@@ -31,7 +31,7 @@ WorkerClient::~WorkerClient() {
 /// @param asWrapperString Строка инициализации командной обёртки
 
 void WorkerClient::setModelWrapperString(const QString& asWrapperString) {
-    m_aModelWrapperString = asWrapperString;
+    m_aModelWrapperString =  asWrapperString;
 }
 
 
