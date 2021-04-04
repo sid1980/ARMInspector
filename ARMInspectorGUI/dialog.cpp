@@ -41,6 +41,10 @@ void Dialog::on_pushButton_addUser_clicked() {
 }
 
 void Dialog::on_pushButton_editUser_clicked() {
+                        //QMessageBox::information(0, "Список инспекций", "Список инспекций");
+                        for (auto& t : inspections_) {
+                            //qInfo() << "name" << t.getName();
+                        }
 
     userForm frm;
     if (frm.exec() == QDialog::Accepted) {
@@ -48,3 +52,8 @@ void Dialog::on_pushButton_editUser_clicked() {
     }
 
 }
+
+void Dialog::listInspection(const QList<Inspection>& inspections){
+    inspections_=inspections;
+       // QMessageBox::information(this, "Список инспекций", "Список Инспекций");
+    }

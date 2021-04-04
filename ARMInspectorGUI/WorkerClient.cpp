@@ -66,10 +66,26 @@ void WorkerClient::process() {
                 switch (model) {
                     case ModelWrapper::Model::Inspection:
                     {
-                        QMessageBox::information(0, "Список инспекций", "Список Инспекций");
                         ItemContainer<Inspection> inspectionContainer;
                         //Выбираем данные.
                         JsonSerializer::parse(wrapper.getData(), inspectionContainer);
+                        inspections_=inspectionContainer.getItemsList();
+                        dlg.getUI()->tableView->setModel(listuser_);
+                        dlg.getUI()->tableView->setColumnHidden(0, true);
+                        dlg.getUI()->tableView->setColumnHidden(4, true);
+                        dlg.getUI()->tableView->setColumnHidden(5, true);
+                        dlg.getUI()->tableView->setColumnHidden(6, true);
+                        dlg.getUI()->tableView->setColumnHidden(7, true);
+                        dlg.getUI()->tableView->setColumnHidden(8, true);
+                        dlg.getUI()->tableView->setColumnHidden(9, true);
+                        //dlg.getUI()->tableView->setColumnHidden(2, true);
+                        dlg.getUI()->tableView->resizeColumnsToContents();
+                        dlg.getUI()->tableView->resizeRowsToContents();
+                        dlg.exec();
+                        connect(this, SIGNAL(passListInspections(const QList<Inspection>& )),
+                          &dlg, SLOT(listInspection(const QList<Inspection>& )));
+                        emit passListInspections(inspections_);
+                        delete listuser_;
                        //что сессия готова передать контроллеру информацию
                        //connect(dlg, SIGNAL(onReadyResult(const RpcSocket*)), this, SLOT(notifyCurrentClient(const RpcSocket*, QString)));
      //QList<Inspection> inspections=inspectionContainer.getItemsList();
@@ -84,22 +100,10 @@ void WorkerClient::process() {
                         ItemContainer<User> userContainer;
                         //Выбираем данные.
                         JsonSerializer::parse(wrapper.getData(), userContainer);
-                        ModelList<User>* listuser = new ModelList<User>(userContainer.getItemsList());
-                        dlg.getUI()->tableView->setModel(listuser);
-                        dlg.getUI()->tableView->setColumnHidden(0, true);
-                        dlg.getUI()->tableView->setColumnHidden(4, true);
-                        dlg.getUI()->tableView->setColumnHidden(5, true);
-                        dlg.getUI()->tableView->setColumnHidden(6, true);
-                        dlg.getUI()->tableView->setColumnHidden(7, true);
-                        dlg.getUI()->tableView->setColumnHidden(8, true);
-                        dlg.getUI()->tableView->setColumnHidden(9, true);
-                        //dlg.getUI()->tableView->setColumnHidden(2, true);
-                        dlg.getUI()->tableView->resizeColumnsToContents();
-                        dlg.getUI()->tableView->resizeRowsToContents();
+                        listuser_ = new ModelList<User>(userContainer.getItemsList());
+                        
                         //dlg.getUI()->tableView->setColumnWidth(1, 500);
                         emit getInspections();
-                        dlg.exec();
-                        delete listuser;
                         //QList<User> users=userContainer.getItemsList();
                         //for (auto& t : users) {
                         //    qInfo() << "name" << t.getName();

@@ -26,7 +26,8 @@ class WorkerClient : public QObject {
     Q_OBJECT
 
 public:
-
+QList<Inspection> inspections_;
+ModelList<User>* listuser_;
     /// Стандартный конструктор.
     /// @param apParent Родитель.
     WorkerClient(QObject *apParent = nullptr);
@@ -47,6 +48,8 @@ signals:
     void getInspections();
     ///Сигнализировать о завершении процесса обработки сообщения от сервера.
     void ready();
+    ///Передать список инспекций
+    void passListInspections(const QList<Inspection>& inspections);
 
 private:
     ///Командная обёртка в форме строки.

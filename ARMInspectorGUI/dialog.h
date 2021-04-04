@@ -20,6 +20,7 @@
 
 #include "ui_dialog.h"
 #include "ui_userForm.h"
+#include "Inspection.h"
 
 namespace Ui {
     class Dialog;
@@ -37,10 +38,13 @@ private slots:
     void on_pushButton_addUser_clicked();
     void on_pushButton_editUser_clicked();
     void on_pushButton_deleteUser_clicked();
+public slots:
+    void listInspection(const QList<Inspection>& inspections);
 
 private:
     Ui::dialog *ui;
     Ui::userForm *usrFrm;
+    QList<Inspection> inspections_;
 };
 
 #endif // DIALOG_H
