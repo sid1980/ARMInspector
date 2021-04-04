@@ -1,0 +1,46 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/* 
+ * File:   dialog.h
+ * Author: kazun
+ *
+ * Created on 29 марта 2021 г., 20:44
+ */
+//Форма вывода списка пользователей
+
+#ifndef DIALOG_H
+#define DIALOG_H
+
+#include <QDialog>
+#include<QMessageBox>
+
+#include "ui_dialog.h"
+#include "ui_userForm.h"
+
+namespace Ui {
+    class Dialog;
+}
+
+class Dialog : public QDialog {
+    Q_OBJECT
+
+public:
+    explicit Dialog(QWidget *parent = 0);
+    ~Dialog();
+    Ui::dialog* getUI();
+private slots:
+
+    void on_pushButton_addUser_clicked();
+    void on_pushButton_editUser_clicked();
+    void on_pushButton_deleteUser_clicked();
+
+private:
+    Ui::dialog *ui;
+    Ui::userForm *usrFrm;
+};
+
+#endif // DIALOG_H
