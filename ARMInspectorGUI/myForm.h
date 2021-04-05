@@ -28,6 +28,7 @@ public:
     void initClient(ClientController *clientController);
     void initApp(QApplication *app);
     void closeEvent(QCloseEvent* ev);
+    
 public slots:
     void exit_app();
     void start_ARM();

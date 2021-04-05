@@ -37,6 +37,7 @@ public:
     enum Model {
         Unknown,
         User,
+        UserV1,
         Inspection,
         PassList
     };

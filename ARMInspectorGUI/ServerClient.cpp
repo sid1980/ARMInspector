@@ -90,9 +90,9 @@ void ServerClient::connectToServer() {
         return;
 
     qInfo() << QString("connectToServer(%1, %2)").arg("127.0.0.1").arg(80);
-    //m_pClientSocket->connectToHost("10.174.0.9", 7071);
+    m_pClientSocket->connectToHost("10.174.0.9", 7071); // Windows
     //m_pClientSocket->connectToHost("10.174.0.21", 7071);
-        m_pClientSocket->connectToHost("127.0.0.1", 7071);
+    //    m_pClientSocket->connectToHost("127.0.0.1", 7071) ;// Linux
 }
 
 

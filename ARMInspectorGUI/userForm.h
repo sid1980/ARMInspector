@@ -22,8 +22,10 @@ class userForm : public QDialog {
 public:
     explicit userForm(QWidget *parent = 0);
     virtual ~userForm();
+    Ui::userForm* getWidget();
+
 private:
-    Ui::userForm* widget;
+    Ui::userForm* widget_;
 };
 
 #endif /* _USERFORM_H */

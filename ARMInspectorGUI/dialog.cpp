@@ -11,18 +11,22 @@
  * Created on 29 марта 2021 г., 20:44
  */
 
+//Форма вывода списка пользователей
+
+
+
 #include "dialog.h"
-#include "ui_dialog.h"
-#include "userForm.h"
 
 Dialog::Dialog(QWidget *parent) :
 QDialog(parent),
 ui(new Ui::dialog) {
     ui->setupUi(this);
+    usrFrm_ = new userForm(this);
 }
 
 Dialog::~Dialog() {
     delete ui;
+    delete usrFrm_;
 }
 
 Ui::dialog* Dialog::getUI() {
@@ -34,26 +38,36 @@ void Dialog::on_pushButton_deleteUser_clicked() {
 
     QMessageBox::question(this, "Удаление пользователя", "Вы действительно хотите удалить пользователя? ",
             QMessageBox::Yes | QMessageBox::No);
+
 }
 
 void Dialog::on_pushButton_addUser_clicked() {
-    QMessageBox::information(this, "Добавление нового пользовтеля", "Добавление нового пользовтеля");
+        if (usrFrm_->exec() == QDialog::Accepted) {
+        QMessageBox::information(this, "Добавление нового пользовтеля", " Добавление нового пользовтеля");
+    }
 }
 
 void Dialog::on_pushButton_editUser_clicked() {
-                        //QMessageBox::information(0, "Список инспекций", "Список инспекций");
-                        for (auto& t : inspections_) {
-                            //qInfo() << "name" << t.getName();
-                        }
+    //QMessageBox::information(0, "Список инспекций", "Список инспекций");
+    //QMessageBox::information(0, "Список инспекций", inspections_[0].getName());
 
-    userForm frm;
-    if (frm.exec() == QDialog::Accepted) {
-        QMessageBox::information(this, "Редактирование пользовтеля", " Редактирование пользовтеля");
-    }
+
+
 
 }
 
-void Dialog::listInspection(const QList<Inspection>& inspections){
-    inspections_=inspections;
-       // QMessageBox::information(this, "Список инспекций", "Список Инспекций");
+void Dialog::listInspection(const QList<Inspection>& inspections) {
+    inspections_ = inspections;
+    //QMessageBox::information(0, "Список инспекций", inspections_[0].getName());
+    // QMessageBox::information(this, "Список инспекций", "Список Инспекций");
+}
+
+void Dialog::setListInspection(const QList<Inspection>& inspections) {
+    inspections_ = inspections;
+    for (auto& t : inspections_) {
+        //qInfo() << "name" << t.getName();
+        usrFrm_->getWidget()->comboBoxInspection->addItem(t.getName());
     }
+
+    // QMessageBox::information(this, "Список инспекций", "Список Инспекций");
+}

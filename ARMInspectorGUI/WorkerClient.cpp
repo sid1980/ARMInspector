@@ -31,7 +31,7 @@ WorkerClient::~WorkerClient() {
 /// @param asWrapperString Строка инициализации командной обёртки
 
 void WorkerClient::setModelWrapperString(const QString& asWrapperString) {
-    m_aModelWrapperString =  asWrapperString;
+    m_aModelWrapperString = asWrapperString;
 }
 
 
@@ -47,7 +47,7 @@ const QString& WorkerClient::getModelWrapperString() const {
 
 void WorkerClient::process() {
     ModelWrapper wrapper;
-    Dialog dlg; 
+    Dialog dlg;
     //Разворачиваем командную обёртку.
     JsonSerializer::parse(m_aModelWrapperString, wrapper);
     //Вывести заголовок и сообщение.
@@ -69,7 +69,8 @@ void WorkerClient::process() {
                         ItemContainer<Inspection> inspectionContainer;
                         //Выбираем данные.
                         JsonSerializer::parse(wrapper.getData(), inspectionContainer);
-                        inspections_=inspectionContainer.getItemsList();
+                        QList<Inspection> inspections = inspectionContainer.getItemsList();
+                        dlg.setListInspection(inspections); 
                         dlg.getUI()->tableView->setModel(listuser_);
                         dlg.getUI()->tableView->setColumnHidden(0, true);
                         dlg.getUI()->tableView->setColumnHidden(4, true);
@@ -82,26 +83,26 @@ void WorkerClient::process() {
                         dlg.getUI()->tableView->resizeColumnsToContents();
                         dlg.getUI()->tableView->resizeRowsToContents();
                         dlg.exec();
-                        connect(this, SIGNAL(passListInspections(const QList<Inspection>& )),
-                          &dlg, SLOT(listInspection(const QList<Inspection>& )));
-                        emit passListInspections(inspections_);
+                        //connect(this, SIGNAL(passListInspections(const QList<Inspection>&)),
+                        //        &dlg, SLOT(listInspection(const QList<Inspection>&)));
+                        //emit passListInspections(inspections_);
                         delete listuser_;
-                       //что сессия готова передать контроллеру информацию
-                       //connect(dlg, SIGNAL(onReadyResult(const RpcSocket*)), this, SLOT(notifyCurrentClient(const RpcSocket*, QString)));
-     //QList<Inspection> inspections=inspectionContainer.getItemsList();
+                        //что сессия готова передать контроллеру информацию
+                        //connect(dlg, SIGNAL(onReadyResult(const RpcSocket*)), this, SLOT(notifyCurrentClient(const RpcSocket*, QString)));
+                        //QList<Inspection> inspections=inspectionContainer.getItemsList();
                         //for (auto& t : inspections) {
                         //    qInfo() << "name" << t.getName();
                         //}
                     }
-                    break;
-                    case ModelWrapper::Model::User:
+                        break;
+                    case ModelWrapper::Model::UserV1:
                     {
                         //QMessageBox::information(0, "Information Box", "This is information text");
-                        ItemContainer<User> userContainer;
+                        ItemContainer<UserV1> userContainer;
                         //Выбираем данные.
                         JsonSerializer::parse(wrapper.getData(), userContainer);
-                        listuser_ = new ModelList<User>(userContainer.getItemsList());
-                        
+                        listuser_ = new ModelList<UserV1>(userContainer.getItemsList());
+
                         //dlg.getUI()->tableView->setColumnWidth(1, 500);
                         emit getInspections();
                         //QList<User> users=userContainer.getItemsList();

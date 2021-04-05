@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'dialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.2
+** Created by: Qt User Interface Compiler version 5.13.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -33,7 +33,7 @@ public:
     {
         if (dialog->objectName().isEmpty())
             dialog->setObjectName(QString::fromUtf8("dialog"));
-        dialog->resize(565, 543);
+        dialog->resize(789, 701);
         gridLayout_2 = new QGridLayout(dialog);
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         gridLayout = new QGridLayout();

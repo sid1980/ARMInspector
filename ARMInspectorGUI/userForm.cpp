@@ -14,10 +14,14 @@
 #include "userForm.h"
 
 userForm::userForm(QWidget *parent) :
-QDialog(parent),widget(new Ui::userForm) {
-    widget->setupUi(this);
+QDialog(parent), widget_(new Ui::userForm) {
+    widget_->setupUi(this);
 }
 
 userForm::~userForm() {
-    delete widget;
+    delete widget_;
+}
+
+Ui::userForm* userForm::getWidget() {
+    return widget_;
 }

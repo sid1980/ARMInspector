@@ -27,6 +27,11 @@ template <class T> ModelList<T>::ModelList(QList<T> list) {
     m_ListModels = list;
 }
 
+///Инициалировать список моделей
+template <class T> void ModelList<T>::setListModel(const QList<T>& models) {
+    m_ListModels = models;
+}
+
 ///Данные, отображаемые в каждой ячейке таблицы  
 
 template <class T> QVariant ModelList<T>::data(const QModelIndex& index, int role) const {

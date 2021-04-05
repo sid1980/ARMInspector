@@ -10,6 +10,8 @@
  *
  * Created on 29 марта 2021 г., 20:44
  */
+
+
 //Форма вывода списка пользователей
 
 #ifndef DIALOG_H
@@ -19,8 +21,8 @@
 #include<QMessageBox>
 
 #include "ui_dialog.h"
-#include "ui_userForm.h"
 #include "Inspection.h"
+#include "userForm.h"
 
 namespace Ui {
     class Dialog;
@@ -33,6 +35,8 @@ public:
     explicit Dialog(QWidget *parent = 0);
     ~Dialog();
     Ui::dialog* getUI();
+    void setListInspection(const QList<Inspection>& inspections);
+
 private slots:
 
     void on_pushButton_addUser_clicked();
@@ -43,7 +47,7 @@ public slots:
 
 private:
     Ui::dialog *ui;
-    Ui::userForm *usrFrm;
+    userForm *usrFrm_;
     QList<Inspection> inspections_;
 };
 

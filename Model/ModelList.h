@@ -30,6 +30,9 @@ public:
     virtual ~ModelList() {
     };
 
+    ///Инициалировать список моделей
+    void setListModel(const QList<T>& models);
+
     ///Количество колонок
     int columnCount(const QModelIndex & parent = QModelIndex()) const;
     ///Количество строк
@@ -43,7 +46,7 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     ///Добавить экземпляр модели в список
-     void addModel(T& model);
+    void addModel(T& model);
     ///Удалить экземпляр модели из  списка
     void delModel(const QModelIndex & index);
     ///Получить модель из списка

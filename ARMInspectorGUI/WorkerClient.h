@@ -19,6 +19,7 @@
 #include "ItemContainer.h"
 #include "ModelList.h"
 #include "User.h"
+#include "UserV1.h"
 #include "Inspection.h"
 
 
@@ -27,13 +28,12 @@ class WorkerClient : public QObject {
 
 public:
 QList<Inspection> inspections_;
-ModelList<User>* listuser_;
+ModelList<UserV1>* listuser_;
     /// Стандартный конструктор.
     /// @param apParent Родитель.
     WorkerClient(QObject *apParent = nullptr);
     /// Стандартный конструктор.
     ~WorkerClient();
-
     void setModelWrapperString(const QString& asWrapperString );
     const QString& getModelWrapperString() const;
     ///Основная функция потока
