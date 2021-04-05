@@ -6,6 +6,7 @@
 
 #include "DBManager.h"
 #include "User.h"
+#include "UserV1.h"
 #include "Inspection.h"
 
 
@@ -185,6 +186,9 @@ void DBManager::execSqlquery() {
     switch (model) {
         case ModelWrapper::Model::User:
             execSqlquery<User>();
+            break;
+        case ModelWrapper::Model::UserV1:
+            execSqlquery<UserV1>();
             break;
         case ModelWrapper::Model::Inspection:
             execSqlquery<Inspection>();
