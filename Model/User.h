@@ -49,6 +49,9 @@ public:
     static const QString getModelName() {
         return QString("User");
     }
+    static const QString getQuery() {
+        return QString("Select *  from user ");
+    }
     QVariant getData(int position) const;
     //QVariant getFieldValue() {
     //    return QVariant();

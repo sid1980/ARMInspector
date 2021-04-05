@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     /// ПРИМЕР ИСПОЛЬЗОВАНИЯ
-    //clientController.execSqlquery("Select * from pass_list", ModelWrapper::Model::PassList);QApplication app(argc, argv);
+    //clientController.getListModels("Select * from pass_list", ModelWrapper::Model::PassList);QApplication app(argc, argv);
 
     MainWindow w;
     w.setWindowState(Qt::WindowMaximized);

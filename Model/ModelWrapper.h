@@ -26,7 +26,7 @@ public:
     enum Command {
         NOP,
         LOGIN,
-        SQL_QUERY,
+        GET_LIST_MODELS,
         SERVER_RESPONSE,
         SET_SESSION_ID
     };
@@ -41,13 +41,15 @@ public:
         Inspection,
         PassList
     };
+    
+    
 
 
     ///Список команд   c названием. Название используется в качестве  шапки 
     ///в командной обёртке при конструировании её с параметром команды.
     const QHash<Command, QString> ListCommand = {
         {Command::LOGIN, "Авторизация пользователя."},
-        {Command::SQL_QUERY, "Выполнить SQL запрос."},
+        {Command::GET_LIST_MODELS, "Выполнить SQL запрос."},
         {Command::SERVER_RESPONSE, "Сообщение  сервера."},
         {Command::SET_SESSION_ID, "Установить идентификатор сессии."},
         {Command::NOP, "Холостая операция."}

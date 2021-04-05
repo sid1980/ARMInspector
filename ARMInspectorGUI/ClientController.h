@@ -65,7 +65,7 @@ public slots:
     /// Выполнить  SQL запроса к базе данных сервера.
     /// @param asQuery SQL запрос.
     /// @param asModel Модель данных.
-    void execSqlquery(const QString &asQuery, ModelWrapper::Model model);
+    void getListModels(ModelWrapper::Model model);
 private:
     int m_aSessionID{0};
     bool m_aLogged{false};

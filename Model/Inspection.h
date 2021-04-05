@@ -18,7 +18,7 @@
 #include <QVariant>
 #include <QJsonArray>
 
-class Inspection: public JsonSerializable {
+class Inspection : public JsonSerializable {
 public:
     Inspection();
     //Inspection(const Inspection& orig);
@@ -31,6 +31,7 @@ public:
     const qint64& getMro()const;
     void read(const QJsonObject &jsonObj);
     void write(QJsonObject &jsonObj) const;
+
     static const QJsonArray getColumnArray() {
         const QJsonArray jsonArray = {"Идентификатор", "Название", "МРО"};
         return jsonArray;
@@ -39,13 +40,18 @@ public:
     static const QString getModelName() {
         return QString("Inspection");
     }
+
+    static const QString getQuery() {
+        return QString("Select *  from inspection ");
+    }
+
     QVariant getData(int position) const;
-    
+
 
 private:
-     qint64 id_;
+    qint64 id_;
     QString name_;
-     qint64 mro_;
+    qint64 mro_;
 
 };
 

@@ -58,9 +58,9 @@ void WorkerClient::process() {
     if (wrapper.getSuccess()) {
         //Команда на сервере выполнена успешно.Определяем тип возвращённой команды.
         switch (command) {
-            case ModelWrapper::Command::SQL_QUERY:
+            case ModelWrapper::Command::GET_LIST_MODELS:
             {
-                //Сервер вернул результат команды "SQL_QUERY"  
+                //Сервер вернул результат команды "GET_LIST_MODELS"  
                 //Процесс обработки возвращённого реультата.    
                 ModelWrapper::Model model = wrapper.getEnumModel();
                 switch (model) {
@@ -159,7 +159,7 @@ void WorkerClient::process() {
                 msgBox.exec();
             }
                 break;
-            case ModelWrapper::Command::SQL_QUERY:
+            case ModelWrapper::Command::GET_LIST_MODELS:
             case ModelWrapper::Command::NOP:
             {
 

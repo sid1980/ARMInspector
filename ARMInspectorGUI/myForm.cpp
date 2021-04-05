@@ -43,7 +43,7 @@ void myForm::exit_app() {
 void myForm::start_ARM() {
     //QPushButton *button =widget.okButton;
     m_pClientController->login(this->widget->nameEdit->text(), this->widget->passEdit->text());
-    //m_pClientController->execSqlquery("Select * from user", ModelWrapper::Model::User);
+    //m_pClientController->getListModels("Select * from user", ModelWrapper::Model::User);
 
     //this->hide();
     //emit ready();

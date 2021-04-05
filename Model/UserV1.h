@@ -18,7 +18,7 @@
 #include <QVariant>
 #include <QJsonArray>
 
-class UserV1: public JsonSerializable  {
+class UserV1 : public JsonSerializable {
 public:
     UserV1();
     virtual ~UserV1();
@@ -34,12 +34,18 @@ public:
     void write(QJsonObject &jsonObj) const;
 
     static const QJsonArray getColumnArray() {
-        const QJsonArray jsonArray = {"Идентификатор", "ФИО", "Инспекция","Имя пользователя"};
+        const QJsonArray jsonArray = {"Идентификатор", "ФИО", "Инспекция", "Имя пользователя"};
         return jsonArray;
     }
 
     static const QString getModelName() {
         return QString("UserV1");
+    }
+
+    static const QString getQuery() {
+        return QString("Select fio,name_i,name  from user u "
+                "INNER JOIN inspection i"
+                "  ON u.id_inspection=i.id ");
     }
     QVariant getData(int position) const;
     //QVariant getFieldValue() {

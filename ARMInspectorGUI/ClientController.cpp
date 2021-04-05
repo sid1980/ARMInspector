@@ -64,7 +64,7 @@ void ClientController::formReady() {
 
 ///Полчить список инспекций
 void ClientController::getListInspection(){
-    this->execSqlquery("Select * from inspection", ModelWrapper::Model::Inspection);
+    this->getListModels( ModelWrapper::Model::Inspection);
 };
 
 ///Ждать сигнала готовности данных.
@@ -105,23 +105,23 @@ void ClientController::login(const QString &asLogin, const QString &asPassword) 
 /// Выполнить  SQL запроса к базе данных сервера.
 /// @param asQuery SQL запрос.
 
-void ClientController::execSqlquery(const QString &asQuery, ModelWrapper::Model model) {
+void ClientController::getListModels(ModelWrapper::Model model) {
     //Создать командную обёртку.
-    ModelWrapper wrapper(ModelWrapper::Command::SQL_QUERY);
+    ModelWrapper wrapper(ModelWrapper::Command::GET_LIST_MODELS);
     //Установить идентификатор сессии.
     wrapper.setSessionID(m_aSessionID);
     //Установить модель.    
     wrapper.setEnumModel(model);
     //Задать параметры команды.
-    QJsonObject params;
-    params.insert("query", asQuery);
+    //QJsonObject params;
+    //params.insert("query", asQuery);
     //params.insert("model", model);
     //Конвертировать параметры в строку.
-    QString query = JsonSerializer::json_encode(params);
+    //QString query = JsonSerializer::json_encode(params);
     //Положить параметры в раздел данных.
-    wrapper.setData(query);
+    wrapper.setData("");
     //Упаковать  весь запрос в строку
-    query = JsonSerializer::serialize(wrapper);
+    QString query = JsonSerializer::serialize(wrapper);
     //Переслать его на сервер.
     m_pCommandController->requestServer(query);
 

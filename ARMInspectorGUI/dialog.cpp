@@ -20,6 +20,7 @@
 #include <QButtonGroup>
 #include <QRadioButton>
 #include <QDebug>
+#include <QComboBox>
 
 Dialog::Dialog(QWidget *parent) :
 QDialog(parent),
@@ -54,14 +55,19 @@ void Dialog::on_pushButton_addUser_clicked() {
         user->setName(usrFrm_->getWidget()->lineEditName->text());
         user->setPassword(usrFrm_->getWidget()->lineEditPassword->text());
         QButtonGroup group;
-        QList<QRadioButton *> allButtons = usrFrm_->getWidget()->groupBoxStatus->findChildren<QRadioButton *>();
-        //qDebug() << allButtons.size();
+        QList<QRadioButton *> allButtons;
+        allButtons = usrFrm_->getWidget()->groupBoxStatus->findChildren<QRadioButton *>();
         for (int i = 0; i < allButtons.size(); ++i) {
             group.addButton(allButtons[i], i);
         }
-        //qDebug() << group.checkedId();
         user->setStatus(group.checkedId());
-        QMessageBox::information(this, "Добавление нового пользовтеля", QString::number(user->getStatus()));
+        
+        allButtons = usrFrm_->getWidget()->groupBoxRole->findChildren<QRadioButton *>();
+        for (int i = 0; i < allButtons.size(); ++i) {
+            group.addButton(allButtons[i], i);
+        }
+        user->setRole(group.checkedId());
+        QMessageBox::information(this, "Добавление нового пользовтеля", QString::number(user->getRole()));
         delete user;
     }
 }

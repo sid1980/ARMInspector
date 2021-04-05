@@ -40,9 +40,7 @@ void MainWindow::Report() {
 
 void MainWindow::ListUsers() {
     //QMessageBox::information(0, "АРМ Администратора", "Список пользователей");
-    m_pClientController->execSqlquery("Select fio,name_i,name  from user u "
-    "INNER JOIN inspection i"
-    "  ON u.id_inspection=i.id ", ModelWrapper::Model::UserV1);
+    m_pClientController->getListModels(ModelWrapper::Model::UserV1);
 
 }
 
