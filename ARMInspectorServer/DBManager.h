@@ -44,12 +44,12 @@ public:
     /// @param apClientSocket Указатель на сокет клиент-серверного соединения.
     void removeDatabase();
    /// Выполнить Sql запрос.
-    void execSqlquery();
+    void getListModels();
 
 
 
     /// Выполнить Sql запрос.
-    template<typename T> void execSqlquery();
+    template<typename T> void getListModels();
  
 
 private:

@@ -59,7 +59,7 @@ bool DBManager::addDataBase() {
         //database.setUserName("test");
         //database.setHostName("localhost");
         //database.setPort(3306);
-//        //database.setPassword("tst");
+        //        //database.setPassword("tst");
         //Открыть базу данных
         if (!database.open()) {
             qDebug() << "FAILURE.db is not opened";
@@ -139,8 +139,12 @@ void DBManager::login() {
         //Если это admin , то добавить его и установить пароль по умолчанию
         if (asLogin == "admin") {
             QString pasword_hash = QString(QCryptographicHash::hash(("adm11"), QCryptographicHash::Md5).toHex());
-            QString sqlquery_string = QString("INSERT INTO user(name,password) VALUES ('admin','") + pasword_hash + QString("')");
-            if (!queryStatementInfo.exec(sqlquery_string)) {
+            //QString sqlquery_string = QString("INSERT INTO user(name,password) VALUES ('admin','") + pasword_hash + QString("')");
+            QString sqlquery_string = QString("INSERT INTO user(name,password) VALUES (:name,:password)");
+            queryStatementInfo.prepare(sqlquery_string);
+            queryStatementInfo.bindValue(":name", asLogin);
+            queryStatementInfo.bindValue(":password", pasword_hash);
+            if (!queryStatementInfo.exec()) {
                 setResult(user, Message::CANNOT_ADD_ADMIN_USER);
                 return;
             } else {
@@ -179,21 +183,21 @@ void DBManager::login() {
 
 ///Выполнить запрос к базе данных.
 
-void DBManager::execSqlquery() {
+void DBManager::getListModels() {
     //Получаем модель.
     ModelWrapper::Model model = m_pModelWrapper->getEnumModel();
     //Выбрать модель, данные которой необходимо запросить. 
     switch (model) {
         case ModelWrapper::Model::User:
-            execSqlquery<User>();
+            getListModels<User>();
             break;
         case ModelWrapper::Model::UserV1:
-            execSqlquery<UserV1>();
+            getListModels<UserV1>();
             break;
         case ModelWrapper::Model::Inspection:
-            execSqlquery<Inspection>();
+            getListModels<Inspection>();
             break;
- 
+
     }
 
 }

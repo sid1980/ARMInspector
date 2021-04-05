@@ -85,10 +85,10 @@ void Worker::process() {
                     pDBManager->login();
                 }
                     break;
-                case ModelWrapper::Command::SQL_QUERY:
+                case ModelWrapper::Command::GET_LIST_MODELS:
                 {
                     //Выполнить SQL запрос.
-                    pDBManager->execSqlquery();
+                    pDBManager->getListModels();
                 }
                     break;
                 default:

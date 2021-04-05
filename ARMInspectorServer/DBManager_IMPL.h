@@ -1,6 +1,6 @@
 /****************************************************************************
  **
- ** Реализация  шаблонного метода  DBManager::execSqlquery .
+ ** Реализация  шаблонного метода  DBManager::getListModels .
  **
  ****************************************************************************/
 
@@ -25,14 +25,15 @@
 /// выполняется запрос. Результат работы запроса упаковывается в секцию данных
 /// командной обёртки m_pModellWrapper.
 
-template<typename T> void DBManager::execSqlquery() {
+template<typename T> void DBManager::getListModels() {
     //Блокировать ресурсы SQL от использования их  другими потоками. 
     QMutexLocker lock(&m_Mutex);
     //Загружаем параметры команды.
-    QJsonObject param;
-    JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
+    //QJsonObject param;
+    //JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
     //Выполнить SQL запрос.
-    QString asSqlQuery = param["query"].toString();
+    //QString asSqlQuery = param["query"].toString();
+    //QString asSqlQuery = T::getQuery();
 
     //Задать  функцию для установки результата выполнения команды сервера
     //и собщения о результате выполнения команды.
@@ -64,7 +65,7 @@ template<typename T> void DBManager::execSqlquery() {
     }
     //Проверить  и выполнить  SQL запрос.
     QSqlQuery queryStatementInfo(database);
-    if (!queryStatementInfo.exec(asSqlQuery)) {
+    if (!queryStatementInfo.exec(T::getQuery())) {
         setResult(container, Message::SQL_ERROR);
         return;
     }
