@@ -16,12 +16,17 @@
 
 
 #include "dialog.h"
+#include "User.h"
+#include <QButtonGroup>
+#include <QRadioButton>
+#include <QDebug>
 
 Dialog::Dialog(QWidget *parent) :
 QDialog(parent),
 ui(new Ui::dialog) {
     ui->setupUi(this);
     usrFrm_ = new userForm(this);
+
 }
 
 Dialog::~Dialog() {
@@ -42,8 +47,22 @@ void Dialog::on_pushButton_deleteUser_clicked() {
 }
 
 void Dialog::on_pushButton_addUser_clicked() {
-        if (usrFrm_->exec() == QDialog::Accepted) {
-        QMessageBox::information(this, "Добавление нового пользовтеля", " Добавление нового пользовтеля");
+    if (usrFrm_->exec() == QDialog::Accepted) {
+        User* user = new User();
+        user->setFio(usrFrm_->getWidget()->lineEditFio->text());
+        user->setInspection(inspections_[usrFrm_->getWidget()->comboBoxInspection->currentIndex()].getId());
+        user->setName(usrFrm_->getWidget()->lineEditName->text());
+        user->setPassword(usrFrm_->getWidget()->lineEditPassword->text());
+        QButtonGroup group;
+        QList<QRadioButton *> allButtons = usrFrm_->getWidget()->groupBoxStatus->findChildren<QRadioButton *>();
+        //qDebug() << allButtons.size();
+        for (int i = 0; i < allButtons.size(); ++i) {
+            group.addButton(allButtons[i], i);
+        }
+        //qDebug() << group.checkedId();
+        user->setStatus(group.checkedId());
+        QMessageBox::information(this, "Добавление нового пользовтеля", QString::number(user->getStatus()));
+        delete user;
     }
 }
 
