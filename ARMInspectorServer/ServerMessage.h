@@ -20,7 +20,9 @@
 
 enum Message {
     USER_LOGIN_SUCCESS,
-    USERR_LOGIN_FAILURE,
+    USER_LOGIN_FAILURE,
+    USER_ADD_SUCCESS,
+    USERR_ADD_FAILURE,
     USER_IS_NOT_FOUND,
     DATABASE_IS_NOT_OPENED,
     NO_DATABASE_CONNECTION,
@@ -61,7 +63,9 @@ namespace ServerMessage {
     ///Список сообщений с результатом выполнения команды сервером
     const QHash<const Message, Result> message = {
         {Message::USER_LOGIN_SUCCESS,{"Пользователь  успешно прошёл авторизацию.", true, ModelWrapper::Command::NOP}},
-        {Message::USERR_LOGIN_FAILURE,{"Пользователь  не прошёл авторизацию.", false, ModelWrapper::Command::NOP}},
+        {Message::USER_LOGIN_FAILURE,{"Пользователь  не прошёл авторизацию.", false, ModelWrapper::Command::NOP}},
+        {Message::USER_ADD_SUCCESS,{"Пользователь  успешно добавлен в базу данных.", true, ModelWrapper::Command::NOP}},
+        {Message::USERR_ADD_FAILURE,{"Ошибка при добавлении пользователя в базу данных.", false, ModelWrapper::Command::NOP}},
         {Message::USER_IS_NOT_FOUND,{"Пользователя с таким именем нет в базе данных.", false, ModelWrapper::Command::NOP}},
         {Message::DATABASE_IS_NOT_OPENED,{"База данных не открыта.", false, ModelWrapper::Command::NOP}},
         {Message::NO_DATABASE_CONNECTION,{"Подключение к базе данных отсутствует.", false, ModelWrapper::Command::NOP}},
@@ -84,7 +88,7 @@ namespace ServerMessage {
         {Message::FAILED_CREATE_WORKER,{"Не удалось создать экземпляр класса, подсоединяемого к потоку.", false, ModelWrapper::Command::NOP}},
         {Message::DATABASE_CONNECTION_INCORRECT,{"Подключение  к базе данных некорректно.", false, ModelWrapper::Command::NOP}},
         {Message::CANNOT_DELETE_SESSION,{"Невозможно удалить сессию.", false, ModelWrapper::Command::NOP}},
-        {Message::ADD_ADMIN_USER_SUCCESS,{"Пользователь admin успешно добавлен в базу данных.", false, ModelWrapper::Command::NOP}},
+        {Message::ADD_ADMIN_USER_SUCCESS,{"Пользователь admin успешно добавлен в базу данных.", true, ModelWrapper::Command::NOP}},
         {Message::CANNOT_ADD_ADMIN_USER,{"Ошибка добавления пользователя admin.", false, ModelWrapper::Command::NOP}}
     };
     /// Выбрать сообщение из списка.

@@ -8,6 +8,8 @@
 #include "User.h"
 #include "UserV1.h"
 #include "Inspection.h"
+#include <QSqlError>
+
 
 
 /// Стандартный конструктор.
@@ -45,7 +47,7 @@ bool DBManager::addDataBase() {
         m_pModelWrapper->setMessage(result.str);
         m_pModelWrapper->setSuccess(result.success);
     };
-    const QString DRIVER("QODBC3");
+    const QString DRIVER("QODBC");
     if (!QSqlDatabase::isDriverAvailable(DRIVER)) {
         setResult(Message::DATABASE_DRIVER_IS_NOT_AVAILABLE);
         return false;
@@ -56,10 +58,10 @@ bool DBManager::addDataBase() {
         database.setDatabaseName("DRIVER={MySQL ODBC 8.0 Unicode Driver};SERVER=localhost;DATABASE=gu_delinq;Uid=test;Pwd=tst;");
         //database.setConnectOptions("SQL_ATTR_ODBC_VERSION=SQL_OV_ODBC3");
         //database.setDatabaseName("arm");
-        //database.setUserName("test");
+        //database.setUserName("");
         //database.setHostName("localhost");
-        //database.setPort(3306);
-        //        //database.setPassword("tst");
+        //database.setPort(3305);
+        //database.setPassword("");
         //Открыть базу данных
         if (!database.open()) {
             qDebug() << "FAILURE.db is not opened";
@@ -91,6 +93,8 @@ void DBManager::login() {
     QString asLogin = param["name"].toString();
     //Пароль.
     QString asPassword = param["password"].toString();
+    //Создать модель данных User
+    User user;
     //Задать  функцию для установки результата выполнения команды сервера
     //и собщения о результате выполнения команды.
     auto setResult = [this](User user, Message msg) {
@@ -102,83 +106,82 @@ void DBManager::login() {
         m_pModelWrapper->setMessage(result.str);
         m_pModelWrapper->setSuccess(result.success);
     };
-    //Создать модель данных User
-    User user;
-    //Взять ранее созданное подключение к  базе данных.
-    QSqlDatabase database = QSqlDatabase::database(QString().setNum(m_pModelWrapper->getSessionID()));
-    //Проверить подключение  к  базе данных.
-    if (!database.isValid()) {
-        //Подключение  к базе данных некорректно.
-        //Установить сообщение.
-        setResult(user, Message::DATABASE_CONNECTION_INCORRECT);
-        //Прекратить работу менеджера базы данных.
-        return;
-    }
-
-    //Проверить, открыта ли база данных.
-    if (!database.isOpen()) {
-        //База данных не открыта.Авторизация не возможна.
-        setResult(user, Message::DATABASE_IS_NOT_OPENED);
-        return;
-    }
-
-    //База данных открыта. Можно проводить авторизацию пользователя. 
-
-    QSqlQuery queryStatementInfo(database);
-    //Подготовить запрос на чтение данных из  базы.
-    QString strGetStatementInfo = "select * from user where name='" + asLogin + "'";
-
-    //Выполнить зыпрос к базе данных.
-    if (!queryStatementInfo.exec(strGetStatementInfo)) {
-        setResult(user, Message::SQL_ERROR);
-        return;
-    }
-    //Проверить, есть ли в базе данных хотя бы одна запись, удовлетворяющая запросу    
-    if (!queryStatementInfo.next()) {
-        //Пользователя с таким именем нет в базе данных. 
-        //Если это admin , то добавить его и установить пароль по умолчанию
-        if (asLogin == "admin") {
-            QString pasword_hash = QString(QCryptographicHash::hash(("adm11"), QCryptographicHash::Md5).toHex());
-            //QString sqlquery_string = QString("INSERT INTO user(name,password) VALUES ('admin','") + pasword_hash + QString("')");
-            QString sqlquery_string = QString("INSERT INTO user(name,password) VALUES (:name,:password)");
-            queryStatementInfo.prepare(sqlquery_string);
-            queryStatementInfo.bindValue(":name", asLogin);
-            queryStatementInfo.bindValue(":password", pasword_hash);
-            if (!queryStatementInfo.exec()) {
-                setResult(user, Message::CANNOT_ADD_ADMIN_USER);
-                return;
-            } else {
-                setResult(user, Message::ADD_ADMIN_USER_SUCCESS);
-                //Пользователь admin успешно добавлен в базу данных
-                return;
-            }
-        } else {
-            setResult(user, Message::USER_IS_NOT_FOUND);
+    if (!asLogin.isEmpty()&&!asPassword.isEmpty()) {
+        //Взять ранее созданное подключение к  базе данных.
+        QSqlDatabase database = QSqlDatabase::database(QString().setNum(m_pModelWrapper->getSessionID()));
+        //Проверить подключение  к  базе данных.
+        if (!database.isValid()) {
+            //Подключение  к базе данных некорректно.
+            //Установить сообщение.
+            setResult(user, Message::DATABASE_CONNECTION_INCORRECT);
+            //Прекратить работу менеджера базы данных.
             return;
         }
-    }
-    //JSON объект для хранения записи базы данных.
-    QJsonObject recordObject;
-    //Скопировать запись базы данных в JSON объект.
-    for (int x = 0; x < queryStatementInfo.record().count(); x++) {
-        //qDebug() << queryStatementInfo.value(x);
-        recordObject.insert(queryStatementInfo.record().fieldName(x), QJsonValue::fromVariant(queryStatementInfo.value(x)));
-    }
-    ///Считать данные JSON объекта  в объект класса User.  
-    user.read(recordObject);
-    //Имя пользователя найдено. Прверить пароль прользователя.Получить хеш пароля.
-    QString pasword_hash = QString(QCryptographicHash::hash((asPassword.toStdString().c_str()), QCryptographicHash::Md5).toHex());
-    //Сравнить его с хеш в базе данных
-    if (pasword_hash.compare(user.getPassword().trimmed(), Qt::CaseSensitive) != 0) {
-        //Пользователь не прошёл авторизацию. Пароль неверен. 
-        setResult(user, Message::USERR_LOGIN_FAILURE);
-        return;
-    }
-    //Пароль введённый пользователем и пароль в базе данных совпали. Пользователь  прошёл авторизацию. 
-    setResult(user, Message::USER_LOGIN_SUCCESS);
 
-    return;
-    //}
+        //Проверить, открыта ли база данных.
+        if (!database.isOpen()) {
+            //База данных не открыта.Авторизация не возможна.
+            setResult(user, Message::DATABASE_IS_NOT_OPENED);
+            return;
+        }
+
+        //База данных открыта. Можно проводить авторизацию пользователя. 
+
+        QSqlQuery queryStatementInfo(database);
+        //Подготовить запрос на чтение данных из  базы.
+        QString strGetStatementInfo = "select * from user where name='" + asLogin + "'";
+
+        //Выполнить зыпрос к базе данных.
+        if (!queryStatementInfo.exec(strGetStatementInfo)) {
+            setResult(user, Message::SQL_ERROR);
+            return;
+        }
+        //Проверить, есть ли в базе данных хотя бы одна запись, удовлетворяющая запросу    
+        if (!queryStatementInfo.next()) {
+            //Пользователя с таким именем нет в базе данных. 
+            //Если это admin , то добавить его и установить пароль по умолчанию
+            if (asLogin == "admin") {
+                QString pasword_hash = QString(QCryptographicHash::hash(("adm11"), QCryptographicHash::Md5).toHex());
+                QString sqlquery_string = QString("INSERT INTO user(name,password) VALUES ('admin','") + pasword_hash + QString("')");
+                if (!queryStatementInfo.exec(sqlquery_string)) {
+                    setResult(user, Message::CANNOT_ADD_ADMIN_USER);
+                    return;
+                } else {
+                    setResult(user, Message::ADD_ADMIN_USER_SUCCESS);
+                    //Пользователь admin успешно добавлен в базу данных
+                    return;
+                }
+            } else {
+                setResult(user, Message::USER_IS_NOT_FOUND);
+                return;
+            }
+        }
+        //JSON объект для хранения записи базы данных.
+        QJsonObject recordObject;
+        //Скопировать запись базы данных в JSON объект.
+        for (int x = 0; x < queryStatementInfo.record().count(); x++) {
+            //qDebug() << queryStatementInfo.value(x);
+            recordObject.insert(queryStatementInfo.record().fieldName(x), QJsonValue::fromVariant(queryStatementInfo.value(x)));
+        }
+        ///Считать данные JSON объекта  в объект класса User.  
+        user.read(recordObject);
+        //Имя пользователя найдено. Прверить пароль прользователя.Получить хеш пароля.
+        QString pasword_hash = QString(QCryptographicHash::hash((asPassword.toStdString().c_str()), QCryptographicHash::Md5).toHex());
+        //Сравнить его с хеш в базе данных
+        if (pasword_hash.compare(user.getPassword().trimmed(), Qt::CaseSensitive) != 0) {
+            //Пользователь не прошёл авторизацию. Пароль неверен. 
+            setResult(user, Message::USER_LOGIN_FAILURE);
+            return;
+        }
+        //Пароль введённый пользователем и пароль в базе данных совпали. Пользователь  прошёл авторизацию. 
+        setResult(user, Message::USER_LOGIN_SUCCESS);
+
+        return;
+    } else {
+        setResult(user, Message::USER_LOGIN_FAILURE);
+        return;
+
+    }
 }
 
 ///Выполнить запрос к базе данных.
@@ -204,6 +207,7 @@ void DBManager::getListModels() {
 
 
 
+
 /// Отключить клиента от сервера
 /// @param apClientSocket Указатель на сокет клиент-серверного соединения.
 
@@ -222,6 +226,75 @@ void DBManager::removeDatabase() {
     //Удалить подключение к базе данных из списка QSqlDatabase
     QSqlDatabase::removeDatabase(QString().setNum(m_pModelWrapper->getSessionID()));
 }
+
+
+
+/// Добавить нового пользователя
+/// \param name
+/// \return 
+
+void DBManager::addUser() {
+    //Задать  функцию для установки результата выполнения команды сервера
+    //и собщения о результате выполнения команды.
+    auto setResult = [this](User user, Message msg) {
+        //Подготовить данные.
+        QString json = JsonSerializer::serialize(user);
+        m_pModelWrapper->setData(json);
+        //Установить сообщение и результат выполнения команды.
+        ServerMessage::Result result = ServerMessage::outPut(msg);
+        m_pModelWrapper->setMessage(result.str);
+        m_pModelWrapper->setSuccess(result.success);
+    };
+    //Создать модель данных User
+    User user;
+    JsonSerializer::parse(m_pModelWrapper->getData(), user);
+    //Взять ранее созданное подключение к  базе данных.
+    QSqlDatabase database = QSqlDatabase::database(QString().setNum(m_pModelWrapper->getSessionID()));
+    //Проверить подключение  к  базе данных.
+    if (!database.isValid()) {
+        //Подключение  к базе данных некорректно.
+        //Установить сообщение.
+        setResult(user, Message::DATABASE_CONNECTION_INCORRECT);
+        //Прекратить работу менеджера базы данных.
+        return;
+    }
+
+    //Проверить, открыта ли база данных.
+    if (!database.isOpen()) {
+        //База данных не открыта.Авторизация не возможна.
+        setResult(user, Message::DATABASE_IS_NOT_OPENED);
+        return;
+    }
+
+    //База данных открыта. Можно проводить авторизацию пользователя. 
+    QSqlQuery queryAdd(database);
+    queryAdd.prepare("INSERT INTO user (fio,id_inspection,name,password,status,role,access)"
+            " VALUES (:fio,:id_inspection,:name,:password,:status,:role,:access)");
+    queryAdd.bindValue(":fio", user.getFio());
+    queryAdd.bindValue(":id_inspection", user.getInspection());
+    queryAdd.bindValue(":name", user.getName());
+    //Получить хеш пароля.
+    QString pasword_hash = QString(QCryptographicHash::hash((user.getPassword().toStdString().c_str()), QCryptographicHash::Md5).toHex());
+    queryAdd.bindValue(":password", pasword_hash);
+    queryAdd.bindValue(":status", user.getStatus());
+    queryAdd.bindValue(":role", user.getRole());
+    queryAdd.bindValue(":access", user.getAccess());
+
+    if (queryAdd.exec()) {
+        setResult(user, Message::USER_ADD_SUCCESS);
+        qDebug() << user.getName();
+        qDebug() << "add user  succes: ";
+    } else {
+        setResult(user, Message::USERR_ADD_FAILURE);
+        qDebug() << "add person failed: " << queryAdd.lastError();
+        qDebug() << user.getName();
+    }
+
+    return;
+}
+
+
+
 
 
 
