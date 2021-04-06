@@ -62,10 +62,13 @@ public slots:
     /// @param asLogin  Имя пользователя. 
     /// @param asPassword Пароль пользователя.
     void login(const QString &asLogin, const QString & asPassword);
-    /// Выполнить  SQL запроса к базе данных сервера.
+    /// Получить список моделей.
     /// @param asQuery SQL запрос.
     /// @param asModel Модель данных.
     void getListModels(ModelWrapper::Model model);
+     ///добавить в базу нового пользователя
+    void addUser(const User&);
+
 private:
     int m_aSessionID{0};
     bool m_aLogged{false};

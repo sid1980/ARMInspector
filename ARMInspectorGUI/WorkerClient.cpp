@@ -42,12 +42,18 @@ const QString& WorkerClient::getModelWrapperString() const {
     return m_aModelWrapperString;
 }
 
+void WorkerClient::addUserData(const User& user) {
+    emit passUserData(user);
+}
+
 
 ///Основная функция обработчика сообщений, полученных от сервера.
 
 void WorkerClient::process() {
     ModelWrapper wrapper;
     Dialog dlg;
+    connect(&dlg, SIGNAL(readyUserData(const User&)),
+            this, SLOT(addUserData(const User&)));
     //Разворачиваем командную обёртку.
     JsonSerializer::parse(m_aModelWrapperString, wrapper);
     //Вывести заголовок и сообщение.
@@ -62,6 +68,7 @@ void WorkerClient::process() {
             {
                 //Сервер вернул результат команды "GET_LIST_MODELS"  
                 //Процесс обработки возвращённого реультата.    
+
                 ModelWrapper::Model model = wrapper.getEnumModel();
                 switch (model) {
                     case ModelWrapper::Model::Inspection:
@@ -70,7 +77,7 @@ void WorkerClient::process() {
                         //Выбираем данные.
                         JsonSerializer::parse(wrapper.getData(), inspectionContainer);
                         QList<Inspection> inspections = inspectionContainer.getItemsList();
-                        dlg.setListInspection(inspections); 
+                        dlg.setListInspection(inspections);
                         dlg.getUI()->tableView->setModel(listuser_);
                         dlg.getUI()->tableView->setColumnHidden(0, true);
                         dlg.getUI()->tableView->setColumnHidden(4, true);
@@ -83,8 +90,6 @@ void WorkerClient::process() {
                         dlg.getUI()->tableView->resizeColumnsToContents();
                         dlg.getUI()->tableView->resizeRowsToContents();
                         dlg.exec();
-                        //connect(this, SIGNAL(passListInspections(const QList<Inspection>&)),
-                        //        &dlg, SLOT(listInspection(const QList<Inspection>&)));
                         //emit passListInspections(inspections_);
                         delete listuser_;
                         //что сессия готова передать контроллеру информацию
@@ -124,11 +129,22 @@ void WorkerClient::process() {
                 //Процесс обработки возвращённого реультата.    
                 User user;
                 JsonSerializer::parse(wrapper.getData(), user);
+                QMessageBox::information(0, "LOGIN",
+                        "User with name " + user.getName().trimmed() + " is logged in");
                 qInfo() << "User with name " << user.getName().trimmed() << " is logged in";
                 //Сигнализировать о завершении обработки.
                 emit ready();
             }
                 break;
+            case ModelWrapper::Command::ADD_NEW_USER:
+            {
+                //Сервер вернул результат команды "ADD_NEW_USER"     
+                //Процесс обработки возвращённого реультата.    
+                QMessageBox::information(0, "Добавление нового пользовтеля",
+                        "Новый пользователь успешно добавлен в базу данных");
+            }
+                break;
+
             case ModelWrapper::Command::NOP:
             {
                 qInfo() << "Command is incorrect";
@@ -159,7 +175,19 @@ void WorkerClient::process() {
                 msgBox.exec();
             }
                 break;
+            case ModelWrapper::Command::ADD_NEW_USER:
+            {
+                QMessageBox msgBox;
+                msgBox.setText("<a style='color:red'> Ошибка добавления нового пользователя</a>");
+                msgBox.exec();
+            }
+                break;
             case ModelWrapper::Command::GET_LIST_MODELS:
+            {
+                QMessageBox::information(0, "СПИСОК МОДЕЛЕЙ", "Список моделей");
+                qInfo() << "Список моделей";
+            }
+                break;
             case ModelWrapper::Command::NOP:
             {
 

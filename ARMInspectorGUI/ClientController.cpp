@@ -46,6 +46,8 @@ void ClientController::init(ServerClient *apServerClient) {
     connect(m_pWorkerClient, SIGNAL(ready()), SLOT(formReady()));
     // Сигнально-слотовое соединение получения списка организаций.
     connect(m_pWorkerClient, SIGNAL(getInspections()), SLOT(getListInspection()));
+    // Сигнально-слотовое добавления нового пользователя в базу данных.
+    connect(m_pWorkerClient, SIGNAL(passUserData(const User&)), SLOT(addUser(const User&)));
 }
 ///Установить идентификатор сессии
 
@@ -63,8 +65,9 @@ void ClientController::formReady() {
 
 
 ///Полчить список инспекций
-void ClientController::getListInspection(){
-    this->getListModels( ModelWrapper::Model::Inspection);
+
+void ClientController::getListInspection() {
+    this->getListModels(ModelWrapper::Model::Inspection);
 };
 
 ///Ждать сигнала готовности данных.
@@ -102,8 +105,26 @@ void ClientController::login(const QString &asLogin, const QString &asPassword) 
 }
 
 
-/// Выполнить  SQL запроса к базе данных сервера.
-/// @param asQuery SQL запрос.
+///Получить список моделей.
+
+void ClientController::addUser(const User &user) {
+    //QMessageBox::information(0, "Добавление нового пользовтеля", QString(user.getFio()));
+
+    //Создать командную обёртку.
+    ModelWrapper wrapper(ModelWrapper::Command::ADD_NEW_USER);
+    //Установить идентификатор сессии.
+    wrapper.setSessionID(m_aSessionID);
+    //Установить модель.    
+    wrapper.setEnumModel(ModelWrapper::Model::User);
+    //Сериализовать модель User.Передать данные о пользователе.
+    QString userAsString = JsonSerializer::serialize(user);
+    wrapper.setData(userAsString);
+    //Упаковать  весь запрос в строку
+    QString query = JsonSerializer::serialize(wrapper);
+    //Переслать его на сервер.
+    m_pCommandController->requestServer(query);
+}
+///Получить список моделей.
 
 void ClientController::getListModels(ModelWrapper::Model model) {
     //Создать командную обёртку.

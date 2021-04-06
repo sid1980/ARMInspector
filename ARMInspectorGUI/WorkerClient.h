@@ -22,24 +22,24 @@
 #include "UserV1.h"
 #include "Inspection.h"
 
-
 class WorkerClient : public QObject {
     Q_OBJECT
 
 public:
-QList<Inspection> inspections_;
-ModelList<UserV1>* listuser_;
+    QList<Inspection> inspections_;
+    ModelList<UserV1>* listuser_;
     /// Стандартный конструктор.
     /// @param apParent Родитель.
     WorkerClient(QObject *apParent = nullptr);
     /// Стандартный конструктор.
     ~WorkerClient();
-    void setModelWrapperString(const QString& asWrapperString );
+    void setModelWrapperString(const QString& asWrapperString);
     const QString& getModelWrapperString() const;
     ///Основная функция потока
     void process();
 
 public slots:
+    void addUserData(const User&);
 
 signals:
     ///Установить идентификатор клиента
@@ -50,7 +50,8 @@ signals:
     void ready();
     ///Передать список инспекций
     void passListInspections(const QList<Inspection>& inspections);
-
+    ///Передать данные о пользователе
+    void passUserData(const User&);
 private:
     ///Командная обёртка в форме строки.
     QString m_aModelWrapperString;

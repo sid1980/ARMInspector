@@ -61,7 +61,7 @@ const QString& User::getFio() const {
 };
 
 const qint64& User::getInspection() const {
-    return id_;
+    return inspection_;
 };
 
 const QString& User::getName() const {

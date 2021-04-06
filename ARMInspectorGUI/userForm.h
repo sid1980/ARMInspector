@@ -16,6 +16,7 @@
 #define _USERFORM_H
 
 #include "ui_userForm.h"
+#include "User.h"
 
 class userForm : public QDialog {
     Q_OBJECT
@@ -23,7 +24,6 @@ public:
     explicit userForm(QWidget *parent = 0);
     virtual ~userForm();
     Ui::userForm* getWidget();
-
 private:
     Ui::userForm* widget_;
 };

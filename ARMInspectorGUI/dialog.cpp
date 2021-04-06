@@ -27,7 +27,6 @@ QDialog(parent),
 ui(new Ui::dialog) {
     ui->setupUi(this);
     usrFrm_ = new userForm(this);
-
 }
 
 Dialog::~Dialog() {
@@ -61,16 +60,19 @@ void Dialog::on_pushButton_addUser_clicked() {
             group.addButton(allButtons[i], i);
         }
         user->setStatus(group.checkedId());
-        
+
         allButtons = usrFrm_->getWidget()->groupBoxRole->findChildren<QRadioButton *>();
         for (int i = 0; i < allButtons.size(); ++i) {
             group.addButton(allButtons[i], i);
         }
         user->setRole(group.checkedId());
-        QMessageBox::information(this, "Добавление нового пользовтеля", QString::number(user->getRole()));
+        //QMessageBox::information(this, "Добавление нового пользовтеля",
+        //        QString::number(user->getInspection()));
+        emit readyUserData(*user);
         delete user;
     }
 }
+
 
 void Dialog::on_pushButton_editUser_clicked() {
     //QMessageBox::information(0, "Список инспекций", "Список инспекций");

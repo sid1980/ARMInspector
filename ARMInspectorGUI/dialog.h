@@ -22,6 +22,7 @@
 
 #include "ui_dialog.h"
 #include "Inspection.h"
+#include "User.h"
 #include "userForm.h"
 
 namespace Ui {
@@ -44,7 +45,9 @@ private slots:
     void on_pushButton_deleteUser_clicked();
 public slots:
     void listInspection(const QList<Inspection>& inspections);
-
+signals:
+    void readyUserData(const User&);
+    
 private:
     Ui::dialog *ui;
     userForm *usrFrm_;

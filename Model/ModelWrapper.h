@@ -27,6 +27,7 @@ public:
         NOP,
         LOGIN,
         GET_LIST_MODELS,
+        ADD_NEW_USER,
         SERVER_RESPONSE,
         SET_SESSION_ID
     };
@@ -50,6 +51,7 @@ public:
     const QHash<Command, QString> ListCommand = {
         {Command::LOGIN, "Авторизация пользователя."},
         {Command::GET_LIST_MODELS, "Выполнить SQL запрос."},
+        {Command::ADD_NEW_USER, "Добавить нового пользователя."},
         {Command::SERVER_RESPONSE, "Сообщение  сервера."},
         {Command::SET_SESSION_ID, "Установить идентификатор сессии."},
         {Command::NOP, "Холостая операция."}
