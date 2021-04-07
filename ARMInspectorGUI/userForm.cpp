@@ -25,3 +25,15 @@ userForm::~userForm() {
 Ui::userForm* userForm::getWidget() {
     return widget_;
 }
+
+const QList<Inspection>& userForm::getInspections()const {
+    return inspections_;
+};
+
+void userForm::setInspections(const QList<Inspection>& inspections) {
+    inspections_ = inspections;
+    for (auto& t : inspections_) {
+        this->getWidget()->comboBoxInspection->addItem(t.getName());
+    }
+
+}

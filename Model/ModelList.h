@@ -51,7 +51,8 @@ public:
     void delModel(const QModelIndex & index);
     ///Получить модель из списка
     T& getModel(const QModelIndex & index) const;
-
+    
+    
 private:
     QList<T> m_ListModels;
     QVariant getData(int num, int position) const;

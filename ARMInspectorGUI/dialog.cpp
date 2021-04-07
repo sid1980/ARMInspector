@@ -17,21 +17,38 @@
 
 #include "dialog.h"
 #include "User.h"
+#include "UserV1.h"
 #include <QButtonGroup>
 #include <QRadioButton>
 #include <QDebug>
 #include <QComboBox>
+#include <QPalette>
+#include <QColor>
 
 Dialog::Dialog(QWidget *parent) :
 QDialog(parent),
 ui(new Ui::dialog) {
     ui->setupUi(this);
     usrFrm_ = new userForm(this);
+    user_ = new UserV1();
+    listusers_ = new ModelList<UserV1>();
+    //const QColor hlClr = Qt::red; // highlight color to set
+    //const QColor txtClr = Qt::white; // highlighted text color to set
+
+    //QPalette p = palette();
+    //p.setColor(QPalette::Highlight, hlClr);
+    //p.setColor(QPalette::HighlightedText, txtClr);
+    //setPalette(p);
+    this->getUI()->tableView->setStyleSheet("QTableView::item:selected { color:white; background:#royalblue; font-weight:900; }"
+            "QTableCornerButton::section { background-color:#232326; }"
+            "QHeaderView::section { color:white; background-color:#232326; }");
 }
 
 Dialog::~Dialog() {
     delete ui;
     delete usrFrm_;
+    delete user_;
+    delete listusers_;
 }
 
 Ui::dialog* Dialog::getUI() {
@@ -46,11 +63,44 @@ void Dialog::on_pushButton_deleteUser_clicked() {
 
 }
 
+void Dialog::showUserData(const User& user) {
+    //table2->selectRow(current.row());
+    this->getUI()->tableView->scrollToBottom();
+    this->getUI()->tableView->selectRow(listusers_->rowCount()-1);
+    QMessageBox::information(this, "Добавление нового пользовтеля",
+            "Пользователь" + user.getFio() + " успешно добавлен в базу данных");
+}
+
+void Dialog::setListInspection(const QList<Inspection>& inspections) {
+    usrFrm_->setInspections(inspections);
+};
+
+void Dialog::setModel(const QList<UserV1>& users) {
+    listusers_->setListModel(users);
+    this->getUI()->tableView->setModel(listusers_);
+}
+
+void Dialog::showBox() {
+    this->getUI()->tableView->setColumnHidden(0, true);
+    this->getUI()->tableView->setColumnHidden(4, true);
+    this->getUI()->tableView->setColumnHidden(5, true);
+    this->getUI()->tableView->setColumnHidden(6, true);
+    this->getUI()->tableView->setColumnHidden(7, true);
+    this->getUI()->tableView->setColumnHidden(8, true);
+    this->getUI()->tableView->setColumnHidden(9, true);
+    //dialog_.getUI()->tableView->setColumnHidden(2, true);
+    this->getUI()->tableView->resizeColumnsToContents();
+    this->getUI()->tableView->resizeRowsToContents();
+    //emit passListInspections(inspections_);
+    this->show();
+
+}
+
 void Dialog::on_pushButton_addUser_clicked() {
     if (usrFrm_->exec() == QDialog::Accepted) {
         User* user = new User();
         user->setFio(usrFrm_->getWidget()->lineEditFio->text());
-        user->setInspection(inspections_[usrFrm_->getWidget()->comboBoxInspection->currentIndex()].getId());
+        user->setInspection(usrFrm_->getInspections()[usrFrm_->getWidget()->comboBoxInspection->currentIndex()].getId());
         user->setName(usrFrm_->getWidget()->lineEditName->text());
         user->setPassword(usrFrm_->getWidget()->lineEditPassword->text());
         QButtonGroup group;
@@ -69,10 +119,13 @@ void Dialog::on_pushButton_addUser_clicked() {
         //QMessageBox::information(this, "Добавление нового пользовтеля",
         //        QString::number(user->getInspection()));
         emit readyUserData(*user);
+        user_->setFio(user->getFio());
+        user_->setName(user->getName());
+        user_->setInspection(usrFrm_->getInspections()[usrFrm_->getWidget()->comboBoxInspection->currentIndex()].getName());
+        listusers_->addModel(*user_);
         delete user;
     }
 }
-
 
 void Dialog::on_pushButton_editUser_clicked() {
     //QMessageBox::information(0, "Список инспекций", "Список инспекций");
@@ -83,18 +136,14 @@ void Dialog::on_pushButton_editUser_clicked() {
 
 }
 
-void Dialog::listInspection(const QList<Inspection>& inspections) {
-    inspections_ = inspections;
-    //QMessageBox::information(0, "Список инспекций", inspections_[0].getName());
-    // QMessageBox::information(this, "Список инспекций", "Список Инспекций");
-}
 
-void Dialog::setListInspection(const QList<Inspection>& inspections) {
-    inspections_ = inspections;
-    for (auto& t : inspections_) {
-        //qInfo() << "name" << t.getName();
-        usrFrm_->getWidget()->comboBoxInspection->addItem(t.getName());
-    }
 
-    // QMessageBox::information(this, "Список инспекций", "Список Инспекций");
-}
+//void Dialog::setListInspection(const QList<Inspection>& inspections) {
+//    inspections_ = inspections;
+//    for (auto& t : inspections_) {
+//qInfo() << "name" << t.getName();
+//        usrFrm_->getWidget()->comboBoxInspection->addItem(t.getName());
+//    }
+
+// QMessageBox::information(this, "Список инспекций", "Список Инспекций");
+//}

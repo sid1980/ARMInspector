@@ -21,13 +21,13 @@
 #include "User.h"
 #include "UserV1.h"
 #include "Inspection.h"
+#include "dialog.h"
 
 class WorkerClient : public QObject {
     Q_OBJECT
 
 public:
     QList<Inspection> inspections_;
-    ModelList<UserV1>* listuser_;
     /// Стандартный конструктор.
     /// @param apParent Родитель.
     WorkerClient(QObject *apParent = nullptr);
@@ -52,9 +52,16 @@ signals:
     void passListInspections(const QList<Inspection>& inspections);
     ///Передать данные о пользователе
     void passUserData(const User&);
+    /// Сервер вернул данные о пользователе
+    void readyUserData(const User&);
+    ///Сигнал завершения работы.
+    /// @param asResult Результат выполнения запроса 
+    void finished(QString asResult);
+    void error(QString asError);    
 private:
     ///Командная обёртка в форме строки.
     QString m_aModelWrapperString;
+    Dialog* dialog_;
 };
 
 #endif /* WORKERCLIENT_H */

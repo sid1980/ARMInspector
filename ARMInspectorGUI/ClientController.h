@@ -38,7 +38,6 @@ public:
     void setLogged(bool asLogged);
     ///получить флаг  авторизации клиента
     bool getLogged();
-
 signals:
     void ready();
 
@@ -66,12 +65,16 @@ public slots:
     /// @param asQuery SQL запрос.
     /// @param asModel Модель данных.
     void getListModels(ModelWrapper::Model model);
-     ///добавить в базу нового пользователя
+    ///добавить в базу нового пользователя
     void addUser(const User&);
 
 private:
     int m_aSessionID{0};
     bool m_aLogged{false};
+    ///Командная обёртка в форме строки.
+    QString m_aModelWrapperString;
+
+
 
 };
 

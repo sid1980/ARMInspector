@@ -28,6 +28,7 @@ template <class T> ModelList<T>::ModelList(QList<T> list) {
 }
 
 ///Инициалировать список моделей
+
 template <class T> void ModelList<T>::setListModel(const QList<T>& models) {
     m_ListModels = models;
 }
@@ -106,6 +107,8 @@ template <class T> void ModelList<T>::delModel(const QModelIndex & index) {
     m_ListModels.removeAt(index.row());
     endRemoveRows();
 }
+
+
 
 #endif /* MOSDELLIST_IMPL_H */
 

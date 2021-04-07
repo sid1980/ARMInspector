@@ -36,7 +36,7 @@ void ClientController::init(ServerClient *apServerClient) {
 
     //Создать обработчик сообщений сервера 
     m_pWorkerClient = new WorkerClient();
-
+    //addThread(QString(""));
     // Сигнально-слотовое соединение, сигнализирующее, что   контроллер комманд
     // готов вернуть  результат  выполнения запроса к серверу.
     connect(m_pCommandController, SIGNAL(onProcessRequestServer(QString)), SLOT(processRequestServer(QString)));
@@ -160,8 +160,8 @@ void ClientController::processRequestServer(QString asJson) {
     m_pWorkerClient->setModelWrapperString(asJson);
     //Стартовать процесс обработкм сообщений.
     m_pWorkerClient->process();
+    //addThread(asJson);
 }
-
 ///получить флаг  авторизации клиента
 
 bool ClientController::getLogged() {
@@ -174,4 +174,6 @@ bool ClientController::getLogged() {
 void ClientController::setLogged(bool asLogged) {
     this->m_aLogged = asLogged;
 }
+
+/// Создать новый поток.
 

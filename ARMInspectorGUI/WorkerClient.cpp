@@ -19,13 +19,15 @@
 /// @param apParent Родитель.
 
 WorkerClient::WorkerClient(QObject *apParent) : QObject(apParent) {
-
+    dialog_ = new Dialog();
+    connect(dialog_, SIGNAL(readyUserData(const User&)), this, SLOT(addUserData(const User&)));
 }
 
 ///Деструктор.
 
 WorkerClient::~WorkerClient() {
     //Освободить  ресурсы
+    delete dialog_;
 }
 /// Инициализировать строку командной обёртки.
 /// @param asWrapperString Строка инициализации командной обёртки
@@ -50,10 +52,8 @@ void WorkerClient::addUserData(const User& user) {
 ///Основная функция обработчика сообщений, полученных от сервера.
 
 void WorkerClient::process() {
+    //QMessageBox::information(0, "Добавление нового пользовтеля", "Пользователь успешно добавлен в базу данных");
     ModelWrapper wrapper;
-    Dialog dlg;
-    connect(&dlg, SIGNAL(readyUserData(const User&)),
-            this, SLOT(addUserData(const User&)));
     //Разворачиваем командную обёртку.
     JsonSerializer::parse(m_aModelWrapperString, wrapper);
     //Вывести заголовок и сообщение.
@@ -74,46 +74,20 @@ void WorkerClient::process() {
                     case ModelWrapper::Model::Inspection:
                     {
                         ItemContainer<Inspection> inspectionContainer;
-                        //Выбираем данные.
                         JsonSerializer::parse(wrapper.getData(), inspectionContainer);
                         QList<Inspection> inspections = inspectionContainer.getItemsList();
-                        dlg.setListInspection(inspections);
-                        dlg.getUI()->tableView->setModel(listuser_);
-                        dlg.getUI()->tableView->setColumnHidden(0, true);
-                        dlg.getUI()->tableView->setColumnHidden(4, true);
-                        dlg.getUI()->tableView->setColumnHidden(5, true);
-                        dlg.getUI()->tableView->setColumnHidden(6, true);
-                        dlg.getUI()->tableView->setColumnHidden(7, true);
-                        dlg.getUI()->tableView->setColumnHidden(8, true);
-                        dlg.getUI()->tableView->setColumnHidden(9, true);
-                        //dlg.getUI()->tableView->setColumnHidden(2, true);
-                        dlg.getUI()->tableView->resizeColumnsToContents();
-                        dlg.getUI()->tableView->resizeRowsToContents();
-                        dlg.exec();
-                        //emit passListInspections(inspections_);
-                        delete listuser_;
-                        //что сессия готова передать контроллеру информацию
-                        //connect(dlg, SIGNAL(onReadyResult(const RpcSocket*)), this, SLOT(notifyCurrentClient(const RpcSocket*, QString)));
-                        //QList<Inspection> inspections=inspectionContainer.getItemsList();
-                        //for (auto& t : inspections) {
-                        //    qInfo() << "name" << t.getName();
-                        //}
+                        dialog_->setListInspection(inspections);
+                        dialog_->showBox();
                     }
                         break;
                     case ModelWrapper::Model::UserV1:
                     {
                         //QMessageBox::information(0, "Information Box", "This is information text");
                         ItemContainer<UserV1> userContainer;
-                        //Выбираем данные.
                         JsonSerializer::parse(wrapper.getData(), userContainer);
-                        listuser_ = new ModelList<UserV1>(userContainer.getItemsList());
-
-                        //dlg.getUI()->tableView->setColumnWidth(1, 500);
+                        dialog_->setModel(userContainer.getItemsList());
+                        //dialog_->getUI()->tableView->setModel(new ModelList<UserV1>(userContainer.getItemsList()));
                         emit getInspections();
-                        //QList<User> users=userContainer.getItemsList();
-                        //for (auto& t : users) {
-                        //    qInfo() << "name" << t.getName();
-                        //}
                     }
                         break;
                     case ModelWrapper::Model::PassList:
@@ -129,8 +103,8 @@ void WorkerClient::process() {
                 //Процесс обработки возвращённого реультата.    
                 User user;
                 JsonSerializer::parse(wrapper.getData(), user);
-                QMessageBox::information(0, "LOGIN",
-                        "User with name " + user.getName().trimmed() + " is logged in");
+                //MessageBox::information(0, "LOGIN",
+                //        "User with name " + user.getName().trimmed() + " is logged in");
                 qInfo() << "User with name " << user.getName().trimmed() << " is logged in";
                 //Сигнализировать о завершении обработки.
                 emit ready();
@@ -139,9 +113,13 @@ void WorkerClient::process() {
             case ModelWrapper::Command::ADD_NEW_USER:
             {
                 //Сервер вернул результат команды "ADD_NEW_USER"     
-                //Процесс обработки возвращённого реультата.    
-                QMessageBox::information(0, "Добавление нового пользовтеля",
-                        "Новый пользователь успешно добавлен в базу данных");
+                //Процесс обработки возвращённого реультата.  
+                connect(this, SIGNAL(readyUserData(const User&)),
+                        dialog_, SLOT(showUserData(const User&)));
+                User user;
+                JsonSerializer::parse(wrapper.getData(), user);
+                emit dialog_->showUserData(user);
+
             }
                 break;
 

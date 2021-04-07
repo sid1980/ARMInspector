@@ -33,7 +33,7 @@ public:
     {
         if (dialog->objectName().isEmpty())
             dialog->setObjectName(QString::fromUtf8("dialog"));
-        dialog->resize(789, 701);
+        dialog->resize(718, 701);
         gridLayout_2 = new QGridLayout(dialog);
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         gridLayout = new QGridLayout();

@@ -24,6 +24,9 @@
 #include "Inspection.h"
 #include "User.h"
 #include "userForm.h"
+#include "ModelList.h"
+#include "UserV1.h"
+
 
 namespace Ui {
     class Dialog;
@@ -34,24 +37,28 @@ class Dialog : public QDialog {
 
 public:
     explicit Dialog(QWidget *parent = 0);
+    //Dialog(){};
     ~Dialog();
     Ui::dialog* getUI();
-    void setListInspection(const QList<Inspection>& inspections);
-
+    void setListInspection(const QList<Inspection>& inspections );
+    void setModel(const QList<UserV1>& users);
+    void showBox();
 private slots:
-
     void on_pushButton_addUser_clicked();
     void on_pushButton_editUser_clicked();
     void on_pushButton_deleteUser_clicked();
 public slots:
-    void listInspection(const QList<Inspection>& inspections);
+    //void listInspection(const QList<Inspection>& inspections);
+    void showUserData(const User&);
 signals:
     void readyUserData(const User&);
-    
+
 private:
     Ui::dialog *ui;
     userForm *usrFrm_;
-    QList<Inspection> inspections_;
+    ModelList<UserV1>* listusers_;
+    UserV1 *user_;
+
 };
 
 #endif // DIALOG_H
