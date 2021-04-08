@@ -24,6 +24,10 @@
 #include <QComboBox>
 #include <QPalette>
 #include <QColor>
+#include <QString>
+#include <string>
+
+///Констуктор
 
 Dialog::Dialog(QWidget *parent) :
 QDialog(parent),
@@ -39,10 +43,12 @@ ui(new Ui::dialog) {
     //p.setColor(QPalette::Highlight, hlClr);
     //p.setColor(QPalette::HighlightedText, txtClr);
     //setPalette(p);
-    this->getUI()->tableView->setStyleSheet("QTableView::item:selected { color:white; background:#royalblue; font-weight:900; }"
+    this->getUI()->tableView->setStyleSheet("QTableView::item:selected { color:white; background:#0000ff; font-weight:900; }"
             "QTableCornerButton::section { background-color:#232326; }"
             "QHeaderView::section { color:white; background-color:#232326; }");
 }
+
+///Деструктор
 
 Dialog::~Dialog() {
     delete ui;
@@ -63,31 +69,40 @@ void Dialog::on_pushButton_deleteUser_clicked() {
 
 }
 
+
+///Показать строку данных о пользователе на экране
+
 void Dialog::showUserData(const User& user) {
     //table2->selectRow(current.row());
     this->getUI()->tableView->scrollToBottom();
-    this->getUI()->tableView->selectRow(listusers_->rowCount()-1);
+    this->getUI()->tableView->selectRow(listusers_->rowCount() - 1);
     QMessageBox::information(this, "Добавление нового пользовтеля",
             "Пользователь" + user.getFio() + " успешно добавлен в базу данных");
 }
 
+///Инициализировать список инспекций
+
 void Dialog::setListInspection(const QList<Inspection>& inspections) {
     usrFrm_->setInspections(inspections);
 };
+
+///Установить модель списка пользователей
 
 void Dialog::setModel(const QList<UserV1>& users) {
     listusers_->setListModel(users);
     this->getUI()->tableView->setModel(listusers_);
 }
 
+///Показать диалог списка организаци1
+
 void Dialog::showBox() {
     this->getUI()->tableView->setColumnHidden(0, true);
-    this->getUI()->tableView->setColumnHidden(4, true);
-    this->getUI()->tableView->setColumnHidden(5, true);
-    this->getUI()->tableView->setColumnHidden(6, true);
-    this->getUI()->tableView->setColumnHidden(7, true);
-    this->getUI()->tableView->setColumnHidden(8, true);
-    this->getUI()->tableView->setColumnHidden(9, true);
+    //this->getUI()->tableView->setColumnHidden(4, true);
+    //this->getUI()->tableView->setColumnHidden(5, true);
+    //this->getUI()->tableView->setColumnHidden(6, true);
+    //this->getUI()->tableView->setColumnHidden(7, true);
+    //this->getUI()->tableView->setColumnHidden(8, true);
+    //this->getUI()->tableView->setColumnHidden(9, true);
     //dialog_.getUI()->tableView->setColumnHidden(2, true);
     this->getUI()->tableView->resizeColumnsToContents();
     this->getUI()->tableView->resizeRowsToContents();
@@ -95,6 +110,12 @@ void Dialog::showBox() {
     this->show();
 
 }
+///Обработка нажатия кнопки добавления  пользователя.
+///Данные считываются из формы данных пользователя,
+///добавляются в Модель отображения данных на экране и 
+///и в Модель передачи данных на сервер.
+///Для передачи данных на сервер диалог пользуется 
+///сигналом readyUserData.
 
 void Dialog::on_pushButton_addUser_clicked() {
     if (usrFrm_->exec() == QDialog::Accepted) {
@@ -127,13 +148,32 @@ void Dialog::on_pushButton_addUser_clicked() {
     }
 }
 
+
+
+///Обработка нажатия кнопки редактирования пользователя
+
 void Dialog::on_pushButton_editUser_clicked() {
-    //QMessageBox::information(0, "Список инспекций", "Список инспекций");
+    //QMessageBox::information(0, "Список инспекций", "pushButton_editUser_clicked");
     //QMessageBox::information(0, "Список инспекций", inspections_[0].getName());
+    qDebug() << "pushButton_editUser_clicked";
 
+    QModelIndexList selection = this->getUI()->tableView->selectionModel()->selectedRows();
 
+    //Multiple rows can be selected
+    //QModelIndexList indexList = this->getUI()->tableView->selectionModel()->selectedIndexes();
+    
 
-
+    QItemSelectionModel *select = this->getUI()->tableView->selectionModel();
+    int rowidx = select->currentIndex().row();
+    QModelIndexList indexes = select->selection().indexes();
+    ///Перебрать все ячейки строки
+    for (int i = 0; i < indexes.count(); ++i) {
+        //select->model()->index(rowidx, i).data()
+        //        QMessageBox::information(this, "", select->model()->index(rowidx, i).data().toString());
+        //std::string stdstr = select->model()->index(rowidx, i).data().toString().toUtf8().constData();
+        //qInfo() << QString::fromLocal8Bit(stdstr.c_str());
+        qInfo() << QString::fromLocal8Bit(select->model()->index(rowidx, i).data().toString().toUtf8().constData());
+    }
 }
 
 

@@ -27,7 +27,6 @@
 #include "ModelList.h"
 #include "UserV1.h"
 
-
 namespace Ui {
     class Dialog;
 }
