@@ -38,7 +38,7 @@ public:
     enum Model {
         Unknown,
         User,
-        UserV1,
+        UserView,
         Inspection
     };
     

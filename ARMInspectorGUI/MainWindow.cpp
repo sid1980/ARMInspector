@@ -40,7 +40,7 @@ void MainWindow::Report() {
 
 void MainWindow::ListUsers() {
     //QMessageBox::information(0, "АРМ Администратора", "Список пользователей");
-    m_pClientController->getListModels(ModelWrapper::Model::UserV1);
+    m_pClientController->getListModels(ModelWrapper::Model::UserView);
 
 }
 

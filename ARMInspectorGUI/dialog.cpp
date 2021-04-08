@@ -17,7 +17,7 @@
 
 #include "dialog.h"
 #include "User.h"
-#include "UserV1.h"
+#include "UserView.h"
 #include <QButtonGroup>
 #include <QRadioButton>
 #include <QDebug>
@@ -35,8 +35,8 @@ QDialog(parent),
 ui(new Ui::dialog) {
     ui->setupUi(this);
     usrFrm_ = new userForm(this);
-    user_ = new UserV1();
-    listusers_ = new ModelList<UserV1>();
+    user_ = new UserView();
+    listusers_ = new ModelList<UserView>();
     //const QColor hlClr = Qt::red; // highlight color to set
     //const QColor txtClr = Qt::white; // highlighted text color to set
 
@@ -89,7 +89,7 @@ void Dialog::setListInspection(const QList<Inspection>& inspections) {
 
 ///Установить модель списка пользователей
 
-void Dialog::setModel(const QList<UserV1>& users) {
+void Dialog::setModel(const QList<UserView>& users) {
     listusers_->setListModel(users);
     this->getUI()->tableView->setModel(listusers_);
     QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(listusers_); // create proxy
@@ -166,7 +166,7 @@ void Dialog::on_pushButton_editUser_clicked() {
     if (rowidx >= 0) {
         QModelIndexList indexes = select->selection().indexes();
         ///Перебрать все ячейки строки
-        UserV1 user = listusers_->getModel(select->currentIndex());
+        UserView user = listusers_->getModel(select->currentIndex());
         qDebug() << QString::number(user.getId());
         //    for (int i = 0; i < indexes.count(); ++i) {
         //select->model()->index(rowidx, i).data()

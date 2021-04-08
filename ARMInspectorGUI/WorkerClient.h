@@ -19,7 +19,7 @@
 #include "ItemContainer.h"
 #include "ModelList.h"
 #include "User.h"
-#include "UserV1.h"
+#include "UserView.h"
 #include "Inspection.h"
 #include "dialog.h"
 

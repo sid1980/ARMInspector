@@ -80,13 +80,13 @@ void WorkerClient::process() {
                         dialog_->showBox();
                     }
                         break;
-                    case ModelWrapper::Model::UserV1:
+                    case ModelWrapper::Model::UserView:
                     {
                         //QMessageBox::information(0, "Information Box", "This is information text");
-                        ItemContainer<UserV1> userContainer;
+                        ItemContainer<UserView> userContainer;
                         JsonSerializer::parse(wrapper.getData(), userContainer);
                         dialog_->setModel(userContainer.getItemsList());
-                        //dialog_->getUI()->tableView->setModel(new ModelList<UserV1>(userContainer.getItemsList()));
+                        //dialog_->getUI()->tableView->setModel(new ModelList<UserView>(userContainer.getItemsList()));
                         emit getInspections();
                     }
                         break;

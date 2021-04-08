@@ -25,7 +25,7 @@
 #include "User.h"
 #include "userForm.h"
 #include "ModelList.h"
-#include "UserV1.h"
+#include "UserView.h"
 
 namespace Ui {
     class Dialog;
@@ -40,7 +40,7 @@ public:
     ~Dialog();
     Ui::dialog* getUI();
     void setListInspection(const QList<Inspection>& inspections );
-    void setModel(const QList<UserV1>& users);
+    void setModel(const QList<UserView>& users);
     void showBox();
 private slots:
     void on_pushButton_addUser_clicked();
@@ -55,8 +55,8 @@ signals:
 private:
     Ui::dialog *ui;
     userForm *usrFrm_;
-    ModelList<UserV1>* listusers_;
-    UserV1 *user_;
+    ModelList<UserView>* listusers_;
+    UserView *user_;
 
 };
 
