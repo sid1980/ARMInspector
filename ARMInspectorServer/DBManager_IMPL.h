@@ -65,6 +65,8 @@ template<typename T> void DBManager::getListModels() {
     }
     //Проверить  и выполнить  SQL запрос.
     QSqlQuery queryStatementInfo(database);
+    qDebug() << T::getQuery();
+
     if (!queryStatementInfo.exec(T::getQuery())) {
         setResult(container, Message::SQL_ERROR);
         return;

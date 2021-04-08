@@ -47,7 +47,7 @@ bool DBManager::addDataBase() {
         m_pModelWrapper->setMessage(result.str);
         m_pModelWrapper->setSuccess(result.success);
     };
-    const QString DRIVER("QODBC");
+    const QString DRIVER("QODBC3");
     if (!QSqlDatabase::isDriverAvailable(DRIVER)) {
         setResult(Message::DATABASE_DRIVER_IS_NOT_AVAILABLE);
         return false;
