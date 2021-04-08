@@ -89,7 +89,7 @@ template <class T> Qt::ItemFlags ModelList<T>::flags(const QModelIndex & /*index
 
 ///Получить модель из списка
 
-template <class T> T& ModelList<T>::getModel(const QModelIndex & index) const {
+template <class T> T ModelList<T>::getModel(const QModelIndex & index) const {
     return m_ListModels.at(index.row());
     //return (*QList<T>)[index.row()];
 }

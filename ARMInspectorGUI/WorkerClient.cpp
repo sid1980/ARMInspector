@@ -90,10 +90,6 @@ void WorkerClient::process() {
                         emit getInspections();
                     }
                         break;
-                    case ModelWrapper::Model::PassList:
-                    {
-                    }
-                        break;
                 }
             }
                 break;

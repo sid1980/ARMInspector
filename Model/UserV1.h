@@ -43,9 +43,9 @@ public:
     }
 
     static const QString getQuery() {
-        return QString("Select fio,name_i,name  from user u "
-                "INNER JOIN inspection i"
-                "  ON u.id_inspection=i.id ");
+        return QString("Select u.id,fio,name_i,name  from user as u "
+                "INNER JOIN inspection as i"
+                "  ON u.id_inspection=i.id");
     }
     QVariant getData(int position) const;
     //QVariant getFieldValue() {

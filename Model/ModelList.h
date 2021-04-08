@@ -50,7 +50,7 @@ public:
     ///Удалить экземпляр модели из  списка
     void delModel(const QModelIndex & index);
     ///Получить модель из списка
-    T& getModel(const QModelIndex & index) const;
+    T getModel(const QModelIndex & index) const;
     
     
 private:

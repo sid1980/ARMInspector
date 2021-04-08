@@ -39,8 +39,7 @@ public:
         Unknown,
         User,
         UserV1,
-        Inspection,
-        PassList
+        Inspection
     };
     
     

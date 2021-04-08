@@ -26,6 +26,7 @@
 #include <QColor>
 #include <QString>
 #include <string>
+#include <QSortFilterProxyModel>
 
 ///Констуктор
 
@@ -91,22 +92,18 @@ void Dialog::setListInspection(const QList<Inspection>& inspections) {
 void Dialog::setModel(const QList<UserV1>& users) {
     listusers_->setListModel(users);
     this->getUI()->tableView->setModel(listusers_);
+    QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(listusers_); // create proxy
+    proxyModel->setSourceModel(listusers_);
+    this->getUI()->tableView->setSortingEnabled(true); // enable sortingEnabled
+    this->getUI()->tableView->setModel(proxyModel);
 }
 
-///Показать диалог списка организаци1
+///Показать диалог списка организаций
 
 void Dialog::showBox() {
     this->getUI()->tableView->setColumnHidden(0, true);
-    //this->getUI()->tableView->setColumnHidden(4, true);
-    //this->getUI()->tableView->setColumnHidden(5, true);
-    //this->getUI()->tableView->setColumnHidden(6, true);
-    //this->getUI()->tableView->setColumnHidden(7, true);
-    //this->getUI()->tableView->setColumnHidden(8, true);
-    //this->getUI()->tableView->setColumnHidden(9, true);
-    //dialog_.getUI()->tableView->setColumnHidden(2, true);
     this->getUI()->tableView->resizeColumnsToContents();
     this->getUI()->tableView->resizeRowsToContents();
-    //emit passListInspections(inspections_);
     this->show();
 
 }
@@ -124,6 +121,8 @@ void Dialog::on_pushButton_addUser_clicked() {
         user->setInspection(usrFrm_->getInspections()[usrFrm_->getWidget()->comboBoxInspection->currentIndex()].getId());
         user->setName(usrFrm_->getWidget()->lineEditName->text());
         user->setPassword(usrFrm_->getWidget()->lineEditPassword->text());
+
+        ///Получить значение RadioBox
         QButtonGroup group;
         QList<QRadioButton *> allButtons;
         allButtons = usrFrm_->getWidget()->groupBoxStatus->findChildren<QRadioButton *>();
@@ -149,7 +148,6 @@ void Dialog::on_pushButton_addUser_clicked() {
 }
 
 
-
 ///Обработка нажатия кнопки редактирования пользователя
 
 void Dialog::on_pushButton_editUser_clicked() {
@@ -157,33 +155,27 @@ void Dialog::on_pushButton_editUser_clicked() {
     //QMessageBox::information(0, "Список инспекций", inspections_[0].getName());
     qDebug() << "pushButton_editUser_clicked";
 
-    QModelIndexList selection = this->getUI()->tableView->selectionModel()->selectedRows();
+    //QModelIndexList selection = this->getUI()->tableView->selectionModel()->selectedRows();
 
     //Multiple rows can be selected
     //QModelIndexList indexList = this->getUI()->tableView->selectionModel()->selectedIndexes();
-    
+
 
     QItemSelectionModel *select = this->getUI()->tableView->selectionModel();
     int rowidx = select->currentIndex().row();
-    QModelIndexList indexes = select->selection().indexes();
-    ///Перебрать все ячейки строки
-    for (int i = 0; i < indexes.count(); ++i) {
+    if (rowidx >= 0) {
+        QModelIndexList indexes = select->selection().indexes();
+        ///Перебрать все ячейки строки
+        UserV1 user = listusers_->getModel(select->currentIndex());
+        qDebug() << QString::number(user.getId());
+        //    for (int i = 0; i < indexes.count(); ++i) {
         //select->model()->index(rowidx, i).data()
         //        QMessageBox::information(this, "", select->model()->index(rowidx, i).data().toString());
         //std::string stdstr = select->model()->index(rowidx, i).data().toString().toUtf8().constData();
         //qInfo() << QString::fromLocal8Bit(stdstr.c_str());
-        qInfo() << QString::fromLocal8Bit(select->model()->index(rowidx, i).data().toString().toUtf8().constData());
+        //qDebug() << rowidx;
+        //        qDebug() << QString::fromLocal8Bit(select->model()->index(rowidx, i).data().toString().toUtf8().constData());
+        //    }
     }
 }
 
-
-
-//void Dialog::setListInspection(const QList<Inspection>& inspections) {
-//    inspections_ = inspections;
-//    for (auto& t : inspections_) {
-//qInfo() << "name" << t.getName();
-//        usrFrm_->getWidget()->comboBoxInspection->addItem(t.getName());
-//    }
-
-// QMessageBox::information(this, "Список инспекций", "Список Инспекций");
-//}
