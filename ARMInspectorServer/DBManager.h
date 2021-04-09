@@ -44,16 +44,19 @@ public:
     /// Получить список моделей.
     void getListModels();
     template<typename T> void getListModels();
+    /// Получить  модель.
+    void getModel();
+    template<typename T> void getModel();
     /// Отключить клиента от сервера
     /// @param apClientSocket Указатель на сокет клиент-серверного соединения.
     void removeDatabase();
     /// Выполнить Sql запрос.
-    void execSqlquery();
+    ///void execSqlquery();
 
 
 
     /// Выполнить Sql запрос.
-    template<typename T> void execSqlquery();
+    //template<typename T> void execSqlquery();
 
 
 private:

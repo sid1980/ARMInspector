@@ -184,7 +184,26 @@ void DBManager::login() {
     }
 }
 
-///Выполнить запрос к базе данных.
+///Получить модель
+
+void DBManager::getModel() {
+    //Получаем модель.
+    ModelWrapper::Model model = m_pModelWrapper->getEnumModel();
+    //Выбрать модель, данные которой необходимо запросить. 
+    switch (model) {
+        case ModelWrapper::Model::User:
+            getModel<User>();
+            break;
+        case ModelWrapper::Model::UserView:
+            getModel<UserView>();
+            break;
+        case ModelWrapper::Model::Inspection:
+            getModel<Inspection>();
+            break;
+
+    }
+}
+///Получить список моделей
 
 void DBManager::getListModels() {
     //Получаем модель.

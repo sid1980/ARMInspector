@@ -97,6 +97,12 @@ void Worker::process() {
                     pDBManager->getListModels();
                 }
                     break;
+                case ModelWrapper::Command::GET_MODEL:
+                {
+                    //Получить список моделей.
+                    pDBManager->getModel();
+                }
+                    break;
                 default:
                 {
                     setResult(Message::INCORRECT_COMMAND);
