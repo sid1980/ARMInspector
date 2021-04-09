@@ -24,6 +24,7 @@ public:
     explicit userEditFrm(QWidget *parent = 0);
     virtual ~userEditFrm();
     Ui::userEditFrm* getWidget();
+    void setInspections(const QList<Inspection>&);
 
 private:
     Ui::userEditFrm* widget_;

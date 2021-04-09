@@ -1,5 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
+/* * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -26,7 +25,6 @@
 #include <QColor>
 #include <QString>
 #include <string>
-#include <QSortFilterProxyModel>
 
 ///Констуктор
 
@@ -38,7 +36,8 @@ ui(new Ui::dialog) {
     usrEdtFrm_ = new userEditFrm(this);
     userview_ = new UserView();
     listusers_ = new ModelList<UserView>();
-    //const QColor hlClr = Qt::red; // highlight color to set
+    proxyModel_ = new QSortFilterProxyModel(listusers_);
+//const QColor hlClr = Qt::red; // highlight color to set
     //const QColor txtClr = Qt::white; // highlighted text color to set
 
     //QPalette p = palette();
@@ -58,6 +57,7 @@ Dialog::~Dialog() {
     delete usrEdtFrm_;
     delete userview_;
     delete listusers_;
+    delete proxyModel_;
 }
 
 Ui::dialog* Dialog::getUI() {
@@ -94,18 +94,19 @@ void Dialog::fillUserEdiFrm(const User& user) {
 
 void Dialog::setListInspection(const QList<Inspection>& inspections) {
     usrFrm_->setInspections(inspections);
+    usrEdtFrm_->setInspections(inspections);
 };
 
 ///Установить модель списка пользователей
 
 void Dialog::setModel(const QList<UserView>& users) {
     listusers_->setListModel(users);
-    this->getUI()->tableView->setModel(listusers_);
+    //this->getUI()->tableView->setModel(listusers_);
     ///Разрешить сортировку по столбцам
-    QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(listusers_); // create proxy
-    proxyModel->setSourceModel(listusers_);
+    //QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(listusers_); // create proxy
+    proxyModel_->setSourceModel(listusers_);
     this->getUI()->tableView->setSortingEnabled(true); // enable sortingEnabled
-    this->getUI()->tableView->setModel(proxyModel);
+    this->getUI()->tableView->setModel(proxyModel_);
 }
 
 ///Показать диалог списка организаций
@@ -170,16 +171,21 @@ void Dialog::on_pushButton_editUser_clicked() {
     //QModelIndexList indexList = this->getUI()->tableView->selectionModel()->selectedIndexes();
 
 
-    QItemSelectionModel *select = this->getUI()->tableView->selectionModel();
-    int rowidx = select->currentIndex().row();
+    //QItemSelectionModel *select = this->getUI()->tableView->selectionModel();
+    ///int rowidx = select->currentIndex().row();
+    int rowidx = proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()).row();
     if (rowidx >= 0) {
-        QModelIndexList indexes = select->selection().indexes();
-        UserView user = listusers_->getModel(select->currentIndex());
-        qDebug() << QString::number(user.getId());
+        //QModelIndexList indexes = select->selection().indexes();
+        //UserView user = listusers_->getModel(select->currentIndex());
+        UserView user = listusers_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
+        //qDebug() << QString::number(user.getId());
         auto id = user.getId();
+        //auto id = select->model()->index(rowidx, 0).data().toInt();
         emit getUserData(id);
         emit waitServer();
         usrEdtFrm_->show();
+        
+        //listusers_->record(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()).row());
         ///Перебрать все ячейки строки
         //    for (int i = 0; i < indexes.count(); ++i) {
         //select->model()->index(rowidx, i).data()

@@ -24,4 +24,11 @@ userEditFrm::~userEditFrm() {
 Ui::userEditFrm* userEditFrm::getWidget() {
     return widget_;
 }
+void  userEditFrm::setInspections(const QList<Inspection>& inspections) {
+       inspections_ = inspections;
+    for (auto& t : inspections_) {
+        this->getWidget()->comboBoxInspection->addItem(t.getName());
+    }
+
+}
 

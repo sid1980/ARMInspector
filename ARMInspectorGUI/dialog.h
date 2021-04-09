@@ -27,6 +27,7 @@
 #include "userEditFrm.h"
 #include "ModelList.h"
 #include "UserView.h"
+#include <QSortFilterProxyModel>
 
 namespace Ui {
     class Dialog;
@@ -62,7 +63,7 @@ private:
     userEditFrm *usrEdtFrm_;
     ModelList<UserView>* listusers_;
     UserView *userview_;
-
+    QSortFilterProxyModel *proxyModel_;
 };
 
 #endif // DIALOG_H
