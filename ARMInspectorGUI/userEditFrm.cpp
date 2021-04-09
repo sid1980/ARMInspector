@@ -24,6 +24,12 @@ userEditFrm::~userEditFrm() {
 Ui::userEditFrm* userEditFrm::getWidget() {
     return widget_;
 }
+
+const QList<Inspection>& userEditFrm::getInspections()const {
+    return inspections_;
+};
+
+
 void  userEditFrm::setInspections(const QList<Inspection>& inspections) {
        inspections_ = inspections;
     for (auto& t : inspections_) {

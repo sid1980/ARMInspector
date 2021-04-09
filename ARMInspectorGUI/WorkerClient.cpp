@@ -124,11 +124,14 @@ void WorkerClient::process() {
             {
                 //Сервер вернул результат команды "ADD_NEW_USER"     
                 //Процесс обработки возвращённого реультата.  
-                connect(this, SIGNAL(readyUserData(const User&)),
-                        dialog_, SLOT(showUserData(const User&)));
+                //connect(this, SIGNAL(readyUserData(const User&)),
+                //        dialog_, SLOT(showUserData(const User&)));
                 User user;
                 JsonSerializer::parse(wrapper.getData(), user);
-                emit readyUserData(user);
+ 
+                dialog_->showUserData(user);
+                //emit readyUserData(user);
+                emit ready();
 
             }
                 break;

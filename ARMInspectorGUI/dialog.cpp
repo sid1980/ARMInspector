@@ -1,4 +1,4 @@
-/* * To change this license header, choose License Headers in Project Properties.
+/* * To change this license header, coose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -77,6 +77,11 @@ void Dialog::on_pushButton_deleteUser_clicked() {
 
 void Dialog::showUserData(const User& user) {
     //table2->selectRow(current.row());
+        userview_->setId(user.getId());
+        userview_->setFio(user.getFio());
+        userview_->setName(user.getName());
+        userview_->setInspection(usrFrm_->getInspections()[user.getInspection()].getName());
+        listusers_->addModel(*userview_);
     this->getUI()->tableView->scrollToBottom();
     this->getUI()->tableView->selectRow(listusers_->rowCount() - 1);
     QMessageBox::information(this, "Добавление нового пользовтеля",
@@ -87,6 +92,28 @@ void Dialog::showUserData(const User& user) {
 
 void Dialog::fillUserEdiFrm(const User& user) {
     usrEdtFrm_->getWidget()->lineEditFio->setText(user.getFio());
+    for(int i=0; i<usrEdtFrm_->getInspections().size();i++){
+        if(usrEdtFrm_->getInspections()[i].getId()==user.getInspection()) {
+            usrEdtFrm_->getWidget()->comboBoxInspection->setCurrentIndex(i);
+            break;
+        }
+    }
+    usrEdtFrm_->getWidget()->lineEditName->setText(user.getName());
+        QList<QRadioButton *> allButtons;
+        allButtons = usrEdtFrm_->getWidget()->groupBoxStatus->findChildren<QRadioButton *>();
+        for (int i = 1; i <= allButtons.size(); ++i) {
+            if(i==user.getStatus()){
+                allButtons[i-1]->setChecked(true);
+            }
+        }
+        allButtons = usrEdtFrm_->getWidget()->groupBoxRole->findChildren<QRadioButton *>();
+        for (int i = 1; i <= allButtons.size(); ++i) {
+            if(i==user.getRole()){
+                allButtons[i-1]->setChecked(true);
+            }
+        }
+
+    
 }
  
 
@@ -137,24 +164,25 @@ void Dialog::on_pushButton_addUser_clicked() {
         QButtonGroup group;
         QList<QRadioButton *> allButtons;
         allButtons = usrFrm_->getWidget()->groupBoxStatus->findChildren<QRadioButton *>();
-        for (int i = 0; i < allButtons.size(); ++i) {
-            group.addButton(allButtons[i], i);
+        for (int i = 1; i <= allButtons.size(); ++i) {
+            group.addButton(allButtons[i-1], i);
         }
         user->setStatus(group.checkedId());
 
         allButtons = usrFrm_->getWidget()->groupBoxRole->findChildren<QRadioButton *>();
-        for (int i = 0; i < allButtons.size(); ++i) {
-            group.addButton(allButtons[i], i);
+        for (int i = 1; i < allButtons.size(); ++i) {
+            group.addButton(allButtons[i-1], i);
         }
         user->setRole(group.checkedId());
         //QMessageBox::information(this, "Добавление нового пользовтеля",
         //        QString::number(user->getInspection()));
+        //proxyModel_->setSourceModel(listusers_);
+
         emit readyUserData(*user);
-        userview_->setFio(user->getFio());
-        userview_->setName(user->getName());
-        userview_->setInspection(usrFrm_->getInspections()[usrFrm_->getWidget()->comboBoxInspection->currentIndex()].getName());
-        listusers_->addModel(*userview_);
+        emit waitServer();
+        //this->showUserData(*user);
         delete user;
+        
     }
 }
 
