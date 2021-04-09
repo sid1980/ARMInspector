@@ -32,12 +32,14 @@ public:
     /// Инициализировать командный контроллер клиента.
     /// @param apServerClient Клиент.
     void init(ServerClient *apServerClient);
-    ///Ждать завершения предыдущей операции или сигнала старта.
-    void waitReady();
     ///установить флаг  авторизации клиента
     void setLogged(bool asLogged);
     ///получить флаг  авторизации клиента
     bool getLogged();
+    ///Получить модель
+    void getModel(const qint64&, ModelWrapper::Model model);
+
+
 signals:
     void ready();
 
@@ -67,6 +69,10 @@ public slots:
     void getListModels(ModelWrapper::Model model);
     ///добавить в базу нового пользователя
     void addUser(const User&);
+    ///добавить в базу нового пользователя
+    void getUser(const qint64&);
+    ///Ждать завершения предыдущей операции или сигнала старта.
+    void waitReady();
 
 private:
     int m_aSessionID{0};

@@ -15,14 +15,16 @@
 #define _USEREDITFRM_H
 
 #include "ui_userEditFrm.h"
-#include "User.h"
+//#include "User.h"
 #include "Inspection.h"
 
 class userEditFrm : public QDialog {
     Q_OBJECT
 public:
-    userEditFrm();
+    explicit userEditFrm(QWidget *parent = 0);
     virtual ~userEditFrm();
+    Ui::userEditFrm* getWidget();
+
 private:
     Ui::userEditFrm* widget_;
     QList<Inspection> inspections_;

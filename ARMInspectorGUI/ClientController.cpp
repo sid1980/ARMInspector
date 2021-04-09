@@ -48,6 +48,12 @@ void ClientController::init(ServerClient *apServerClient) {
     connect(m_pWorkerClient, SIGNAL(getInspections()), SLOT(getListInspection()));
     // Сигнально-слотовое добавления нового пользователя в базу данных.
     connect(m_pWorkerClient, SIGNAL(passUserData(const User&)), SLOT(addUser(const User&)));
+    // Сигнально-слотовое соединение для добавления нового пользователя в базу данных.
+    connect(m_pWorkerClient, SIGNAL(passUserData(const User&)), SLOT(addUser(const User&)));
+    // Сигнально-слотовое соединение для полуяения  сведений о   пользователе из  базы данных.
+    connect(m_pWorkerClient, SIGNAL(getUserData(const qint64&)), SLOT(getUser(const qint64&)));
+    // Сигнально-слотовое соединение  ожидания ответа от сервера.
+    connect(m_pWorkerClient, SIGNAL(waitServer()), SLOT(waitReady()));
 }
 ///Установить идентификатор сессии
 
@@ -105,7 +111,12 @@ void ClientController::login(const QString &asLogin, const QString &asPassword) 
 }
 
 
-///Получить список моделей.
+///Получить данные о пользователе
+
+void ClientController::getUser(const qint64& asId) {
+    getModel(asId, ModelWrapper::Model::User);
+}
+///Добавить нового пользователя.
 
 void ClientController::addUser(const User &user) {
     //QMessageBox::information(0, "Добавление нового пользовтеля", QString(user.getFio()));
@@ -124,7 +135,32 @@ void ClientController::addUser(const User &user) {
     //Переслать его на сервер.
     m_pCommandController->requestServer(query);
 }
-///Получить список моделей.
+
+
+
+///Получить  модель.
+
+void ClientController::getModel(const qint64& asId, ModelWrapper::Model model) {
+    //Создать командную обёртку.
+    ModelWrapper wrapper(ModelWrapper::Command::GET_MODEL);
+    //Установить идентификатор сессии.
+    wrapper.setSessionID(m_aSessionID);
+    //Установить модель.    
+    wrapper.setEnumModel(model);
+    //Задать параметры команды.
+    QJsonObject params;
+    params.insert("ID", asId);
+    //params.insert("model", model);
+    //Конвертировать параметры в строку.
+    QString query = JsonSerializer::json_encode(params);
+    //Положить параметры в раздел данных.
+    wrapper.setData(query);
+    //Упаковать  весь запрос в строку
+    query = JsonSerializer::serialize(wrapper);
+    //Переслать его на сервер.
+    m_pCommandController->requestServer(query);
+
+}///Получить список моделей.
 
 void ClientController::getListModels(ModelWrapper::Model model) {
     //Создать командную обёртку.

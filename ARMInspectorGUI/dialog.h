@@ -24,6 +24,7 @@
 #include "Inspection.h"
 #include "User.h"
 #include "userForm.h"
+#include "userEditFrm.h"
 #include "ModelList.h"
 #include "UserView.h"
 
@@ -39,8 +40,9 @@ public:
     //Dialog(){};
     ~Dialog();
     Ui::dialog* getUI();
-    void setListInspection(const QList<Inspection>& inspections );
+    void setListInspection(const QList<Inspection>& inspections);
     void setModel(const QList<UserView>& users);
+    void fillUserEdiFrm(const User& user);
     void showBox();
 private slots:
     void on_pushButton_addUser_clicked();
@@ -51,12 +53,15 @@ public slots:
     void showUserData(const User&);
 signals:
     void readyUserData(const User&);
+    void getUserData(const qint64&);
+    void waitServer();
 
 private:
     Ui::dialog *ui;
     userForm *usrFrm_;
+    userEditFrm *usrEdtFrm_;
     ModelList<UserView>* listusers_;
-    UserView *user_;
+    UserView *userview_;
 
 };
 

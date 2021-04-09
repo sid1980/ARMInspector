@@ -21,6 +21,8 @@
 WorkerClient::WorkerClient(QObject *apParent) : QObject(apParent) {
     dialog_ = new Dialog();
     connect(dialog_, SIGNAL(readyUserData(const User&)), this, SLOT(addUserData(const User&)));
+    connect(dialog_, SIGNAL(getUserData(const qint64&)), this, SIGNAL(getUserData(const qint64&)));
+    connect(dialog_, SIGNAL(waitServer()), this, SIGNAL(waitServer()));
 }
 
 ///Деструктор.
@@ -114,8 +116,29 @@ void WorkerClient::process() {
                         dialog_, SLOT(showUserData(const User&)));
                 User user;
                 JsonSerializer::parse(wrapper.getData(), user);
-                emit dialog_->showUserData(user);
+                emit readyUserData(user);
 
+            }
+                break;
+            case ModelWrapper::Command::GET_MODEL:
+            {
+                //Сервер вернул результат команды "GET_MODEL"     
+                ModelWrapper::Model model = wrapper.getEnumModel();
+                switch (model) {
+                    case ModelWrapper::Model::User:
+                    {
+                        User user;
+                        JsonSerializer::parse(wrapper.getData(), user);
+                        //emit dialog_->showUserData(user);
+                        //QMessageBox::information(0, "Получение данных о пользователе",
+                        //        "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> ");
+                        dialog_->fillUserEdiFrm(user);
+                        emit ready();
+
+                    }
+                        break;
+
+                }
             }
                 break;
 

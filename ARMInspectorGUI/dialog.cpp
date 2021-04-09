@@ -35,7 +35,8 @@ QDialog(parent),
 ui(new Ui::dialog) {
     ui->setupUi(this);
     usrFrm_ = new userForm(this);
-    user_ = new UserView();
+    usrEdtFrm_ = new userEditFrm(this);
+    userview_ = new UserView();
     listusers_ = new ModelList<UserView>();
     //const QColor hlClr = Qt::red; // highlight color to set
     //const QColor txtClr = Qt::white; // highlighted text color to set
@@ -54,7 +55,8 @@ ui(new Ui::dialog) {
 Dialog::~Dialog() {
     delete ui;
     delete usrFrm_;
-    delete user_;
+    delete usrEdtFrm_;
+    delete userview_;
     delete listusers_;
 }
 
@@ -78,8 +80,15 @@ void Dialog::showUserData(const User& user) {
     this->getUI()->tableView->scrollToBottom();
     this->getUI()->tableView->selectRow(listusers_->rowCount() - 1);
     QMessageBox::information(this, "Добавление нового пользовтеля",
-            "Пользователь" + user.getFio() + " успешно добавлен в базу данных");
+            "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно добавлен в базу данных");
 }
+
+//Заполнить форму редактирования пользователя его данными
+
+void Dialog::fillUserEdiFrm(const User& user) {
+    usrEdtFrm_->getWidget()->lineEditFio->setText(user.getFio());
+}
+ 
 
 ///Инициализировать список инспекций
 
@@ -92,6 +101,7 @@ void Dialog::setListInspection(const QList<Inspection>& inspections) {
 void Dialog::setModel(const QList<UserView>& users) {
     listusers_->setListModel(users);
     this->getUI()->tableView->setModel(listusers_);
+    ///Разрешить сортировку по столбцам
     QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(listusers_); // create proxy
     proxyModel->setSourceModel(listusers_);
     this->getUI()->tableView->setSortingEnabled(true); // enable sortingEnabled
@@ -139,10 +149,10 @@ void Dialog::on_pushButton_addUser_clicked() {
         //QMessageBox::information(this, "Добавление нового пользовтеля",
         //        QString::number(user->getInspection()));
         emit readyUserData(*user);
-        user_->setFio(user->getFio());
-        user_->setName(user->getName());
-        user_->setInspection(usrFrm_->getInspections()[usrFrm_->getWidget()->comboBoxInspection->currentIndex()].getName());
-        listusers_->addModel(*user_);
+        userview_->setFio(user->getFio());
+        userview_->setName(user->getName());
+        userview_->setInspection(usrFrm_->getInspections()[usrFrm_->getWidget()->comboBoxInspection->currentIndex()].getName());
+        listusers_->addModel(*userview_);
         delete user;
     }
 }
@@ -154,7 +164,6 @@ void Dialog::on_pushButton_editUser_clicked() {
     //QMessageBox::information(0, "Список инспекций", "pushButton_editUser_clicked");
     //QMessageBox::information(0, "Список инспекций", inspections_[0].getName());
     qDebug() << "pushButton_editUser_clicked";
-
     //QModelIndexList selection = this->getUI()->tableView->selectionModel()->selectedRows();
 
     //Multiple rows can be selected
@@ -165,9 +174,13 @@ void Dialog::on_pushButton_editUser_clicked() {
     int rowidx = select->currentIndex().row();
     if (rowidx >= 0) {
         QModelIndexList indexes = select->selection().indexes();
-        ///Перебрать все ячейки строки
         UserView user = listusers_->getModel(select->currentIndex());
         qDebug() << QString::number(user.getId());
+        auto id = user.getId();
+        emit getUserData(id);
+        emit waitServer();
+        usrEdtFrm_->show();
+        ///Перебрать все ячейки строки
         //    for (int i = 0; i < indexes.count(); ++i) {
         //select->model()->index(rowidx, i).data()
         //        QMessageBox::information(this, "", select->model()->index(rowidx, i).data().toString());

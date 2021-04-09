@@ -27,8 +27,11 @@ public:
         NOP,
         LOGIN,
         GET_LIST_MODELS,
+        GET_MODEL,
         ADD_NEW_USER,
+        EDIT_USER,
         SERVER_RESPONSE,
+        WAIT_SERVER_RESPONSE,
         SET_SESSION_ID
     };
 
@@ -51,7 +54,10 @@ public:
         {Command::LOGIN, "Авторизация пользователя."},
         {Command::GET_LIST_MODELS, "Выполнить SQL запрос."},
         {Command::ADD_NEW_USER, "Добавить нового пользователя."},
+        {Command::EDIT_USER, "Редактировать пользователя."},
+        {Command::GET_MODEL, "Получить экземпляр модели."},
         {Command::SERVER_RESPONSE, "Сообщение  сервера."},
+        {Command::WAIT_SERVER_RESPONSE, "Ждать ответ  сервера."},
         {Command::SET_SESSION_ID, "Установить идентификатор сессии."},
         {Command::NOP, "Холостая операция."}
     };

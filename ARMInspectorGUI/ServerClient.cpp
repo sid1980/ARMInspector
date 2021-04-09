@@ -89,10 +89,10 @@ void ServerClient::connectToServer() {
     if (m_pClientSocket->state() == QAbstractSocket::ConnectedState)
         return;
 
-    //qInfo() << QString("connectToServer(%1, %2)").arg("10.174.0.9").arg(7071);
-    //m_pClientSocket->connectToHost("10.174.0.9", 7071); // Windows
-    qInfo() << QString("connectToServer(%1, %2)").arg("127.0.0.1").arg(7071);
-    m_pClientSocket->connectToHost("127.0.0.1", 7071); // Linux
+    qInfo() << QString("connectToServer(%1, %2)").arg("10.174.0.9").arg(7071);
+    m_pClientSocket->connectToHost("10.174.0.9", 7071); // Windows
+    //qInfo() << QString("connectToServer(%1, %2)").arg("127.0.0.1").arg(7071);
+    //m_pClientSocket->connectToHost("127.0.0.1", 7071); // Linux
 }
 
 

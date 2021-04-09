@@ -44,6 +44,8 @@ public slots:
 signals:
     ///Установить идентификатор клиента
     void setID(int asID);
+    ///Ждать ответ сервера
+    void waitServer();
     ///Получить список инспекций
     void getInspections();
     ///Сигнализировать о завершении процесса обработки сообщения от сервера.
@@ -52,6 +54,8 @@ signals:
     void passListInspections(const QList<Inspection>& inspections);
     ///Передать данные о пользователе
     void passUserData(const User&);
+    ///Получить  данные о пользователе
+    void getUserData(const qint64&);
     /// Сервер вернул данные о пользователе
     void readyUserData(const User&);
     ///Сигнал завершения работы.

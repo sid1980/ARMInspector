@@ -18,6 +18,10 @@ QDialog(parent), widget_(new Ui::userEditFrm) {
     widget_->setupUi(this);
 }
 
-
 userEditFrm::~userEditFrm() {
 }
+
+Ui::userEditFrm* userEditFrm::getWidget() {
+    return widget_;
+}
+
