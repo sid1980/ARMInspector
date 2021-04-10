@@ -53,7 +53,7 @@ public slots:
     //void listInspection(const QList<Inspection>& inspections);
     void showUserData(const User&);
 signals:
-    void readyUserData(const User&);
+    void addUser(const User&);
     void getUserData(const qint64&);
     void waitServer();
 

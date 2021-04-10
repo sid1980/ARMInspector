@@ -84,8 +84,8 @@ void Dialog::showUserData(const User& user) {
         listusers_->addModel(*userview_);
     this->getUI()->tableView->scrollToBottom();
     this->getUI()->tableView->selectRow(listusers_->rowCount() - 1);
-    QMessageBox::information(this, "Добавление нового пользовтеля",
-            "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно добавлен в базу данных");
+//    QMessageBox::information(this, "Добавление нового пользовтеля",
+//            "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно добавлен в базу данных");
 }
 
 //Заполнить форму редактирования пользователя его данными
@@ -178,7 +178,7 @@ void Dialog::on_pushButton_addUser_clicked() {
         //        QString::number(user->getInspection()));
         //proxyModel_->setSourceModel(listusers_);
 
-        emit readyUserData(*user);
+        emit addUser(*user);
         emit waitServer();
         //this->showUserData(*user);
         delete user;

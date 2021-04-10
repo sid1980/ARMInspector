@@ -44,8 +44,6 @@ public:
     ///Основная функция потока
     void process();
 
-public slots:
-    void addUserData(const User&);
 
 signals:
     ///Установить идентификатор клиента
@@ -59,11 +57,9 @@ signals:
     ///Передать список инспекций
     void passListInspections(const QList<Inspection>& inspections);
     ///Передать данные о пользователе
-    void passUserData(const User&);
+    void addUser(const User&);
     ///Получить  данные о пользователе
     void getUserData(const qint64&);
-    /// Сервер вернул данные о пользователе
-    void readyUserData(const User&);
     ///Сигнал завершения работы.
     /// @param asResult Результат выполнения запроса 
     void finished(QString asResult);

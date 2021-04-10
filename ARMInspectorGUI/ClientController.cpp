@@ -46,10 +46,8 @@ void ClientController::init(ServerClient *apServerClient) {
     connect(m_pWorkerClient, SIGNAL(ready()), SLOT(formReady()));
     // Сигнально-слотовое соединение получения списка организаций.
     connect(m_pWorkerClient, SIGNAL(getInspections()), SLOT(getListInspection()));
-    // Сигнально-слотовое добавления нового пользователя в базу данных.
-    connect(m_pWorkerClient, SIGNAL(passUserData(const User&)), SLOT(addUser(const User&)));
     // Сигнально-слотовое соединение для добавления нового пользователя в базу данных.
-    connect(m_pWorkerClient, SIGNAL(passUserData(const User&)), SLOT(addUser(const User&)));
+    connect(m_pWorkerClient, SIGNAL(addUser(const User&)), SLOT(addUser(const User&)));
     // Сигнально-слотовое соединение для полуяения  сведений о   пользователе из  базы данных.
     connect(m_pWorkerClient, SIGNAL(getUserData(const qint64&)), SLOT(getUser(const qint64&)));
     // Сигнально-слотовое соединение  ожидания ответа от сервера.

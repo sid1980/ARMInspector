@@ -32,7 +32,7 @@
 
 WorkerClient::WorkerClient(QObject *apParent) : QObject(apParent) {
     dialog_ = new Dialog();
-    connect(dialog_, SIGNAL(readyUserData(const User&)), this, SLOT(addUserData(const User&)));
+    connect(dialog_, SIGNAL(addUser(const User&)), this, SIGNAL(addUser(const User&)));
     connect(dialog_, SIGNAL(getUserData(const qint64&)), this, SIGNAL(getUserData(const qint64&)));
     connect(dialog_, SIGNAL(waitServer()), this, SIGNAL(waitServer()));
 }
@@ -58,9 +58,6 @@ const QString& WorkerClient::getModelWrapperString() const {
     return m_aModelWrapperString;
 }
 
-void WorkerClient::addUserData(const User& user) {
-    emit passUserData(user);
-}
 
 
 ///Основная функция обработчика сообщений, полученных от сервера.
