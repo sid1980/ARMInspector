@@ -141,8 +141,12 @@ void DBManager::login() {
             //Пользователя с таким именем нет в базе данных. 
             //Если это admin , то добавить его и установить пароль по умолчанию
             if (asLogin == "admin") {
+                qDebug() << asLogin;
                 QString pasword_hash = QString(QCryptographicHash::hash(("adm11"), QCryptographicHash::Md5).toHex());
-                QString sqlquery_string = QString("INSERT INTO user(name,password) VALUES ('admin','") + pasword_hash + QString("')");
+                QString sqlquery_string = QString("INSERT INTO user(name,password)"
+                        " VALUES ('admin','") + pasword_hash + QString("')");
+                qDebug() << sqlquery_string;
+
                 if (!queryStatementInfo.exec(sqlquery_string)) {
                     setResult(user, Message::CANNOT_ADD_ADMIN_USER);
                     return;
@@ -247,6 +251,67 @@ void DBManager::removeDatabase() {
 }
 
 
+//Редактировать пользователя 
+
+void DBManager::updateUser() {
+    //Задать  функцию для установки результата выполнения команды сервера
+    //и собщения о результате выполнения команды.
+    auto setResult = [this](User user, Message msg) {
+        //Подготовить данные.
+        QString json = JsonSerializer::serialize(user);
+        m_pModelWrapper->setData(json);
+        //Установить сообщение и результат выполнения команды.
+        ServerMessage::Result result = ServerMessage::outPut(msg);
+        m_pModelWrapper->setMessage(result.str);
+        m_pModelWrapper->setSuccess(result.success);
+    };
+    //Создать модель данных User
+    User user;
+    JsonSerializer::parse(m_pModelWrapper->getData(), user);
+    //Взять ранее созданное подключение к  базе данных.
+    QSqlDatabase database = QSqlDatabase::database(QString().setNum(m_pModelWrapper->getSessionID()));
+    //Проверить подключение  к  базе данных.
+    if (!database.isValid()) {
+        //Подключение  к базе данных некорректно.
+        //Установить сообщение.
+        setResult(user, Message::DATABASE_CONNECTION_INCORRECT);
+        //Прекратить работу менеджера базы данных.
+        return;
+    }
+
+    //Проверить, открыта ли база данных.
+    if (!database.isOpen()) {
+        //База данных не открыта.Авторизация не возможна.
+        setResult(user, Message::DATABASE_IS_NOT_OPENED);
+        return;
+    }
+
+    //База данных открыта. Можно проводить авторизацию пользователя. 
+    QSqlQuery queryAdd(database);
+    //qDebug() << user.getName();
+    //QString query;
+    queryAdd.prepare("UPDATE  user set fio=:fio,id_inspection=:id_inspection,name=:name,"
+            "status=:status,role=:role,access=:access where id=:id");
+    queryAdd.bindValue(":id", user.getId());
+    queryAdd.bindValue(":fio", user.getFio());
+    queryAdd.bindValue(":id_inspection", user.getInspection());
+    queryAdd.bindValue(":name", user.getName());
+    queryAdd.bindValue(":status", user.getStatus());
+    queryAdd.bindValue(":role", user.getRole());
+    queryAdd.bindValue(":access", user.getAccess());
+
+    if (queryAdd.exec()) {
+        setResult(user, Message::USER_EDIT_SUCCESS);
+        qDebug() << user.getName();
+        qDebug() << "update user  succes: ";
+    } else {
+        setResult(user, Message::USERR_EDIT_FAILURE);
+        qDebug() << "update person failed: " << queryAdd.lastError();
+        qDebug() << user.getName();
+    }
+
+    return;
+}
 
 /// Добавить нового пользователя
 /// \param name

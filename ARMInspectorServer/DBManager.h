@@ -41,6 +41,8 @@ public:
     void login();
     ///Добавить  пользователя.
     void addUser();
+    ///Редактировать   пользователя.
+    void updateUser();
     /// Получить список моделей.
     void getListModels();
     template<typename T> void getListModels();

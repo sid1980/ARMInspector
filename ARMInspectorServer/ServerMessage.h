@@ -97,7 +97,7 @@ namespace ServerMessage {
         {Message::DATABASE_CONNECTION_INCORRECT,{"Подключение  к базе данных некорректно.", false, ModelWrapper::Command::NOP}},
         {Message::CANNOT_DELETE_SESSION,{"Невозможно удалить сессию.", false, ModelWrapper::Command::NOP}},
         {Message::ADD_ADMIN_USER_SUCCESS,{"Пользователь admin успешно добавлен в базу данных.", true, ModelWrapper::Command::NOP}},
-        {Message::CANNOT_ADD_ADMIN_USER,{"Ошибка добавления пользователя admin.", false, ModelWrapper::Command::NOP}}
+        {Message::CANNOT_ADD_ADMIN_USER,{"Не могу  добавить  пользователя admin.", false, ModelWrapper::Command::NOP}}
     };
     /// Выбрать сообщение из списка.
     /// @param msg Идентификатор сообщения, которое выбирается из списка.
