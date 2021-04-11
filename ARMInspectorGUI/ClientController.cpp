@@ -48,6 +48,8 @@ void ClientController::init(ServerClient *apServerClient) {
     connect(m_pWorkerClient, SIGNAL(getInspections()), SLOT(getListInspection()));
     // Сигнально-слотовое соединение для добавления нового пользователя в базу данных.
     connect(m_pWorkerClient, SIGNAL(addUser(const User&)), SLOT(addUser(const User&)));
+    // Сигнально-слотовое соединение для редактирования  пользователя .
+    connect(m_pWorkerClient, SIGNAL(updateUser(const User&)), SLOT(updateUser(const User&)));
     // Сигнально-слотовое соединение для полуяения  сведений о   пользователе из  базы данных.
     connect(m_pWorkerClient, SIGNAL(getUserData(const qint64&)), SLOT(getUser(const qint64&)));
     // Сигнально-слотовое соединение  ожидания ответа от сервера.
@@ -109,6 +111,26 @@ void ClientController::login(const QString &asLogin, const QString &asPassword) 
 }
 
 
+///Редактировать данные о пользователе
+
+void ClientController::updateUser(const User &user) {
+    //QMessageBox::information(0, "Редактирование пользовтеля", QString(user.getFio()));
+    //QMessageBox::information(0, "Добавление нового пользовтеля", QString(user.getFio()));
+    //Создать командную обёртку.
+    ModelWrapper wrapper(ModelWrapper::Command::EDIT_USER);
+    //Установить идентификатор сессии.
+    wrapper.setSessionID(m_aSessionID);
+    //Установить модель.    
+    wrapper.setEnumModel(ModelWrapper::Model::User);
+    //Сериализовать модель User.Передать данные о пользователе.
+    QString userAsString = JsonSerializer::serialize(user);
+    wrapper.setData(userAsString);
+    //Упаковать  весь запрос в строку
+    QString query = JsonSerializer::serialize(wrapper);
+    //Переслать его на сервер.
+    m_pCommandController->requestServer(query);
+
+}
 ///Получить данные о пользователе
 
 void ClientController::getUser(const qint64& asId) {

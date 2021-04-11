@@ -37,7 +37,7 @@ ui(new Ui::dialog) {
     userview_ = new UserView();
     listusers_ = new ModelList<UserView>();
     proxyModel_ = new QSortFilterProxyModel(listusers_);
-//const QColor hlClr = Qt::red; // highlight color to set
+    //const QColor hlClr = Qt::red; // highlight color to set
     //const QColor txtClr = Qt::white; // highlighted text color to set
 
     //QPalette p = palette();
@@ -77,45 +77,45 @@ void Dialog::on_pushButton_deleteUser_clicked() {
 
 void Dialog::showUserData(const User& user) {
     //table2->selectRow(current.row());
-        userview_->setId(user.getId());
-        userview_->setFio(user.getFio());
-        userview_->setName(user.getName());
-        userview_->setInspection(usrFrm_->getInspections()[user.getInspection()].getName());
-        listusers_->addModel(*userview_);
+    userview_->setId(user.getId());
+    userview_->setFio(user.getFio());
+    userview_->setName(user.getName());
+    userview_->setInspection(usrFrm_->getInspections()[user.getInspection()].getName());
+    listusers_->addModel(*userview_);
     this->getUI()->tableView->scrollToBottom();
     this->getUI()->tableView->selectRow(listusers_->rowCount() - 1);
-//    QMessageBox::information(this, "Добавление нового пользовтеля",
-//            "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно добавлен в базу данных");
+    //    QMessageBox::information(this, "Добавление нового пользовтеля",
+    //            "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно добавлен в базу данных");
 }
 
 //Заполнить форму редактирования пользователя его данными
 
-void Dialog::fillUserEdiFrm(const User& user) {
+void Dialog::fillUserEditFrm(const User& user) {
     usrEdtFrm_->getWidget()->lineEditFio->setText(user.getFio());
-    for(int i=0; i<usrEdtFrm_->getInspections().size();i++){
-        if(usrEdtFrm_->getInspections()[i].getId()==user.getInspection()) {
+    for (int i = 0; i < usrEdtFrm_->getInspections().size(); i++) {
+        if (usrEdtFrm_->getInspections()[i].getId() == user.getInspection()) {
             usrEdtFrm_->getWidget()->comboBoxInspection->setCurrentIndex(i);
             break;
         }
     }
     usrEdtFrm_->getWidget()->lineEditName->setText(user.getName());
-        QList<QRadioButton *> allButtons;
-        allButtons = usrEdtFrm_->getWidget()->groupBoxStatus->findChildren<QRadioButton *>();
-        for (int i = 1; i <= allButtons.size(); ++i) {
-            if(i==user.getStatus()){
-                allButtons[i-1]->setChecked(true);
-            }
+    QList<QRadioButton *> allButtons;
+    allButtons = usrEdtFrm_->getWidget()->groupBoxStatus->findChildren<QRadioButton *>();
+    for (int i = 1; i <= allButtons.size(); ++i) {
+        if (i == user.getStatus()) {
+            allButtons[i - 1]->setChecked(true);
         }
-        allButtons = usrEdtFrm_->getWidget()->groupBoxRole->findChildren<QRadioButton *>();
-        for (int i = 1; i <= allButtons.size(); ++i) {
-            if(i==user.getRole()){
-                allButtons[i-1]->setChecked(true);
-            }
+    }
+    allButtons = usrEdtFrm_->getWidget()->groupBoxRole->findChildren<QRadioButton *>();
+    for (int i = 1; i <= allButtons.size(); ++i) {
+        if (i == user.getRole()) {
+            allButtons[i - 1]->setChecked(true);
         }
+    }
 
-    
+
 }
- 
+
 
 ///Инициализировать список инспекций
 
@@ -165,13 +165,13 @@ void Dialog::on_pushButton_addUser_clicked() {
         QList<QRadioButton *> allButtons;
         allButtons = usrFrm_->getWidget()->groupBoxStatus->findChildren<QRadioButton *>();
         for (int i = 1; i <= allButtons.size(); ++i) {
-            group.addButton(allButtons[i-1], i);
+            group.addButton(allButtons[i - 1], i);
         }
         user->setStatus(group.checkedId());
 
         allButtons = usrFrm_->getWidget()->groupBoxRole->findChildren<QRadioButton *>();
         for (int i = 1; i < allButtons.size(); ++i) {
-            group.addButton(allButtons[i-1], i);
+            group.addButton(allButtons[i - 1], i);
         }
         user->setRole(group.checkedId());
         //QMessageBox::information(this, "Добавление нового пользовтеля",
@@ -182,7 +182,7 @@ void Dialog::on_pushButton_addUser_clicked() {
         emit waitServer();
         //this->showUserData(*user);
         delete user;
-        
+
     }
 }
 
@@ -211,8 +211,37 @@ void Dialog::on_pushButton_editUser_clicked() {
         //auto id = select->model()->index(rowidx, 0).data().toInt();
         emit getUserData(id);
         emit waitServer();
-        usrEdtFrm_->show();
-        
+        if (usrEdtFrm_->exec() == QDialog::Accepted) {
+            User* user = new User();
+            user->setFio(usrEdtFrm_->getWidget()->lineEditFio->text());
+            user->setInspection(usrEdtFrm_->getInspections()[usrEdtFrm_->getWidget()->comboBoxInspection->currentIndex()].getId());
+            user->setName(usrEdtFrm_->getWidget()->lineEditName->text());
+
+            ///Получить значение RadioBox
+            QList<QRadioButton *> buttons;
+            buttons = usrEdtFrm_->getWidget()->groupBoxStatus->findChildren<QRadioButton *>();
+            for (int i = 1; i <= buttons.size(); ++i) {
+                if (buttons[i - 1]->isChecked()) {
+                    user->setStatus(i);
+                }
+            }
+            buttons = usrEdtFrm_->getWidget()->groupBoxRole->findChildren<QRadioButton *>();
+            for (int i = 1; i <= buttons.size(); ++i) {
+                if (buttons[i - 1]->isChecked()) {
+                    user->setRole(i);
+                }
+            }
+            //QMessageBox::information(this, "Добавление нового пользовтеля",
+            //        QString::number(user->getInspection()));
+            //proxyModel_->setSourceModel(listusers_);
+
+            emit updateUser(*user);
+            emit waitServer();
+            //this->showUserData(*user);
+            delete user;
+
+        }
+
         //listusers_->record(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()).row());
         ///Перебрать все ячейки строки
         //    for (int i = 0; i < indexes.count(); ++i) {

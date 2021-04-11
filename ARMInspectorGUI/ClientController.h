@@ -69,6 +69,8 @@ public slots:
     void getListModels(ModelWrapper::Model model);
     ///добавить в базу нового пользователя
     void addUser(const User&);
+    ///отредактировать данные о  пользователе
+    void updateUser(const User&);
     ///добавить в базу нового пользователя
     void getUser(const qint64&);
     ///Ждать завершения предыдущей операции или сигнала старта.

@@ -58,6 +58,8 @@ signals:
     void passListInspections(const QList<Inspection>& inspections);
     ///Передать данные о пользователе
     void addUser(const User&);
+    ///Редактировать данные о пользователе
+    void updateUser(const User&);
     ///Получить  данные о пользователе
     void getUserData(const qint64&);
     ///Сигнал завершения работы.

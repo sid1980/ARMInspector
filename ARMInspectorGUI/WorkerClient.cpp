@@ -33,6 +33,7 @@
 WorkerClient::WorkerClient(QObject *apParent) : QObject(apParent) {
     dialog_ = new Dialog();
     connect(dialog_, SIGNAL(addUser(const User&)), this, SIGNAL(addUser(const User&)));
+    connect(dialog_, SIGNAL(updateUser(const User&)), this, SIGNAL(updateUser(const User&)));
     connect(dialog_, SIGNAL(getUserData(const qint64&)), this, SIGNAL(getUserData(const qint64&)));
     connect(dialog_, SIGNAL(waitServer()), this, SIGNAL(waitServer()));
 }
@@ -125,9 +126,24 @@ void WorkerClient::process() {
                 //        dialog_, SLOT(showUserData(const User&)));
                 User user;
                 JsonSerializer::parse(wrapper.getData(), user);
- 
+
                 dialog_->showUserData(user);
                 //emit readyUserData(user);
+                emit ready();
+
+            }
+                break;
+            case ModelWrapper::Command::EDIT_USER:
+            {
+                //Сервер вернул результат команды "EDIT_USER"     
+                User user;
+                JsonSerializer::parse(wrapper.getData(), user);
+
+                //dialog_->showUserData(user);
+                //emit readyUserData(user);
+                QMessageBox::information(0, "Редактирование пользовтеля",
+                        "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно отредактирован");
+
                 emit ready();
 
             }
@@ -144,7 +160,7 @@ void WorkerClient::process() {
                         //emit dialog_->showUserData(user);
                         //QMessageBox::information(0, "Получение данных о пользователе",
                         //        "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> ");
-                        dialog_->fillUserEdiFrm(user);
+                        dialog_->fillUserEditFrm(user);
                         emit ready();
 
                     }
