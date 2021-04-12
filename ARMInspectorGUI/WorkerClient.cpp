@@ -35,6 +35,7 @@ WorkerClient::WorkerClient(QObject *apParent) : QObject(apParent) {
     connect(dialog_, SIGNAL(addUser(const User&)), this, SIGNAL(addUser(const User&)));
     connect(dialog_, SIGNAL(updateUser(const User&)), this, SIGNAL(updateUser(const User&)));
     connect(dialog_, SIGNAL(getUserData(const qint64&)), this, SIGNAL(getUserData(const qint64&)));
+    connect(dialog_, SIGNAL(deleteUser(const qint64&)), this, SIGNAL(deleteUser(const qint64&)));
     connect(dialog_, SIGNAL(waitServer()), this, SIGNAL(waitServer()));
 }
 
@@ -161,6 +162,26 @@ void WorkerClient::process() {
                         //QMessageBox::information(0, "Получение данных о пользователе",
                         //        "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> ");
                         dialog_->fillUserEditFrm(user);
+                        emit ready();
+
+                    }
+                        break;
+
+                }
+            }
+                break;
+            case ModelWrapper::Command::DEL_MODEL:
+            {
+                //Сервер вернул результат команды "GET_MODEL"     
+                ModelWrapper::Model model = wrapper.getEnumModel();
+                switch (model) {
+                    case ModelWrapper::Model::User:
+                    {
+                        User user;
+                        JsonSerializer::parse(wrapper.getData(), user);
+                        //emit dialog_->showUserData(user);
+                        QMessageBox::information(0, "Удаление  пользователя",
+                                "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a>  успешно удален");
                         emit ready();
 
                     }

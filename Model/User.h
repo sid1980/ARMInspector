@@ -52,6 +52,9 @@ public:
     static const QString getQuery() {
         return QString("Select *  from user ");
     }
+    static const QString delQuery() {
+        return QString("Delete   from user ");
+    }
     QVariant getData(int position) const;
     //QVariant getFieldValue() {
     //    return QVariant();

@@ -44,7 +44,11 @@ public:
     static const QString getQuery() {
         return QString("Select *  from inspection ");
     }
+    static const QString delQuery() {
+        return QString("Delete   from inspection ");
+    }
 
+    
     QVariant getData(int position) const;
 
 

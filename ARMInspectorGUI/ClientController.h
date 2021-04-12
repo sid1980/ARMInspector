@@ -38,6 +38,8 @@ public:
     bool getLogged();
     ///Получить модель
     void getModel(const qint64&, ModelWrapper::Model model);
+    ///Удалить модель
+    void deleteModel(const qint64&, ModelWrapper::Model model);
 
 
 signals:
@@ -73,6 +75,8 @@ public slots:
     void updateUser(const User&);
     ///добавить в базу нового пользователя
     void getUser(const qint64&);
+    ///Удалить пользователя
+    void deleteUser(const qint64&);
     ///Ждать завершения предыдущей операции или сигнала старта.
     void waitReady();
 

@@ -62,6 +62,8 @@ signals:
     void updateUser(const User&);
     ///Получить  данные о пользователе
     void getUserData(const qint64&);
+    ///Удалить  данные о пользователе
+    void deleteUser(const qint64&);
     ///Сигнал завершения работы.
     /// @param asResult Результат выполнения запроса 
     void finished(QString asResult);

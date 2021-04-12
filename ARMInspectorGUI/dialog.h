@@ -57,6 +57,7 @@ signals:
     void addUser(const User&);
     void updateUser(const User&);
     void getUserData(const qint64&);
+    void deleteUser(const qint64&);
     void waitServer();
 
 private:

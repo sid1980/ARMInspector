@@ -47,8 +47,13 @@ public:
                 "INNER JOIN inspection as i"
                 "  ON u.id_inspection=i.id");
     }
+
+    static const QString delQuery() {
+        return QString("Delete   from user ");
+    }
+
     QVariant getData(int position) const;
-    void setData(int position,const QVariant& value);
+    void setData(int position, const QVariant& value);
     //QVariant getFieldValue() {
     //    return QVariant();
     //};

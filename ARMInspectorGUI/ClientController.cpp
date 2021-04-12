@@ -51,6 +51,8 @@ void ClientController::init(ServerClient *apServerClient) {
     // Сигнально-слотовое соединение для редактирования  пользователя .
     connect(m_pWorkerClient, SIGNAL(updateUser(const User&)), SLOT(updateUser(const User&)));
     // Сигнально-слотовое соединение для полуяения  сведений о   пользователе из  базы данных.
+    connect(m_pWorkerClient, SIGNAL(deleteUser(const qint64&)), SLOT(deleteUser(const qint64&)));
+    // Сигнально-слотовое соединение для полуяения  сведений о   пользователе из  базы данных.
     connect(m_pWorkerClient, SIGNAL(getUserData(const qint64&)), SLOT(getUser(const qint64&)));
     // Сигнально-слотовое соединение  ожидания ответа от сервера.
     connect(m_pWorkerClient, SIGNAL(waitServer()), SLOT(waitReady()));
@@ -136,6 +138,11 @@ void ClientController::updateUser(const User &user) {
 void ClientController::getUser(const qint64& asId) {
     getModel(asId, ModelWrapper::Model::User);
 }
+///Удалить  пользователя
+
+void ClientController::deleteUser(const qint64& asId) {
+    deleteModel(asId, ModelWrapper::Model::User);
+}
 ///Добавить нового пользователя.
 
 void ClientController::addUser(const User &user) {
@@ -158,7 +165,29 @@ void ClientController::addUser(const User &user) {
 
 
 
-///Получить  модель.
+///Удалить  модель.
+
+void ClientController::deleteModel(const qint64& asId, ModelWrapper::Model model) {
+    //Создать командную обёртку.
+    ModelWrapper wrapper(ModelWrapper::Command::DEL_MODEL);
+    //Установить идентификатор сессии.
+    wrapper.setSessionID(m_aSessionID);
+    //Установить модель.    
+    wrapper.setEnumModel(model);
+    //Задать параметры команды.
+    QJsonObject params;
+    params.insert("ID", asId);
+    //params.insert("model", model);
+    //Конвертировать параметры в строку.
+    QString query = JsonSerializer::json_encode(params);
+    //Положить параметры в раздел данных.
+    wrapper.setData(query);
+    //Упаковать  весь запрос в строку
+    query = JsonSerializer::serialize(wrapper);
+    //Переслать его на сервер.
+    m_pCommandController->requestServer(query);
+
+}///Получить  модель.
 
 void ClientController::getModel(const qint64& asId, ModelWrapper::Model model) {
     //Создать командную обёртку.
@@ -180,7 +209,8 @@ void ClientController::getModel(const qint64& asId, ModelWrapper::Model model) {
     //Переслать его на сервер.
     m_pCommandController->requestServer(query);
 
-}///Получить список моделей.
+}
+///Получить список моделей.
 
 void ClientController::getListModels(ModelWrapper::Model model) {
     //Создать командную обёртку.

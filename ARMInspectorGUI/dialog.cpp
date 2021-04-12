@@ -66,10 +66,32 @@ Ui::dialog* Dialog::getUI() {
 
 void Dialog::on_pushButton_deleteUser_clicked() {
     //Question MessageBox
-
-    QMessageBox::question(this, "Удаление пользователя", "Вы действительно хотите удалить пользователя? ",
-            QMessageBox::Yes | QMessageBox::No);
-
+    int rowidx = proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()).row();
+    if (rowidx >= 0) {
+        //QModelIndexList indexes = select->selection().indexes();
+        //UserView user = listusers_->getModel(select->currentIndex());
+        UserView user = listusers_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
+        //qDebug() << QString::number(user.getId());
+        auto id = user.getId();
+        //auto id = select->model()->index(rowidx, 0).data().toInt();
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Удаление пользователя",
+                "Вы действительно хотите удалить пользователя <a style='color:royalblue'> " +
+                user.getFio() + "</a> ? ",
+                QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
+            qDebug() << "Yes was clicked";
+            emit deleteUser(id);
+            emit waitServer();
+            //QModelIndexList indexes = select->selection().indexes();
+            //for (int i = 0; i < indexes.count(); ++i) {
+            //select->model()->index(rowidx, i).data();
+            listusers_->delModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
+            //QApplication::quit();
+        } else {
+            qDebug() << "Yes was *not* clicked";
+        }
+    }
 }
 
 
@@ -195,9 +217,9 @@ void Dialog::showBox() {
 }
 ///Обработка нажатия кнопки добавления  пользователя.
 ///Данные считываются из формы данных пользователя,
-///добавляются в Модель отображения данных на экране и 
+///добавляются в Модель отображения данных на экране и
 ///и в Модель передачи данных на сервер.
-///Для передачи данных на сервер диалог пользуется 
+///Для передачи данных на сервер диалог пользуется
 ///сигналом readyUserData.
 
 void Dialog::on_pushButton_addUser_clicked() {
