@@ -203,6 +203,29 @@ void DBManager::login() {
 
 ///-----------------------------------------------------------------------------
 ///
+///             Удалить модель
+///
+///-----------------------------------------------------------------------------
+
+void DBManager::deleteModel() {
+    //Получаем модель.
+    ModelWrapper::Model model = m_pModelWrapper->getEnumModel();
+    //Выбрать модель, данные которой необходимо запросить. 
+    switch (model) {
+        case ModelWrapper::Model::User:
+            deleteModel<User>();
+            break;
+        case ModelWrapper::Model::UserView:
+            deleteModel<UserView>();
+            break;
+        case ModelWrapper::Model::Inspection:
+            deleteModel<Inspection>();
+            break;
+
+    }
+}
+///-----------------------------------------------------------------------------
+///
 ///             Получить модель
 ///
 ///-----------------------------------------------------------------------------
@@ -258,7 +281,6 @@ void DBManager::getListModels() {
 ///                      Указатель на сокет клиент-серверного соединения.
 ///
 ///-----------------------------------------------------------------------------
-
 
 void DBManager::removeDatabase() {
     //Блокировать ресурсы SQL от использования их  другими потоками. 
@@ -396,12 +418,27 @@ void DBManager::addUser() {
     queryAdd.bindValue(":access", user.getAccess());
 
     if (queryAdd.exec()) {
+        queryAdd.prepare("SELECT * FROM user WHERE ID = (SELECT max(ID) FROM user)");
+        if (!queryAdd.exec()) {
+            setResult(user, Message::USER_ADD_FAILURE);
+            return;
+        }
+        //Выборка данных.
+        while (queryAdd.next()) {
+            QJsonObject recordObject;
+            ///Экземпляр объекта класса T, который будет  сериализоваться.
+            for (int x = 0; x < queryAdd.record().count(); x++) {
+                recordObject.insert(queryAdd.record().fieldName(x), QJsonValue::fromVariant(queryAdd.value(x)));
+            }
+            ///Считать запись базы данных  в объект класса T.  
+            user.read(recordObject);
+        }
         setResult(user, Message::USER_ADD_SUCCESS);
         qDebug() << user.getName();
         qDebug() << user.getId();
         qDebug() << "add user  succes: ";
     } else {
-        setResult(user, Message::USERR_ADD_FAILURE);
+        setResult(user, Message::USER_ADD_FAILURE);
         qDebug() << "add person failed: " << queryAdd.lastError();
         qDebug() << user.getName();
     }

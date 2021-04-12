@@ -109,6 +109,12 @@ void Worker::process() {
                     pDBManager->getModel();
                 }
                     break;
+                case ModelWrapper::Command::DEL_MODEL:
+                {
+                    //Получить список моделей.
+                    pDBManager->deleteModel();
+                }
+                    break;
                 default:
                 {
                     setResult(Message::INCORRECT_COMMAND);
