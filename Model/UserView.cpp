@@ -67,6 +67,26 @@ void UserView::write(QJsonObject &jsonObj) const {
 
 };
 
+void UserView::setData(int position, const QVariant& value) {
+    switch (position) {
+        case 0:
+            this->setId(value.toInt());
+            break;
+        case 1:
+            this->setFio(value.toString());
+            break;
+        case 2:
+            this->setInspection(value.toString());
+            break;
+        case 3:
+            this->setName(value.toString());
+            break;
+        default:
+            break;
+    }
+
+};
+
 QVariant UserView::getData(int position) const {
 
     switch (position) {

@@ -51,7 +51,8 @@ private slots:
     void on_pushButton_deleteUser_clicked();
 public slots:
     //void listInspection(const QList<Inspection>& inspections);
-    void showUserData(const User&);
+    void showNewUserData(const User&);
+    void showEditUserData(const User&);
 signals:
     void addUser(const User&);
     void updateUser(const User&);

@@ -75,15 +75,63 @@ void Dialog::on_pushButton_deleteUser_clicked() {
 
 ///Показать строку данных о пользователе на экране
 
-void Dialog::showUserData(const User& user) {
+void Dialog::showNewUserData(const User& user) {
     //table2->selectRow(current.row());
     userview_->setId(user.getId());
     userview_->setFio(user.getFio());
     userview_->setName(user.getName());
-    userview_->setInspection(usrFrm_->getInspections()[user.getInspection()].getName());
+    userview_->setInspection(usrFrm_->getInspections()[user.getInspection() - 1].getName());
     listusers_->addModel(*userview_);
-    this->getUI()->tableView->scrollToBottom();
     this->getUI()->tableView->selectRow(listusers_->rowCount() - 1);
+    this->getUI()->tableView->scrollToBottom();
+    //QModelIndexList indexList = this->getUI()->tableView->selectionModel()->selectedIndexes();
+    //foreach(QModelIndex index, indexList) {
+    //    this->getUI()->tableView->scrollTo(index);
+    //}
+    //    QMessageBox::information(this, "Добавление нового пользовтеля",
+    //            "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно добавлен в базу данных");
+}
+///Показать строку данных о пользователе на экране
+
+void Dialog::showEditUserData(const User& user) {
+    //table2->selectRow(current.row());
+    userview_->setId(user.getId());
+    userview_->setFio(user.getFio());
+    //QMessageBox::information(0, "Редактирование пользовтеля",
+    //        "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно отредактирован");
+    userview_->setName(user.getName());
+    userview_->setInspection(usrFrm_->getInspections()[user.getInspection() - 1].getName());
+    //listusers_->addModel(*userview_);
+    QItemSelectionModel *select = this->getUI()->tableView->selectionModel();
+    int rowidx = select->currentIndex().row();
+    this->getUI()->tableView->scrollTo(select->currentIndex());
+    //QModelIndexList indexes = select->selection().indexes();
+    //for (int i = 0; i < indexes.count(); ++i) {
+    //select->model()->index(rowidx, i).data();
+    select->model()->setData(select->model()->index(rowidx, 0), userview_->getId(), Qt::EditRole);
+    select->model()->setData(select->model()->index(rowidx, 1), userview_->getFio(), Qt::EditRole);
+    select->model()->setData(select->model()->index(rowidx, 2), userview_->getInspection(), Qt::EditRole);
+    select->model()->setData(select->model()->index(rowidx, 3), userview_->getName(), Qt::EditRole);
+    //QMessageBox::information(this, "", select->model()->index(rowidx, i).data().toString());
+    //std::string stdstr = select->model()->index(rowidx, i).data().toString().toUtf8().constData();
+    //qInfo() << QString::fromLocal8Bit(stdstr.c_str());
+    //qDebug() << rowidx;
+    //        qDebug() << QString::fromLocal8Bit(select->model()->index(rowidx, i).data().toString().toUtf8().constData());
+    //}
+
+
+
+
+    //QModelIndexList indexList = this->getUI()->tableView->selectionModel()->selectedIndexes();
+    //foreach(QModelIndex index, indexList) {
+    //    this->getUI()->tableView->scrollTo(index);
+    //            listusers_->setData(index, QVariant(userview_->getId()), Qt::EditRole);
+    //}
+    //this->setModel()
+    //this->getUI()->tableView->viewport()->update();
+    //this->getUI()->tableView->reset();
+    //    this->getUI()->tableView->scrollToBottom();
+    //    this->getUI()->tableView->selectRow(listusers_->rowCount() - 1);
     //    QMessageBox::information(this, "Добавление нового пользовтеля",
     //            "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно добавлен в базу данных");
 }
@@ -153,10 +201,14 @@ void Dialog::showBox() {
 ///сигналом readyUserData.
 
 void Dialog::on_pushButton_addUser_clicked() {
+    this->getUI()->tableView->model()->sort(-1);
     if (usrFrm_->exec() == QDialog::Accepted) {
         User* user = new User();
         user->setFio(usrFrm_->getWidget()->lineEditFio->text());
         user->setInspection(usrFrm_->getInspections()[usrFrm_->getWidget()->comboBoxInspection->currentIndex()].getId());
+        //std::string stdstr = usrFrm_->getInspections()[usrFrm_->getWidget()->comboBoxInspection->currentIndex()].getName().toUtf8().constData();
+        //qDebug() << QString::fromLocal8Bit(stdstr.c_str());
+
         user->setName(usrFrm_->getWidget()->lineEditName->text());
         user->setPassword(usrFrm_->getWidget()->lineEditPassword->text());
 
@@ -190,6 +242,7 @@ void Dialog::on_pushButton_addUser_clicked() {
 ///Обработка нажатия кнопки редактирования пользователя
 
 void Dialog::on_pushButton_editUser_clicked() {
+
     //QMessageBox::information(0, "Список инспекций", "pushButton_editUser_clicked");
     //QMessageBox::information(0, "Список инспекций", inspections_[0].getName());
     qDebug() << "pushButton_editUser_clicked";
@@ -199,7 +252,7 @@ void Dialog::on_pushButton_editUser_clicked() {
     //QModelIndexList indexList = this->getUI()->tableView->selectionModel()->selectedIndexes();
 
 
-    //QItemSelectionModel *select = this->getUI()->tableView->selectionModel();
+    ///QItemSelectionModel *select = this->getUI()->tableView->selectionModel();
     ///int rowidx = select->currentIndex().row();
     int rowidx = proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()).row();
     if (rowidx >= 0) {
@@ -213,6 +266,7 @@ void Dialog::on_pushButton_editUser_clicked() {
         emit waitServer();
         if (usrEdtFrm_->exec() == QDialog::Accepted) {
             User* user = new User();
+            user->setId(id);
             user->setFio(usrEdtFrm_->getWidget()->lineEditFio->text());
             user->setInspection(usrEdtFrm_->getInspections()[usrEdtFrm_->getWidget()->comboBoxInspection->currentIndex()].getId());
             user->setName(usrEdtFrm_->getWidget()->lineEditName->text());

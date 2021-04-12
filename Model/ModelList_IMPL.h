@@ -78,6 +78,10 @@ template <class T> QVariant ModelList<T>::headerData(int section, Qt::Orientatio
 
 template <class T> bool ModelList<T>::setData(const QModelIndex &index, const QVariant &value, int role) {
     if (role == Qt::EditRole) {
+        T model = this->getModel(index);
+        model.setData(index.column(), value);
+        m_ListModels.replace(index.row(), model);
+        //setValue(index.row(), index.column(), value.toString());
     }
     return false;
 }

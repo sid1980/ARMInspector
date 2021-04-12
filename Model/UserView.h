@@ -48,6 +48,7 @@ public:
                 "  ON u.id_inspection=i.id");
     }
     QVariant getData(int position) const;
+    void setData(int position,const QVariant& value);
     //QVariant getFieldValue() {
     //    return QVariant();
     //};

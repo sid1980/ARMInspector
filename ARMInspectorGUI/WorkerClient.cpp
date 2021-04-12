@@ -126,8 +126,8 @@ void WorkerClient::process() {
                 //        dialog_, SLOT(showUserData(const User&)));
                 User user;
                 JsonSerializer::parse(wrapper.getData(), user);
-
-                dialog_->showUserData(user);
+                
+                dialog_->showNewUserData(user);
                 //emit readyUserData(user);
                 emit ready();
 
@@ -143,7 +143,7 @@ void WorkerClient::process() {
                 //emit readyUserData(user);
                 QMessageBox::information(0, "Редактирование пользовтеля",
                         "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно отредактирован");
-
+                dialog_->showEditUserData(user);
                 emit ready();
 
             }
