@@ -1,3 +1,9 @@
+/****************************************************************************
+ **
+ **             Класс модели пользователя User.
+ **
+ ****************************************************************************/
+
 /* 
  * File:   User.cpp
  * Author: 1
@@ -6,12 +12,27 @@
  */
 
 #include "User.h"
+///-----------------------------------------------------------------------------
+///
+///         Стандартный конструктор.
+///          
+///-----------------------------------------------------------------------------
 
 User::User() : id_(0), fio_(""), inspection_(0), name_(""), password_(""), status_(0), role_(0), access_(0), claim_(0), position_(0) {
 }
+///-----------------------------------------------------------------------------
+///
+///         Стандартный деструктор.
+///          
+///-----------------------------------------------------------------------------
 
 User::~User() {
 }
+///-----------------------------------------------------------------------------
+///
+///         Функции записи-чтения полей класса.
+///          
+///-----------------------------------------------------------------------------
 
 void User::setId(const qint64& id) {
     id_ = id;
@@ -44,6 +65,7 @@ void User::setRole(const qint64& role) {
 void User::setAccess(const qint64& access) {
     access_ = access;
 };
+
 void User::setClaim(const qint64& claim) {
     claim_ = claim;
 };
@@ -83,6 +105,7 @@ const qint64& User::getRole() const {
 const qint64& User::getAccess() const {
     return access_;
 };
+
 const qint64& User::getClaim() const {
     return claim_;
 };
@@ -90,6 +113,13 @@ const qint64& User::getClaim() const {
 const qint64& User::getPosition() const {
     return position_;
 };
+///-----------------------------------------------------------------------------
+///
+///         Считывание данных внешнего JSON объекта и 
+///         запись их в соответствующие поля класса 
+///         Используется при сериализации объекта класса        
+///          
+///-----------------------------------------------------------------------------
 
 void User::read(const QJsonObject &jsonObj) {
     this->setId(jsonObj["id"].toInt());
@@ -103,6 +133,13 @@ void User::read(const QJsonObject &jsonObj) {
     this->setClaim(jsonObj["claim"].toInt());
     this->setPosition(jsonObj["position"].toInt());
 };
+
+///-----------------------------------------------------------------------------
+///
+///         Запись данных полей класса во внешнний JSON объект. 
+///         Используется при сериализации объекта класса         
+///
+///-----------------------------------------------------------------------------
 
 void User::write(QJsonObject &jsonObj) const {
 
@@ -119,7 +156,14 @@ void User::write(QJsonObject &jsonObj) const {
 
 };
 
-QVariant User::getData(int position) const {
+///-----------------------------------------------------------------------------
+///
+///         Прочитать данные любого из полей класса. 
+///         Используется при моделировании QAbstractTableModel         
+///
+///-----------------------------------------------------------------------------
+
+const QVariant User::getData(const int& position) const {
 
     switch (position) {
         case 0:
@@ -146,9 +190,52 @@ QVariant User::getData(int position) const {
             return 0;
             break;
     }
-
 };
 
+///-----------------------------------------------------------------------------
+///
+///         Записать  данные в любое з поле класса. 
+///         Используется при моделировании QAbstractTableModel         
+///
+///-----------------------------------------------------------------------------
+
+void User::setData(const int& position, const QVariant& value) {
+    switch (position) {
+        case 0:
+            this->setId(value.toInt());
+            break;
+        case 1:
+            this->setFio(value.toString());
+            break;
+        case 2:
+            this->setInspection(value.toInt());
+            break;
+        case 3:
+            this->setName(value.toString());
+            break;
+        case 4:
+            this->setPassword(value.toString());
+            break;
+        case 5:
+            this->setStatus(value.toInt());
+            break;
+        case 6:
+            this->setRole(value.toInt());
+            break;
+        case 7:
+            this->setAccess(value.toInt());
+            break;
+        case 8:
+            this->setClaim(value.toInt());
+            break;
+        case 9:
+            this->setPosition(value.toInt());
+            break;
+        default:
+            break;
+    }
+
+};
 
 
 

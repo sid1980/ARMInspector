@@ -3,6 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+/****************************************************************************
+ **
+ **             Класс модели пользователя UserView.
+ **             Используются для вывода данных о пользователе списком
+ **
+ ****************************************************************************/
 
 /* 
  * File:   UserView.h
@@ -17,8 +23,8 @@
 #include "JsonSerializable.h"
 #include <QVariant>
 #include <QJsonArray>
-
-class UserView : public JsonSerializable {
+#include "Model.h"
+class UserView : public JsonSerializable,Model {
 public:
     UserView();
     virtual ~UserView();
@@ -52,8 +58,8 @@ public:
         return QString("Delete   from user ");
     }
 
-    QVariant getData(int position) const;
-    void setData(int position, const QVariant& value);
+    virtual const QVariant getData(const int& ) const;
+    virtual void setData(const int&, const QVariant& );
     //QVariant getFieldValue() {
     //    return QVariant();
     //};

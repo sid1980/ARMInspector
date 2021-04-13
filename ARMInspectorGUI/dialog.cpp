@@ -2,6 +2,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+/****************************************************************************
+ **
+ **             Класс окна вывода списка пользователя -Dialog.
+ **             Используются для вывода данных о пользователе списком
+ **             Модель эземпляра из списка - UserView.
+ **
+ ****************************************************************************/
 
 /*
  * File:   dialog.cpp
@@ -26,7 +33,11 @@
 #include <QString>
 #include <string>
 
-///Констуктор
+///-----------------------------------------------------------------------------
+///
+///         Конструктор.
+///          
+///-----------------------------------------------------------------------------
 
 Dialog::Dialog(QWidget *parent) :
 QDialog(parent),
@@ -37,19 +48,23 @@ ui(new Ui::dialog) {
     userview_ = new UserView();
     listusers_ = new ModelList<UserView>();
     proxyModel_ = new QSortFilterProxyModel(listusers_);
-    //const QColor hlClr = Qt::red; // highlight color to set
-    //const QColor txtClr = Qt::white; // highlighted text color to set
+    const QColor hlClr = Qt::red; // highlight color to set
+    const QColor txtClr = Qt::white; // highlighted text color to set
 
-    //QPalette p = palette();
-    //p.setColor(QPalette::Highlight, hlClr);
-    //p.setColor(QPalette::HighlightedText, txtClr);
-    //setPalette(p);
-    this->getUI()->tableView->setStyleSheet("QTableView::item:selected { color:white; background:#0000ff; font-weight:900; }"
-            "QTableCornerButton::section { background-color:#232326; }"
-            "QHeaderView::section { color:white; background-color:#232326; }");
+    QPalette p = palette();
+    p.setColor(QPalette::Highlight, hlClr);
+    p.setColor(QPalette::HighlightedText, txtClr);
+    setPalette(p);
+    //this->getUI()->tableView->setStyleSheet("QTableView::item:selected { color:white; background:#0000ff; font-weight:900; }"
+    //        "QTableCornerButton::section { background-color:#232326; }"
+    //        "QHeaderView::section { color:white; background-color:#232326; }");
 }
 
-///Деструктор
+///-----------------------------------------------------------------------------
+///
+///         Деструктор.
+///          
+///-----------------------------------------------------------------------------
 
 Dialog::~Dialog() {
     delete ui;
@@ -64,38 +79,14 @@ Ui::dialog* Dialog::getUI() {
     return ui;
 }
 
-void Dialog::on_pushButton_deleteUser_clicked() {
-    //Question MessageBox
-    int rowidx = proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()).row();
-    if (rowidx >= 0) {
-        //QModelIndexList indexes = select->selection().indexes();
-        //UserView user = listusers_->getModel(select->currentIndex());
-        UserView user = listusers_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
-        //qDebug() << QString::number(user.getId());
-        auto id = user.getId();
-        //auto id = select->model()->index(rowidx, 0).data().toInt();
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Удаление пользователя",
-                "Вы действительно хотите удалить пользователя <a style='color:royalblue'> " +
-                user.getFio() + "</a> ? ",
-                QMessageBox::Yes | QMessageBox::No);
-        if (reply == QMessageBox::Yes) {
-            qDebug() << "Yes was clicked";
-            emit deleteUser(id);
-            emit waitServer();
-            //QModelIndexList indexes = select->selection().indexes();
-            //for (int i = 0; i < indexes.count(); ++i) {
-            //select->model()->index(rowidx, i).data();
-            listusers_->delModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
-            //QApplication::quit();
-        } else {
-            qDebug() << "Yes was *not* clicked";
-        }
-    }
-}
 
 
-///Показать строку данных о пользователе на экране
+
+///-----------------------------------------------------------------------------
+///
+///         показать данные о новом пользователе в  окне списка пользователей
+///          
+///-----------------------------------------------------------------------------
 
 void Dialog::showNewUserData(const User& user) {
     //table2->selectRow(current.row());
@@ -106,14 +97,23 @@ void Dialog::showNewUserData(const User& user) {
     listusers_->addModel(*userview_);
     this->getUI()->tableView->selectRow(listusers_->rowCount() - 1);
     this->getUI()->tableView->scrollToBottom();
-    //QModelIndexList indexList = this->getUI()->tableView->selectionModel()->selectedIndexes();
-    //foreach(QModelIndex index, indexList) {
-    //    this->getUI()->tableView->scrollTo(index);
-    //}
-    //    QMessageBox::information(this, "Добавление нового пользовтеля",
-    //            "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно добавлен в базу данных");
 }
-///Показать строку данных о пользователе на экране
+
+//QModelIndexList indexList = this->getUI()->tableView->selectionModel()->selectedIndexes();
+//foreach(QModelIndex index, indexList) {
+//    this->getUI()->tableView->scrollTo(index);
+//}
+//    QMessageBox::information(this, "Добавление нового пользовтеля",
+//            "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно добавлен в базу данных");
+
+
+
+///-----------------------------------------------------------------------------
+///
+///              показать отредактированные данные о  пользователе в 
+///              окне списка пользователей
+///          
+///-----------------------------------------------------------------------------
 
 void Dialog::showEditUserData(const User& user) {
     //table2->selectRow(current.row());
@@ -158,7 +158,14 @@ void Dialog::showEditUserData(const User& user) {
     //            "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно добавлен в базу данных");
 }
 
-//Заполнить форму редактирования пользователя его данными
+
+
+
+///-----------------------------------------------------------------------------
+///
+///         заполнить форму редактирования пользователя
+///          
+///-----------------------------------------------------------------------------
 
 void Dialog::fillUserEditFrm(const User& user) {
     usrEdtFrm_->getWidget()->lineEditFio->setText(user.getFio());
@@ -187,14 +194,23 @@ void Dialog::fillUserEditFrm(const User& user) {
 }
 
 
-///Инициализировать список инспекций
+///-----------------------------------------------------------------------------
+///
+///         Инициализировать список инспекций  в окнах ввода и 
+///         редактированиядля пользователя  
+///          
+///-----------------------------------------------------------------------------
 
 void Dialog::setListInspection(const QList<Inspection>& inspections) {
     usrFrm_->setInspections(inspections);
     usrEdtFrm_->setInspections(inspections);
 };
 
-///Установить модель списка пользователей
+///-----------------------------------------------------------------------------
+///
+///         определить модель вывода данных
+///          
+///-----------------------------------------------------------------------------
 
 void Dialog::setModel(const QList<UserView>& users) {
     listusers_->setListModel(users);
@@ -206,7 +222,11 @@ void Dialog::setModel(const QList<UserView>& users) {
     this->getUI()->tableView->setModel(proxyModel_);
 }
 
-///Показать диалог списка организаций
+///-----------------------------------------------------------------------------
+///
+///         вывести на экран  окно списка пользователей
+///          
+///-----------------------------------------------------------------------------
 
 void Dialog::showBox() {
     this->getUI()->tableView->setColumnHidden(0, true);
@@ -215,12 +235,18 @@ void Dialog::showBox() {
     this->show();
 
 }
+///-----------------------------------------------------------------------------
+///
+///         обработчик кнопки добавления пользователя
+///          
+///-----------------------------------------------------------------------------
+
 ///Обработка нажатия кнопки добавления  пользователя.
 ///Данные считываются из формы данных пользователя,
 ///добавляются в Модель отображения данных на экране и
 ///и в Модель передачи данных на сервер.
 ///Для передачи данных на сервер диалог пользуется
-///сигналом readyUserData.
+///сигналом фввUser.
 
 void Dialog::on_pushButton_addUser_clicked() {
     this->getUI()->tableView->model()->sort(-1);
@@ -261,7 +287,11 @@ void Dialog::on_pushButton_addUser_clicked() {
 }
 
 
-///Обработка нажатия кнопки редактирования пользователя
+///-----------------------------------------------------------------------------
+///
+///         бработчик кнопки редактирования пользователя
+///          
+///-----------------------------------------------------------------------------
 
 void Dialog::on_pushButton_editUser_clicked() {
 
@@ -330,4 +360,40 @@ void Dialog::on_pushButton_editUser_clicked() {
         //    }
     }
 }
+///-----------------------------------------------------------------------------
+///
+///         обработчик кнопки удаления  пользователя
+///          
+///-----------------------------------------------------------------------------
+
+void Dialog::on_pushButton_deleteUser_clicked() {
+    //Question MessageBox
+    int rowidx = proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()).row();
+    if (rowidx >= 0) {
+        //QModelIndexList indexes = select->selection().indexes();
+        //UserView user = listusers_->getModel(select->currentIndex());
+        UserView user = listusers_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
+        //qDebug() << QString::number(user.getId());
+        auto id = user.getId();
+        //auto id = select->model()->index(rowidx, 0).data().toInt();
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Удаление пользователя",
+                "Вы действительно хотите удалить пользователя <a style='color:royalblue'> " +
+                user.getFio() + "</a> ? ",
+                QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
+            qDebug() << "Yes was clicked";
+            emit deleteUser(id);
+            emit waitServer();
+            //QModelIndexList indexes = select->selection().indexes();
+            //for (int i = 0; i < indexes.count(); ++i) {
+            //select->model()->index(rowidx, i).data();
+            listusers_->delModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
+            //QApplication::quit();
+        } else {
+            qDebug() << "Yes was *not* clicked";
+        }
+    }
+}
+
 

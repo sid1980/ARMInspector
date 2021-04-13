@@ -4,6 +4,12 @@
  * and open the template in the editor.
  */
 
+/****************************************************************************
+ **
+ **             Интерфейс класса модели.
+ **
+ ****************************************************************************/
+
 /* 
  * File:   Model.h
  * Author: kazun_as
@@ -17,8 +23,8 @@
 class Model {
 public:
     virtual ~Model(){};
-    virtual  const QJsonArray& getColumnArray() = 0;
-    virtual  const QString& getModelName() = 0;
+    virtual  const QVariant getData(const int& ) const = 0;
+    virtual  void setData(const int&, const QVariant& ) = 0;
 private:
 
 };

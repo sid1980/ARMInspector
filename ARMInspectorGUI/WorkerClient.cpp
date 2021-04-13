@@ -27,8 +27,11 @@
 #include <QMessageBox>
 #include <QTableView>
 #include "dialog.h"
-/// Стандартный конструктор.
-/// @param apParent Родитель.
+///-----------------------------------------------------------------------------
+///
+///         Конструктор.
+///          
+///-----------------------------------------------------------------------------
 
 WorkerClient::WorkerClient(QObject *apParent) : QObject(apParent) {
     dialog_ = new Dialog();
@@ -39,22 +42,33 @@ WorkerClient::WorkerClient(QObject *apParent) : QObject(apParent) {
     connect(dialog_, SIGNAL(waitServer()), this, SIGNAL(waitServer()));
 }
 
-///Деструктор.
+///-----------------------------------------------------------------------------
+///
+///         Деструктор
+///          
+///-----------------------------------------------------------------------------
 
 WorkerClient::~WorkerClient() {
     //Освободить  ресурсы
     delete dialog_;
 }
-/// Инициализировать строку командной обёртки.
-/// @param asWrapperString Строка инициализации командной обёртки
+///-----------------------------------------------------------------------------
+///
+///            Инициализировать строку командной обёртки.
+///            @param asWrapperString Строка инициализации командной обёртки
+///          
+///-----------------------------------------------------------------------------
 
 void WorkerClient::setModelWrapperString(const QString& asWrapperString) {
     m_aModelWrapperString = asWrapperString;
 }
 
-
-/// Получить строку командной обёртки.
-/// @return Возвращает строку командной обёртки.
+///-----------------------------------------------------------------------------
+///
+///          Получить строку командной обёртки.
+///          @return Возвращает строку командной обёртки.
+///          
+///-----------------------------------------------------------------------------
 
 const QString& WorkerClient::getModelWrapperString() const {
     return m_aModelWrapperString;
@@ -62,7 +76,11 @@ const QString& WorkerClient::getModelWrapperString() const {
 
 
 
-///Основная функция обработчика сообщений, полученных от сервера.
+///-----------------------------------------------------------------------------
+///
+///         Основная функция обработчика сообщений, полученных от сервера.
+///          
+///-----------------------------------------------------------------------------
 
 void WorkerClient::process() {
     //QMessageBox::information(0, "Добавление нового пользовтеля", "Пользователь успешно добавлен в базу данных");
@@ -74,15 +92,21 @@ void WorkerClient::process() {
     qInfo() << "message: " << QString::fromLocal8Bit(wrapper.getMessage().toStdString().c_str());
     //Проверяем результат выполнения команды 
     ModelWrapper::Command command = wrapper.getEnumCommand();
+    ModelWrapper::Model model = wrapper.getEnumModel();
     if (wrapper.getSuccess()) {
-        //Команда на сервере выполнена успешно.Определяем тип возвращённой команды.
+        //*******************************************************************************************************************************************
+        //                                  Команда на сервере выполнена успешно.
+        //*******************************************************************************************************************************************
         switch (command) {
             case ModelWrapper::Command::GET_LIST_MODELS:
-            {
+                ///-----------------------------------------------------------------------------
+                ///
+                ///                         GET_LIST_MODELS
+                ///          
+                ///-----------------------------------------------------------------------------
                 //Сервер вернул результат команды "GET_LIST_MODELS"  
                 //Процесс обработки возвращённого реультата.    
 
-                ModelWrapper::Model model = wrapper.getEnumModel();
                 switch (model) {
                     case ModelWrapper::Model::Inspection:
                     {
@@ -104,8 +128,12 @@ void WorkerClient::process() {
                     }
                         break;
                 }
-            }
                 break;
+                ///-----------------------------------------------------------------------------
+                ///
+                ///                         LOGIN
+                ///          
+                ///-----------------------------------------------------------------------------
             case ModelWrapper::Command::LOGIN:
             {
                 //Сервер вернул результат команды "LOGIN"     
@@ -119,6 +147,11 @@ void WorkerClient::process() {
                 emit ready();
             }
                 break;
+                ///-----------------------------------------------------------------------------
+                ///
+                ///                         ADD_NEW_USER
+                ///          
+                ///-----------------------------------------------------------------------------
             case ModelWrapper::Command::ADD_NEW_USER:
             {
                 //Сервер вернул результат команды "ADD_NEW_USER"     
@@ -127,13 +160,18 @@ void WorkerClient::process() {
                 //        dialog_, SLOT(showUserData(const User&)));
                 User user;
                 JsonSerializer::parse(wrapper.getData(), user);
-                
+
                 dialog_->showNewUserData(user);
                 //emit readyUserData(user);
                 emit ready();
 
             }
                 break;
+                ///-----------------------------------------------------------------------------
+                ///
+                ///                         EDIT_USER
+                ///          
+                ///-----------------------------------------------------------------------------
             case ModelWrapper::Command::EDIT_USER:
             {
                 //Сервер вернул результат команды "EDIT_USER"     
@@ -149,10 +187,14 @@ void WorkerClient::process() {
 
             }
                 break;
+                ///-----------------------------------------------------------------------------
+                ///
+                ///                         GET_MODEL
+                ///          
+                ///-----------------------------------------------------------------------------
             case ModelWrapper::Command::GET_MODEL:
             {
                 //Сервер вернул результат команды "GET_MODEL"     
-                ModelWrapper::Model model = wrapper.getEnumModel();
                 switch (model) {
                     case ModelWrapper::Model::User:
                     {
@@ -170,6 +212,11 @@ void WorkerClient::process() {
                 }
             }
                 break;
+                ///-----------------------------------------------------------------------------
+                ///
+                ///                         DEL_MODEL
+                ///          
+                ///-----------------------------------------------------------------------------
             case ModelWrapper::Command::DEL_MODEL:
             {
                 //Сервер вернул результат команды "GET_MODEL"     
@@ -180,8 +227,8 @@ void WorkerClient::process() {
                         User user;
                         JsonSerializer::parse(wrapper.getData(), user);
                         //emit dialog_->showUserData(user);
-                        QMessageBox::information(0, "Удаление  пользователя",
-                                "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a>  успешно удален");
+                        QMessageBox::information(0, wrapper.getHead(), wrapper.getMessage() +
+                                "пользователя <a style='color:royalblue'> " + user.getFio() + "</a>");
                         emit ready();
 
                     }
@@ -191,12 +238,22 @@ void WorkerClient::process() {
             }
                 break;
 
+                ///-----------------------------------------------------------------------------
+                ///
+                ///                         NOP
+                ///          
+                ///-----------------------------------------------------------------------------
             case ModelWrapper::Command::NOP:
             {
                 qInfo() << "Command is incorrect";
 
             }
                 break;
+                ///-----------------------------------------------------------------------------
+                ///
+                ///                         SERVER_RESPONSE
+                ///          
+                ///-----------------------------------------------------------------------------
             case ModelWrapper::Command::SERVER_RESPONSE:
             {
 
@@ -204,6 +261,11 @@ void WorkerClient::process() {
 
             }
                 break;
+                ///-----------------------------------------------------------------------------
+                ///
+                ///                         SET_SESSION_ID
+                ///          
+                ///-----------------------------------------------------------------------------
             case ModelWrapper::Command::SET_SESSION_ID:
             {
                 ///Сообщить контроллеру клиента о небходимости
@@ -213,34 +275,10 @@ void WorkerClient::process() {
                 break;
         }
     } else {
-        switch (command) {
-            case ModelWrapper::Command::LOGIN:
-            {
-                QMessageBox msgBox;
-                msgBox.setText("<a style='color:royalblue'> Вы ввели данные правильно? (Нет. Попробуйте ещё раз.)</a>");
-                msgBox.exec();
-            }
-                break;
-            case ModelWrapper::Command::ADD_NEW_USER:
-            {
-                QMessageBox msgBox;
-                msgBox.setText("<a style='color:red'> Ошибка добавления нового пользователя</a>");
-                msgBox.exec();
-            }
-                break;
-            case ModelWrapper::Command::GET_LIST_MODELS:
-            {
-                QMessageBox::information(0, "СПИСОК МОДЕЛЕЙ", "Список моделей");
-                qInfo() << "Список моделей";
-            }
-                break;
-            case ModelWrapper::Command::NOP:
-            {
-
-            }
-                break;
-        }
-
+        //*******************************************************************************************************************************************
+        //                                  Ошибка выполнения команды на сервере.
+        //*******************************************************************************************************************************************
+        QMessageBox::information(0, wrapper.getHead(), wrapper.getMessage());
     }
 }
 
