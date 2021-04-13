@@ -53,7 +53,6 @@ enum Message {
     CANNOT_DELETE_SESSION,
     ADD_ADMIN_USER_SUCCESS,
     CANNOT_ADD_ADMIN_USER
-
 };
 
 
@@ -68,17 +67,17 @@ namespace ServerMessage {
     } Result;
     ///Список сообщений с результатом выполнения команды сервером
     const QHash<const Message, Result> message = {
-        {Message::USER_LOGIN_SUCCESS,{"Пользователь  успешно прошёл авторизацию.", true, ModelWrapper::Command::NOP}},
-        {Message::USER_LOGIN_FAILURE,{"Пользователь  не прошёл авторизацию.", false, ModelWrapper::Command::NOP}},
-        {Message::USER_ADD_SUCCESS,{"Пользователь  успешно добавлен в базу данных.", true, ModelWrapper::Command::NOP}},
-        {Message::USER_ADD_FAILURE,{"Ошибка при добавлении пользователя в базу данных.", false, ModelWrapper::Command::NOP}},
-        {Message::MODEL_GET_SUCCESS,{"Модель успешно загружена.", true, ModelWrapper::Command::NOP}},
-        {Message::MODEL_GET_FAILURE,{"Ошибка получения  модели.", false, ModelWrapper::Command::NOP}},
+        {Message::USER_LOGIN_SUCCESS,{"Успешная авторизация пользователя ", true, ModelWrapper::Command::NOP}},
+        {Message::USER_LOGIN_FAILURE,{"Ошибочная авторизация пользователя ", false, ModelWrapper::Command::NOP}},
+        {Message::USER_ADD_SUCCESS,{"Успешное добавление в базу данных пользователя ", true, ModelWrapper::Command::NOP}},
+        {Message::USER_ADD_FAILURE,{"Ошибка при добавлении в базу данных пользователя ", false, ModelWrapper::Command::NOP}},
+        {Message::MODEL_GET_SUCCESS,{"Успешная загрузка данных.", true, ModelWrapper::Command::NOP}},
+        {Message::MODEL_GET_FAILURE,{"Ошибка при загрузке данных.", false, ModelWrapper::Command::NOP}},
         {Message::MODEL_DEL_SUCCESS,{"Успешное удаление ", true, ModelWrapper::Command::NOP}},
         {Message::MODEL_DEL_FAILURE,{"Ошибка удаления ", false, ModelWrapper::Command::NOP}},
-        {Message::USER_EDIT_SUCCESS,{"Пользователь  успешно отредактирован.", true, ModelWrapper::Command::NOP}},
+        {Message::USER_EDIT_SUCCESS,{"Успешное редактирование пользователя ", true, ModelWrapper::Command::NOP}},
         {Message::USERR_EDIT_FAILURE,{"Ошибка при редактировании пользователя .", false, ModelWrapper::Command::NOP}},
-        {Message::USER_IS_NOT_FOUND,{"Пользователя с таким именем нет в базе данных.", false, ModelWrapper::Command::NOP}},
+        {Message::USER_IS_NOT_FOUND,{"В базе данных нет пользователя с  именем ", false, ModelWrapper::Command::NOP}},
         {Message::DATABASE_IS_NOT_OPENED,{"База данных не открыта.", false, ModelWrapper::Command::NOP}},
         {Message::NO_DATABASE_CONNECTION,{"Подключение к базе данных отсутствует.", false, ModelWrapper::Command::NOP}},
         {Message::DATABASE_IS_OPENED,{"База данных открыта", true, ModelWrapper::Command::NOP}},
