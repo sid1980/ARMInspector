@@ -24,10 +24,14 @@
 #include <QVariant>
 #include <QJsonArray>
 #include "Model.h"
-class UserView : public JsonSerializable,Model {
+
+class UserView : public JsonSerializable, Model {
 public:
+    ///конструктор
     UserView();
+    ///деструктор
     virtual ~UserView();
+    ///Функции чтения - записи полей класса
     void setId(const qint64& id);
     void setFio(const QString& fio);
     void setInspection(const QString& inspection);
@@ -36,17 +40,26 @@ public:
     const QString& getFio()const;
     const QString& getInspection()const;
     const QString& getName()const;
+    ///Функции сериализации объекта класса
+    ///Считывание JSON объкта в поля класса
     void read(const QJsonObject &jsonObj);
+    ///Запись полей класса в JSON объкт. 
     void write(QJsonObject &jsonObj) const;
+
+    ///Список названий колонок модели
 
     static const QJsonArray getColumnArray() {
         const QJsonArray jsonArray = {"Идентификатор", "ФИО", "Инспекция", "Имя пользователя"};
         return jsonArray;
     }
 
+    ///название модели
+
     static const QString getModelName() {
         return QString("UserView");
     }
+
+    ///SQL запрос вывода данных
 
     static const QString getQuery() {
         return QString("Select u.id,fio,name_i,name  from user as u "
@@ -54,15 +67,16 @@ public:
                 "  ON u.id_inspection=i.id");
     }
 
+    ///SQL запрос удаления экземпляра модели в  базе данных
+
     static const QString delQuery() {
         return QString("Delete   from user ");
     }
-
-    virtual const QVariant getData(const int& ) const;
-    virtual void setData(const int&, const QVariant& );
-    //QVariant getFieldValue() {
-    //    return QVariant();
-    //};
+    ///Интерфейс модели.
+    ///Получить  данные  о мрдели.
+    virtual const QVariant getData(const int&) const;
+    ///Установить  данные  модели.
+    virtual void setData(const int&, const QVariant&);
 
 private:
     qint64 id_;

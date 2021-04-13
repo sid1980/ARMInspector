@@ -3,6 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+/****************************************************************************
+ ** 
+ **             АВТОРИЗАЦИЯ ПОЛЬЗОВАТЕЛЯ
+ **             Класс окна авторизации  пользователя -myForm.
+ **
+ **
+ ****************************************************************************/
 
 /* 
  * File:   myForm.h
@@ -23,21 +30,29 @@
 class myForm : public QDialog {
     Q_OBJECT
 public:
+    //конструктор
     explicit myForm(QWidget *parent = 0);
+    //деструктор
     virtual ~myForm();
+    ///Инициализация ссылки на контроллер клинта
     void initClient(ClientController *clientController);
+    ///Инициализация приложения
     void initApp(QApplication *app);
+    ///Обработчик события закрытия окна
     void closeEvent(QCloseEvent* ev);
     
 public slots:
+    ///Закрытие приложения
     void exit_app();
+    ///Запуск АРМ Инспектора
     void start_ARM();
 signals:
     ///Сигнализировать о завершении процесса обработки сообщения от сервера.
     void ready();
 private:
+    ///ссылка на виджет окна
     Ui::myForm *widget;
-    ///Контроллер клиента.
+    ///указатель контроллера клиента.
     ClientController *m_pClientController{nullptr};
     //QApplication *m_pApp;
 };

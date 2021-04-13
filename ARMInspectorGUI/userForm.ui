@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Создание нового пользователя</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -38,7 +38,17 @@
      </widget>
     </item>
     <item row="4" column="1">
-     <widget class="QLineEdit" name="lineEditPassword_2"/>
+     <widget class="QLineEdit" name="lineEditPassword_2">
+      <property name="frame">
+       <bool>true</bool>
+      </property>
+      <property name="echoMode">
+       <enum>QLineEdit::Password</enum>
+      </property>
+      <property name="placeholderText">
+       <string>пароль(повторить)</string>
+      </property>
+     </widget>
     </item>
     <item row="7" column="0">
      <widget class="QLabel" name="labelAccess">
@@ -55,7 +65,23 @@
      </widget>
     </item>
     <item row="3" column="1">
-     <widget class="QLineEdit" name="lineEditPassword"/>
+     <widget class="QLineEdit" name="lineEditPassword">
+      <property name="toolTipDuration">
+       <number>-2</number>
+      </property>
+      <property name="maxLength">
+       <number>32764</number>
+      </property>
+      <property name="echoMode">
+       <enum>QLineEdit::Password</enum>
+      </property>
+      <property name="cursorPosition">
+       <number>0</number>
+      </property>
+      <property name="placeholderText">
+       <string>пароль</string>
+      </property>
+     </widget>
     </item>
     <item row="4" column="0">
      <widget class="QLabel" name="labelPassword_2">
@@ -141,7 +167,11 @@
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEditFio"/>
+     <widget class="QLineEdit" name="lineEditFio">
+      <property name="placeholderText">
+       <string>фио</string>
+      </property>
+     </widget>
     </item>
     <item row="1" column="1">
      <widget class="QComboBox" name="comboBoxInspection"/>
@@ -168,7 +198,14 @@
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="lineEditName"/>
+     <widget class="QLineEdit" name="lineEditName">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="placeholderText">
+       <string>имя пользователя</string>
+      </property>
+     </widget>
     </item>
     <item row="5" column="1">
      <widget class="QGroupBox" name="groupBoxStatus">

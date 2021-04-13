@@ -74,9 +74,6 @@ public:
     virtual const QVariant getData(const int&) const;
     ///Установить  данные  модели.
     virtual void setData(const int&, const QVariant&);
-    //QVariant getFieldValue() {
-    //    return QVariant();
-    //};
 
 private:
     //Поля класса

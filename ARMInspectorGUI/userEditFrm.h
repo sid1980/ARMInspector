@@ -3,6 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+/****************************************************************************
+ ** 
+ **             РЕДАКТИРОВАНИЕ ПОЛЬЗОВАТЕЛЯ
+ **             Класс окна редактирования  пользователя -userEditFrm.
+ **
+ ****************************************************************************/
 
 /* 
  * File:   userEditFrm.h
@@ -21,14 +27,21 @@
 class userEditFrm : public QDialog {
     Q_OBJECT
 public:
+    ///конструктор
     explicit userEditFrm(QWidget *parent = 0);
+    ///деструктор
     virtual ~userEditFrm();
+    ///получить указатель на виджет окна
     Ui::userEditFrm* getWidget();
+    ///получить список инспекций 
     const QList<Inspection>& getInspections() const;
+    ///инициализировать список инспекций
     void setInspections(const QList<Inspection>&);
 
 private:
+    ///указатель на виджет окна
     Ui::userEditFrm* widget_;
+    ///список инспекций
     QList<Inspection> inspections_;
 
 };

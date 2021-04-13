@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 /****************************************************************************
- **
+ ** 
+ **             ВЫВОД СПИСКА ПОЛЬЗОВАТЕЛЕЙ
  **             Класс окна вывода списка пользователя -Dialog.
  **             Используются для вывода данных о пользователе списком
  **             Модель вывода UserView.
@@ -65,6 +66,8 @@ private slots:
     void on_pushButton_editUser_clicked();
     ///обработчик кнопки удаления  пользователя
     void on_pushButton_deleteUser_clicked();
+    ///обработчик кнопки удаления  пользователя
+    void on_pushButton_changePassword_clicked();
 public slots:
     //void listInspection(const QList<Inspection>& inspections);
     ///показать данные о новом пользователе в  окне списка пользователей
