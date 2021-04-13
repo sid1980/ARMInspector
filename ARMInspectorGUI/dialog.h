@@ -35,6 +35,7 @@
 #include "userEditFrm.h"
 #include "ModelList.h"
 #include "UserView.h"
+#include "pwdFrm.h"
 #include <QSortFilterProxyModel>
 
 namespace Ui {
@@ -96,6 +97,8 @@ private:
     Ui::dialog *ui;
     ///ссылка на окно ввоода нового пользователя
     userForm *usrFrm_;
+    ///ссылка на окно ввоода нового пароля
+    pwdFrm *pwdFrm_;
     ///ссылка на окно релактирования выбранного пользователя
     userEditFrm *usrEdtFrm_;
     ///ссылк на модель выда данных 

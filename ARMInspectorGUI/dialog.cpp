@@ -45,6 +45,7 @@ QDialog(parent),
 ui(new Ui::dialog) {
     ui->setupUi(this);
     usrFrm_ = new userForm(this);
+    pwdFrm_ = new pwdFrm(this);
     usrEdtFrm_ = new userEditFrm(this);
     userview_ = new UserView();
     listusers_ = new ModelList<UserView>();
@@ -67,6 +68,7 @@ ui(new Ui::dialog) {
 Dialog::~Dialog() {
     delete ui;
     delete usrFrm_;
+    delete pwdFrm_;
     delete usrEdtFrm_;
     delete userview_;
     delete listusers_;
@@ -316,13 +318,18 @@ void Dialog::on_pushButton_deleteUser_clicked() {
     }
 }
 
+
 ///-----------------------------------------------------------------------------
 ///
-///         обработчик кнопки удаления  пользователя
+///         обработчик кнопки редактирования пароля
 ///          
 ///-----------------------------------------------------------------------------
 
 void Dialog::on_pushButton_changePassword_clicked() {
-    
+    pwdFrm_->show();
+    //pwdFrm * frm=new pwdFrm(this);
+    //frm->show();
+    //QMessageBox::information(0, "Редактирование пользовтеля","");
+    //pwdFrm_->show() ;
 }
 
