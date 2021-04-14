@@ -33,13 +33,6 @@
 template<typename T> void DBManager::getListModels() {
     //Блокировать ресурсы SQL от использования их  другими потоками. 
     QMutexLocker lock(&m_Mutex);
-    //Загружаем параметры команды.
-    //QJsonObject param;
-    //JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
-    //Выполнить SQL запрос.
-    //QString asSqlQuery = param["query"].toString();
-    //QString asSqlQuery = T::getQuery();
-
     //Задать  функцию для установки результата выполнения команды сервера
     //и собщения о результате выполнения команды.
     auto setResult = [this](ItemContainer<T> container, Message msg) {
@@ -106,49 +99,16 @@ template<typename T> void DBManager::getModel() {
     QMutexLocker lock(&m_Mutex);
     //Загружаем параметры команды.
     QJsonObject param;
-    T model;
     JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
     //ID модели.
     qint64 asId = param["ID"].toInt();
     //Выполнить SQL запрос.
-    //QString asSqlQuery = param["query"].toString();
-    //QString asSqlQuery = T::getQuery();
-
-    //Задать  функцию для установки результата выполнения команды сервера
-    //и собщения о результате выполнения команды.
-    auto setResult = [this](T model, Message msg) {
-        //Подготовить данные.
-        QString json = JsonSerializer::serialize(model);
-        m_pModelWrapper->setData(json);
-        //Установить сообщение и результат выполнения команды.
-        ServerMessage::Result result = ServerMessage::outPut(msg);
-        m_pModelWrapper->setMessage(result.str);
-        m_pModelWrapper->setSuccess(result.success);
-    };
-    //Проверить , открыта ли  база данных. 
-    m_Db = QSqlDatabase::database(QString().setNum(m_pModelWrapper->getSessionID()));
-    //Проверить подключение подключение к  базе данных.
-    if (!m_Db.isValid()) {
-        //Подключение  к базе данных некорректно.
-        //Установить сообщение.
-        setResult(model, Message::DATABASE_CONNECTION_INCORRECT);
-        //Прекратить работу менеджера базы данных.
-        return;
-    }
-    if (!m_Db.isOpen()) {
-        setResult(model, Message::DATABASE_IS_NOT_OPENED);
+    if (!connectDB<T>()) {
         return;
     }
     //Проверить  и выполнить  SQL запрос.
     QString query = T::getQuery() + " where id=" + QString::number(asId);
-    QJsonObject recordObject = getRecord(query);
-    if (recordObject.isEmpty()) {
-        setResult(model, Message::MODEL_GET_FAILURE);
-        return;
-    }
-    ///Считать запись базы данных  в объект класса T.  
-    model.read(recordObject);
-    setResult(model, Message::MODEL_GET_SUCCESS);
+    getRecord<T>(query);
     return;
 
 }
@@ -165,11 +125,30 @@ template<typename T> void DBManager::deleteModel() {
     QMutexLocker lock(&m_Mutex);
     //Загружаем параметры команды.
     QJsonObject param;
-    T model;
     JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
     //ID модели.
     qint64 asId = param["ID"].toInt();
+    if (!connectDB<T>()) {
+        return;
+    }
+    QString query = T::getQuery() + " where id=" + QString::number(asId);
+    T model = getRecord<T>(query);
+    if (!m_pModelWrapper->getSuccess()) {
+        return;
+    }
+    query = T::delQuery() + " where id=" + QString::number(asId);
+    delRecord<T>(model, query);
+    return;
+}
 
+///-----------------------------------------------------------------------------
+///
+///              Подключение к  базе данных.
+///
+///-----------------------------------------------------------------------------
+
+template<typename T> bool DBManager::connectDB() {
+    T model;
     //Задать  функцию для установки результата выполнения команды сервера
     //и собщения о результате выполнения команды.
     auto setResult = [this](T model, Message msg) {
@@ -181,43 +160,90 @@ template<typename T> void DBManager::deleteModel() {
         m_pModelWrapper->setMessage(result.str);
         m_pModelWrapper->setSuccess(result.success);
     };
-    //Проверить , открыта ли  база данных. 
     m_Db = QSqlDatabase::database(QString().setNum(m_pModelWrapper->getSessionID()));
+    //Проверить , открыта ли  база данных. 
     //Проверить подключение подключение к  базе данных.
     if (!m_Db.isValid()) {
         //Подключение  к базе данных некорректно.
-        //Установить сообщение.
         setResult(model, Message::DATABASE_CONNECTION_INCORRECT);
-        //Прекратить работу менеджера базы данных.
-        return;
-    }
-
-    if (!m_Db.isOpen()) {
+    } else if (!m_Db.isOpen()) {
         setResult(model, Message::DATABASE_IS_NOT_OPENED);
-        return;
+    } else {
+        setResult(model, Message::DATABASE_IS_OPENED);
     }
+    return m_pModelWrapper->getSuccess();
+}
+///-----------------------------------------------------------------------------
+///
+///             Получить запись из базы.
+///
+///-----------------------------------------------------------------------------
+
+template<typename T> T DBManager::getRecord(const QString& queryStr) {
+    T model;
+    QJsonObject recordObject;
+    //Задать  функцию для установки результата выполнения команды сервера
+    //и собщения о результате выполнения команды.
+    auto setResult = [this](T model, Message msg) {
+        //Подготовить данные.
+        QString json = JsonSerializer::serialize(model);
+        m_pModelWrapper->setData(json);
+        //Установить сообщение и результат выполнения команды.
+        ServerMessage::Result result = ServerMessage::outPut(msg);
+        m_pModelWrapper->setMessage(result.str);
+        m_pModelWrapper->setSuccess(result.success);
+    };
     //Проверить  и выполнить  SQL запрос.
-    //qDebug() << T::getQuery();
-    //QString::number(user.getId());
-    QString query = T::getQuery() + " where id=" + QString::number(asId);
-    QJsonObject recordObject = getRecord(query);
-    if (recordObject.isEmpty()) {
-        setResult(model, Message::MODEL_GET_FAILURE);
-        return;
+    QSqlQuery query(m_Db);
+    if (!query.exec(queryStr)) {
+        setResult(model, Message::SQL_ERROR);
+        return model;
     }
-    ///Считать запись базы данных  в объект класса T.  
+    //Выборка данных.
+    while (query.next()) {
+        ///Экземпляр объекта класса T, который будет  сериализоваться.
+        for (int x = 0; x < query.record().count(); x++) {
+            recordObject.insert(query.record().fieldName(x), QJsonValue::fromVariant(query.value(x)));
+        }
+    }
+    if (recordObject.isEmpty()) {
+        setResult(model, Message::MODEL_DEL_FAILURE);
+        return model;
+    }
+    ///Считать запись базы данных  в объект класса T.
     model.read(recordObject);
-    //qDebug() << T::delQuery();
-    //QString::number(user.getId());
-    QSqlQuery queryStatementInfo(m_Db);
-    query = T::delQuery() + " where id=" + QString::number(asId);
-    if (!queryStatementInfo.exec(query)) {
+    setResult(model, Message::MODEL_GET_SUCCESS);
+    return model;
+}
+///-----------------------------------------------------------------------------
+///
+///             Удаліть запись из базы.
+///
+///-----------------------------------------------------------------------------
+
+template<typename T> void DBManager::delRecord(const T& model, const QString& queryStr) {
+    //Задать  функцию для установки результата выполнения команды сервера
+    //и собщения о результате выполнения команды.
+    auto setResult = [this](T model, Message msg) {
+        //Подготовить данные.
+        QString json = JsonSerializer::serialize(model);
+        m_pModelWrapper->setData(json);
+        //Установить сообщение и результат выполнения команды.
+        ServerMessage::Result result = ServerMessage::outPut(msg);
+        m_pModelWrapper->setMessage(result.str);
+        m_pModelWrapper->setSuccess(result.success);
+    };
+    //Проверить  и выполнить  SQL запрос.
+    QSqlQuery query(m_Db);
+    if (!query.exec(queryStr)) {
         setResult(model, Message::MODEL_DEL_FAILURE);
         return;
     }
-
     setResult(model, Message::MODEL_DEL_SUCCESS);
     return;
+
 }
+
+
 #endif /* DBMANAGER_IMPL_H */
 

@@ -11,10 +11,9 @@
 
 #include "CoreLogger.h"
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-    
+
     /// Создание обработчика событий логирования.
     CoreLogger coreLogger;
 #if defined(Q_OS_LINUX)
@@ -22,13 +21,13 @@ int main(int argc, char *argv[])
 #elif defined (Q_OS_WIN)
     coreLogger.setLogFile(QString("%1/%2Server.log").arg(QCoreApplication::applicationDirPath()).arg(ARM_BRAND));
 #endif
-    
+
     /// Контроллер-обработчик RPC-протокола.
-    ServerController serverController;  
+    ServerController serverController;
     serverController.start();
-    
+
     MainWindow w;
     w.show();
-    
+
     return a.exec();
 }

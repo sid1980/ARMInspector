@@ -55,7 +55,7 @@ public:
     void addSession(const RpcSocket * apClientSocket);
     /// Удалить  сессию.
     /// @param apClientSocket Указатель на сокет клиента.
-    void removeSession(const RpcSocket * apClientSocket,const Session * apSession);
+    void removeSession(const RpcSocket * apClientSocket, const Session * apSession);
 
 signals:
 
@@ -78,7 +78,7 @@ private:
     //Указатель на сессию.
     Session *m_pSession{nullptr};
     //Список  открытых сессий. Ключ- ID сессии, Значение-указатель на сессию.
-    QHash<const int,Session * > m_aListSession;
+    QHash<const int, Session * > m_aListSession;
 
 };
 

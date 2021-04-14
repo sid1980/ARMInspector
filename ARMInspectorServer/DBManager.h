@@ -32,8 +32,6 @@ public:
     ///Получить  указатель на класс командной обёртки.
     const ModelWrapper* getModelWrapper() const;
 
-    ///Получить  запись из базы данных.
-    QJsonObject getRecord(const QString& query);
 
 
     /// Подключиться к базе данных .Открыть  базу данных.
@@ -56,6 +54,11 @@ public:
     /// Получить  модель.
     void getModel();
     template<typename T> void getModel();
+    ///Получить  запись из базы данных.
+    template<typename T> T getRecord(const QString&);
+    template<typename T> void delRecord(const T&, const QString&);
+    ///Проверить  подключение к базе данных.
+    template<typename T> bool connectDB();
     /// Отключить клиента от сервера
     /// @param apClientSocket Указатель на сокет клиент-серверного соединения.
     void removeDatabase();

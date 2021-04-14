@@ -96,6 +96,7 @@ void Worker::process() {
                     //Добавление нового пользователя .
                     pDBManager->updateUser();
                 }
+                    break;
                 case ModelWrapper::Command::CHANGE_PASSWORD:
                 {
                     //Добавление нового пользователя .

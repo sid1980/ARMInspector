@@ -16,6 +16,7 @@
 #include <QThread>
 #include "Worker.h"
 #include "Seance.h"
+
 class Seance : public QObject {
     Q_OBJECT
 public:

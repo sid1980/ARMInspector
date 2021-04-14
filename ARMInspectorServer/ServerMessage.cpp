@@ -6,7 +6,7 @@
 #include "ServerMessage.h"
 
 namespace ServerMessage {
-    
+
     /// Выбрать сообщение из списка.
     /// param msg Идентификатор сообщения, которое выбирается из списка.
     /// return Возвращает сообщение,  
@@ -14,6 +14,6 @@ namespace ServerMessage {
     const Result outPut(const Message& msg) {
         return message[msg];
     }
-    
-    
+
+
 }

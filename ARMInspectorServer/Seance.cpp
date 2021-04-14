@@ -59,7 +59,7 @@ void Seance::addThread() {
         wrapper.setMessage(result.str);
         wrapper.setSuccess(result.success);
     };
-    
+
     //Создать новый поток.
     m_pThread = std::unique_ptr<QThread>(new QThread());
     if (m_pThread == nullptr) {

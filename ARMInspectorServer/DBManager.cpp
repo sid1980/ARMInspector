@@ -123,26 +123,13 @@ void DBManager::login() {
     };
     if (!asLogin.isEmpty()&&!asPassword.isEmpty()) {
         //Взять ранее созданное подключение к  базе данных.
-        QSqlDatabase database = QSqlDatabase::database(QString().setNum(m_pModelWrapper->getSessionID()));
-        //Проверить подключение  к  базе данных.
-        if (!database.isValid()) {
-            //Подключение  к базе данных некорректно.
-            //Установить сообщение.
-            setResult(user, Message::DATABASE_CONNECTION_INCORRECT);
-            //Прекратить работу менеджера базы данных.
+        if (!connectDB<User>()) {
+                qDebug() << "DB not connected";
             return;
         }
-
-        //Проверить, открыта ли база данных.
-        if (!database.isOpen()) {
-            //База данных не открыта.Авторизация не возможна.
-            setResult(user, Message::DATABASE_IS_NOT_OPENED);
-            return;
-        }
-
         //База данных открыта. Можно проводить авторизацию пользователя. 
 
-        QSqlQuery queryStatementInfo(database);
+        QSqlQuery queryStatementInfo(m_Db);
         //Подготовить запрос на чтение данных из  базы.
         QString strGetStatementInfo = "select * from user where name='" + asLogin + "'";
 
@@ -325,25 +312,12 @@ void DBManager::changePassword() {
     User user;
     JsonSerializer::parse(m_pModelWrapper->getData(), user);
     //Взять ранее созданное подключение к  базе данных.
-    QSqlDatabase database = QSqlDatabase::database(QString().setNum(m_pModelWrapper->getSessionID()));
-    //Проверить подключение  к  базе данных.
-    if (!database.isValid()) {
-        //Подключение  к базе данных некорректно.
-        //Установить сообщение.
-        setResult(user, Message::DATABASE_CONNECTION_INCORRECT);
-        //Прекратить работу менеджера базы данных.
-        return;
-    }
-
-    //Проверить, открыта ли база данных.
-    if (!database.isOpen()) {
-        //База данных не открыта.Авторизация не возможна.
-        setResult(user, Message::DATABASE_IS_NOT_OPENED);
+    if (!connectDB<User>()) {
         return;
     }
 
     //База данных открыта. Можно проводить авторизацию пользователя. 
-    QSqlQuery queryAdd(database);
+    QSqlQuery queryAdd(m_Db);
     //qDebug() << user.getName();
     //QString query;
     //Получить хеш пароля.
@@ -388,25 +362,11 @@ void DBManager::updateUser() {
     User user;
     JsonSerializer::parse(m_pModelWrapper->getData(), user);
     //Взять ранее созданное подключение к  базе данных.
-    QSqlDatabase database = QSqlDatabase::database(QString().setNum(m_pModelWrapper->getSessionID()));
-    //Проверить подключение  к  базе данных.
-    if (!database.isValid()) {
-        //Подключение  к базе данных некорректно.
-        //Установить сообщение.
-        setResult(user, Message::DATABASE_CONNECTION_INCORRECT);
-        //Прекратить работу менеджера базы данных.
+    if (!connectDB<User>()) {
         return;
     }
-
-    //Проверить, открыта ли база данных.
-    if (!database.isOpen()) {
-        //База данных не открыта.Авторизация не возможна.
-        setResult(user, Message::DATABASE_IS_NOT_OPENED);
-        return;
-    }
-
     //База данных открыта. Можно проводить авторизацию пользователя. 
-    QSqlQuery queryAdd(database);
+    QSqlQuery queryAdd(m_Db);
     //qDebug() << user.getName();
     //QString query;
     queryAdd.prepare("UPDATE  user set fio=:fio,id_inspection=:id_inspection,name=:name,"
@@ -454,25 +414,12 @@ void DBManager::addUser() {
     User user;
     JsonSerializer::parse(m_pModelWrapper->getData(), user);
     //Взять ранее созданное подключение к  базе данных.
-    QSqlDatabase database = QSqlDatabase::database(QString().setNum(m_pModelWrapper->getSessionID()));
-    //Проверить подключение  к  базе данных.
-    if (!database.isValid()) {
-        //Подключение  к базе данных некорректно.
-        //Установить сообщение.
-        setResult(user, Message::DATABASE_CONNECTION_INCORRECT);
-        //Прекратить работу менеджера базы данных.
-        return;
-    }
-
-    //Проверить, открыта ли база данных.
-    if (!database.isOpen()) {
-        //База данных не открыта.Авторизация не возможна.
-        setResult(user, Message::DATABASE_IS_NOT_OPENED);
+    if (!connectDB<User>()) {
         return;
     }
 
     //База данных открыта. Можно проводить авторизацию пользователя. 
-    QSqlQuery queryAdd(database);
+    QSqlQuery queryAdd(m_Db);
     queryAdd.prepare("INSERT INTO user (fio,id_inspection,name,password,status,role,access)"
             " VALUES (:fio,:id_inspection,:name,:password,:status,:role,:access)");
     queryAdd.bindValue(":fio", user.getFio());
@@ -516,29 +463,6 @@ void DBManager::addUser() {
 
 
 
-///-----------------------------------------------------------------------------
-///
-///             Получить запись из базы.
-///
-///-----------------------------------------------------------------------------
-
- QJsonObject DBManager::getRecord(const QString& queryStr) {
-    QJsonObject recordObject;
-    //Проверить  и выполнить  SQL запрос.
-    QSqlQuery query(m_Db);
-    if (!query.exec(queryStr)) {
-        return recordObject;
-    }
-    //Выборка данных.
-    while (query.next()) {
-        ///Экземпляр объекта класса T, который будет  сериализоваться.
-        for (int x = 0; x < query.record().count(); x++) {
-            recordObject.insert(query.record().fieldName(x), QJsonValue::fromVariant(query.value(x)));
-        }
-    }
-    return recordObject;
-
-}
 
 
 
