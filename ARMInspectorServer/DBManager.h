@@ -32,6 +32,8 @@ public:
     ///Получить  указатель на класс командной обёртки.
     const ModelWrapper* getModelWrapper() const;
 
+    ///Получить  запись из базы данных.
+    QJsonObject getRecord(const QString& query);
 
 
     /// Подключиться к базе данных .Открыть  базу данных.
@@ -71,6 +73,8 @@ private:
     ModelWrapper *m_pModelWrapper;
     ///Мьютех блокировки внешних воздействий. 
     QMutex m_Mutex;
+    ///DB. 
+    QSqlDatabase m_Db;
 };
 #include "DBManager_IMPL.h"
 

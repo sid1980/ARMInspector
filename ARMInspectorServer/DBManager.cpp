@@ -516,6 +516,29 @@ void DBManager::addUser() {
 
 
 
+///-----------------------------------------------------------------------------
+///
+///             Получить запись из базы.
+///
+///-----------------------------------------------------------------------------
+
+ QJsonObject DBManager::getRecord(const QString& queryStr) {
+    QJsonObject recordObject;
+    //Проверить  и выполнить  SQL запрос.
+    QSqlQuery query(m_Db);
+    if (!query.exec(queryStr)) {
+        return recordObject;
+    }
+    //Выборка данных.
+    while (query.next()) {
+        ///Экземпляр объекта класса T, который будет  сериализоваться.
+        for (int x = 0; x < query.record().count(); x++) {
+            recordObject.insert(query.record().fieldName(x), QJsonValue::fromVariant(query.value(x)));
+        }
+    }
+    return recordObject;
+
+}
 
 
 
