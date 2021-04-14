@@ -1,10 +1,10 @@
 /********************************************************************************
-** Form generated from reading UI file 'myForm.ui'
-**
-** Created by: Qt User Interface Compiler version 5.13.0
-**
-** WARNING! All changes made in this file will be lost when recompiling UI file!
-********************************************************************************/
+ ** Form generated from reading UI file 'myForm.ui'
+ **
+ ** Created by: Qt User Interface Compiler version 5.15.2
+ **
+ ** WARNING! All changes made in this file will be lost when recompiling UI file!
+ ********************************************************************************/
 
 #ifndef UI_MYFORM_H
 #define UI_MYFORM_H
@@ -20,8 +20,7 @@
 
 QT_BEGIN_NAMESPACE
 
-class Ui_myForm
-{
+class Ui_myForm {
 public:
     QWidget *widget;
     QGridLayout *gridLayout;
@@ -32,8 +31,7 @@ public:
     QPushButton *okButton;
     QPushButton *cancelButton;
 
-    void setupUi(QDialog *myForm)
-    {
+    void setupUi(QDialog *myForm) {
         if (myForm->objectName().isEmpty())
             myForm->setObjectName(QString::fromUtf8("myForm"));
         myForm->setWindowModality(Qt::WindowModal);
@@ -88,8 +86,7 @@ public:
         QMetaObject::connectSlotsByName(myForm);
     } // setupUi
 
-    void retranslateUi(QDialog *myForm)
-    {
+    void retranslateUi(QDialog *myForm) {
         myForm->setWindowTitle(QCoreApplication::translate("myForm", "\320\220\320\240\320\234 \320\230\320\275\321\201\320\277\320\265\320\272\321\202\320\276\321\200\320\260 \320\222\321\205\320\276\320\264", nullptr));
         label->setText(QCoreApplication::translate("myForm", "\320\230\320\274\321\217", nullptr));
         nameEdit->setPlaceholderText(QCoreApplication::translate("myForm", "\320\270\320\274\321\217", nullptr));
@@ -102,7 +99,9 @@ public:
 };
 
 namespace Ui {
-    class myForm: public Ui_myForm {};
+
+    class myForm : public Ui_myForm {
+    };
 } // namespace Ui
 
 QT_END_NAMESPACE

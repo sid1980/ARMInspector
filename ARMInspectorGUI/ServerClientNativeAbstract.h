@@ -11,8 +11,7 @@ enum class ServerError {
     UNKNOWN_ERROR
 };
 
-class ServerClientNativeAbstract
-{
+class ServerClientNativeAbstract {
 public:
     ServerClientNativeAbstract();
 };

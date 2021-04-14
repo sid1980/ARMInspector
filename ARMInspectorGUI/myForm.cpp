@@ -27,7 +27,7 @@
 ///-----------------------------------------------------------------------------
 
 myForm::myForm(QWidget *parent) :
-QDialog(parent),widget(new Ui::myForm) {
+QDialog(parent), widget(new Ui::myForm) {
     widget->setupUi(this);
     //widget.setupUi(this);
     connect(widget->okButton, SIGNAL(clicked()), this, SLOT(start_ARM()));
@@ -40,7 +40,7 @@ QDialog(parent),widget(new Ui::myForm) {
 ///-----------------------------------------------------------------------------
 
 myForm::~myForm() {
-        delete widget;
+    delete widget;
 }
 ///-----------------------------------------------------------------------------
 ///
@@ -66,6 +66,7 @@ void myForm::exit_app() {
 ///         Запуск АРМ Инспектора.
 ///          
 ///-----------------------------------------------------------------------------
+
 void myForm::start_ARM() {
     m_pClientController->login(this->widget->nameEdit->text(), this->widget->passEdit->text());
 }
@@ -74,6 +75,7 @@ void myForm::start_ARM() {
 ///         Инициализация ссылки на контроллер клиента.
 ///          
 ///-----------------------------------------------------------------------------
+
 void myForm::initClient(ClientController *clientController) {
     m_pClientController = clientController;
     // Сигнально-слотовое соединение, сигнализирующее, что   контроллер комманд

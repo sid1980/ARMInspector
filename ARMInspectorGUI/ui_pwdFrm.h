@@ -1,10 +1,10 @@
 /********************************************************************************
-** Form generated from reading UI file 'pwdFrm.ui'
-**
-** Created by: Qt User Interface Compiler version 5.13.0
-**
-** WARNING! All changes made in this file will be lost when recompiling UI file!
-********************************************************************************/
+ ** Form generated from reading UI file 'pwdFrm.ui'
+ **
+ ** Created by: Qt User Interface Compiler version 5.15.2
+ **
+ ** WARNING! All changes made in this file will be lost when recompiling UI file!
+ ********************************************************************************/
 
 #ifndef UI_PWDFRM_H
 #define UI_PWDFRM_H
@@ -20,8 +20,7 @@
 
 QT_BEGIN_NAMESPACE
 
-class Ui_pwdFrm
-{
+class Ui_pwdFrm {
 public:
     QWidget *layoutWidget;
     QGridLayout *gridLayout;
@@ -35,8 +34,7 @@ public:
     QLabel *labelUser;
     QLabel *labelUse1;
 
-    void setupUi(QDialog *pwdFrm)
-    {
+    void setupUi(QDialog *pwdFrm) {
         if (pwdFrm->objectName().isEmpty())
             pwdFrm->setObjectName(QString::fromUtf8("pwdFrm"));
         pwdFrm->setWindowModality(Qt::WindowModal);
@@ -74,7 +72,7 @@ public:
         buttonBox = new QDialogButtonBox(layoutWidget);
         buttonBox->setObjectName(QString::fromUtf8("buttonBox"));
         buttonBox->setOrientation(Qt::Horizontal);
-        buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
+        buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
 
         gridLayout->addWidget(buttonBox, 2, 0, 1, 2);
 
@@ -109,8 +107,7 @@ public:
         QMetaObject::connectSlotsByName(pwdFrm);
     } // setupUi
 
-    void retranslateUi(QDialog *pwdFrm)
-    {
+    void retranslateUi(QDialog *pwdFrm) {
         pwdFrm->setWindowTitle(QCoreApplication::translate("pwdFrm", "\320\235\320\276\320\262\321\213\320\271 \320\277\320\260\321\200\320\276\320\273\321\214", nullptr));
         labelPwd->setText(QCoreApplication::translate("pwdFrm", "\320\237\320\260\321\200\320\276\320\273\321\214", nullptr));
         labelPwd2->setText(QCoreApplication::translate("pwdFrm", "\320\237\320\260\321\200\320\276\320\273\321\214(\320\277\320\276\320\262\321\202\320\276\321\200\320\270\321\202\321\214)", nullptr));
@@ -121,7 +118,9 @@ public:
 };
 
 namespace Ui {
-    class pwdFrm: public Ui_pwdFrm {};
+
+    class pwdFrm : public Ui_pwdFrm {
+    };
 } // namespace Ui
 
 QT_END_NAMESPACE

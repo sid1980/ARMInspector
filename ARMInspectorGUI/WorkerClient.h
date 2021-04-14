@@ -69,7 +69,7 @@ signals:
     ///Сигнал завершения работы.
     /// @param asResult Результат выполнения запроса 
     void finished(QString asResult);
-    void error(QString asError);    
+    void error(QString asError);
 private:
     ///Командная обёртка в форме строки.
     QString m_aModelWrapperString;

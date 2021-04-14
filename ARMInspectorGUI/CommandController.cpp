@@ -27,7 +27,7 @@ void CommandController::messageProcessing(const RpcMessage &asMessage) {
     //qDebug() << "received message: " << QString::fromLocal8Bit(asMessage.method().toStdString().c_str());
     QString result = QString(asMessage.method().toStdString().c_str());
     if (!result.isEmpty()) {
-       emit onProcessRequestServer(result);
+        emit onProcessRequestServer(result);
     }
 }
 

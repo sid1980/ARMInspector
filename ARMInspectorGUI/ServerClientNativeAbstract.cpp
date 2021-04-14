@@ -1,6 +1,5 @@
 #include "ServerClientNativeAbstract.h"
 
-ServerClientNativeAbstract::ServerClientNativeAbstract()
-{
-    
+ServerClientNativeAbstract::ServerClientNativeAbstract() {
+
 }
