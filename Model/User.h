@@ -51,21 +51,54 @@ public:
     void read(const QJsonObject &jsonObj);
     ///Запись полей класса в JSON объкт. 
     void write(QJsonObject &jsonObj) const;
+
     ///Список названий колонок модели
+
     static const QJsonArray getColumnArray() {
-        const QJsonArray jsonArray = {"Идентификатор", "ФИО", "Инспекция",
-            "Имя пользователя", "Пароль", "Статус", "Роль", "Доступ", "Требование", "Должность"};
+        const QJsonArray jsonArray = {
+            "Идентификатор",
+            "ФИО",
+            "Инспекция",
+            "Имя пользователя",
+            "Пароль",
+            "Статус",
+            "Роль",
+            "Доступ",
+            "Требование",
+            "Должность"
+        };
         return jsonArray;
     }
+
+    ///Список названий полей базы
+    static const QJsonArray getFieldArray() {
+        const QJsonArray jsonArray = {
+            "id",
+            "fio",
+            "id_inspection",
+            "name",
+            "password",
+            "status",
+            "role",
+            "access",
+            "claim",
+            "position"
+        };
+        return jsonArray;
+    }
+
+
     ///название модели
     static const QString getModelName() {
         return QString("User");
     }
     ///SQL запрос вывода данных
+
     static const QString getQuery() {
         return QString("Select *  from user ");
     }
     ///SQL запрос удаления экземпляра модели в  базе данных
+
     static const QString delQuery() {
         return QString("Delete   from user ");
     }
@@ -97,7 +130,6 @@ private:
     qint64 claim_;
     ///Идентификатор должности
     qint64 position_;
-
 };
 
 #endif /* USER_H */
