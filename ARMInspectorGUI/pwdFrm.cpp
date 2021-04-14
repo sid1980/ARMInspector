@@ -12,10 +12,22 @@
  */
 
 #include "pwdFrm.h"
+
 pwdFrm::pwdFrm(QWidget *parent) :
 QDialog(parent), widget_(new Ui::pwdFrm) {
     widget_->setupUi(this);
 }
 
 pwdFrm::~pwdFrm() {
+}
+
+
+///-----------------------------------------------------------------------------
+///
+///         Получить указатель на виджет окна.
+///          
+///-----------------------------------------------------------------------------
+
+Ui::pwdFrm* pwdFrm::getWidget() {
+    return widget_;
 }

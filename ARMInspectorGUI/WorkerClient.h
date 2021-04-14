@@ -58,6 +58,8 @@ signals:
     void passListInspections(const QList<Inspection>& inspections);
     ///Передать данные о пользователе
     void addUser(const User&);
+    ///заменить пароль пользователя
+    void setPwd(const User&);
     ///Редактировать данные о пользователе
     void updateUser(const User&);
     ///Получить  данные о пользователе

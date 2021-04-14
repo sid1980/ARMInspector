@@ -37,6 +37,7 @@ WorkerClient::WorkerClient(QObject *apParent) : QObject(apParent) {
     dialog_ = new Dialog();
     connect(dialog_, SIGNAL(addUser(const User&)), this, SIGNAL(addUser(const User&)));
     connect(dialog_, SIGNAL(updateUser(const User&)), this, SIGNAL(updateUser(const User&)));
+    connect(dialog_, SIGNAL(setPwd(const User&)), this, SIGNAL(setPwd(const User&)));
     connect(dialog_, SIGNAL(getUserData(const qint64&)), this, SIGNAL(getUserData(const qint64&)));
     connect(dialog_, SIGNAL(deleteUser(const qint64&)), this, SIGNAL(deleteUser(const qint64&)));
     connect(dialog_, SIGNAL(waitServer()), this, SIGNAL(waitServer()));
@@ -183,6 +184,28 @@ void WorkerClient::process() {
                 QMessageBox::information(0, "Редактирование пользовтеля",
                         "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно отредактирован");
                 dialog_->showEditUserData(user);
+                emit ready();
+
+            }
+                break;
+                ///-----------------------------------------------------------------------------
+                ///
+                ///                         CHANGE_PASSWORD
+                ///          
+                ///-----------------------------------------------------------------------------
+            case ModelWrapper::Command::CHANGE_PASSWORD:
+            {
+                //Сервер вернул результат команды "EDIT_USER"     
+                User user;
+                JsonSerializer::parse(wrapper.getData(), user);
+
+                //dialog_->showUserData(user);
+                //emit readyUserData(user);
+                QMessageBox::information(0, wrapper.getHead(), wrapper.getMessage() +
+                        QString(": <a style='color:royalblue'> ") + user.getName() + QString("</a>"));
+                //QMessageBox::information(0, "Редактирование пользовтеля",
+                //        "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно отредактирован");
+                //dialog_->showEditUserData(user);
                 emit ready();
 
             }

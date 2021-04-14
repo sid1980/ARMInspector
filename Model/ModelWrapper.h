@@ -31,6 +31,7 @@ public:
         DEL_MODEL,
         ADD_NEW_USER,
         EDIT_USER,
+        CHANGE_PASSWORD,
         SERVER_RESPONSE,
         WAIT_SERVER_RESPONSE,
         SET_SESSION_ID
@@ -55,6 +56,7 @@ public:
         {Command::LOGIN, "Авторизация пользователя."},
         {Command::GET_LIST_MODELS, "Выполнить SQL запрос."},
         {Command::ADD_NEW_USER, "Добавить нового пользователя."},
+        {Command::CHANGE_PASSWORD, "Изменить пароль пользователя."},
         {Command::EDIT_USER, "Редактировать пользователя."},
         {Command::GET_MODEL, "Получить экземпляр модели."},
         {Command::DEL_MODEL, "Удалить  экземпляр модели."},

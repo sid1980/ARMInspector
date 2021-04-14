@@ -23,6 +23,9 @@ public:
     explicit pwdFrm(QWidget *parent = 0);
     ///деструктор
     virtual ~pwdFrm();
+    ///получить указатель на виджет окна
+    Ui::pwdFrm* getWidget();
+
 private:
     Ui::pwdFrm* widget_;
 };

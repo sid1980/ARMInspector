@@ -177,9 +177,6 @@ void Dialog::setListInspection(const QList<Inspection>& inspections) {
 
 void Dialog::setModel(const QList<UserView>& users) {
     listusers_->setListModel(users);
-    //this->getUI()->tableView->setModel(listusers_);
-    ///Разрешить сортировку по столбцам
-    //QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(listusers_); // create proxy
     proxyModel_->setSourceModel(listusers_);
     this->getUI()->tableView->setSortingEnabled(true); // enable sortingEnabled
     this->getUI()->tableView->setModel(proxyModel_);
@@ -257,8 +254,8 @@ void Dialog::on_pushButton_editUser_clicked() {
 
     int rowidx = proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()).row();
     if (rowidx >= 0) {
-        UserView user = listusers_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
-        auto id = user.getId();
+        UserView userV = listusers_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
+        auto id = userV.getId();
         emit getUserData(id);
         emit waitServer();
         if (usrEdtFrm_->exec() == QDialog::Accepted) {
@@ -318,7 +315,6 @@ void Dialog::on_pushButton_deleteUser_clicked() {
     }
 }
 
-
 ///-----------------------------------------------------------------------------
 ///
 ///         обработчик кнопки редактирования пароля
@@ -326,7 +322,33 @@ void Dialog::on_pushButton_deleteUser_clicked() {
 ///-----------------------------------------------------------------------------
 
 void Dialog::on_pushButton_changePassword_clicked() {
-    pwdFrm_->show();
+    int rowidx = proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()).row();
+    if (rowidx >= 0) {
+        UserView userV = listusers_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
+        pwdFrm_->getWidget()->labelUser->setText(userV.getFio());
+        if (pwdFrm_->exec() == QDialog::Accepted) {
+            QString pwd1 = pwdFrm_->getWidget()->lineEditPwd->text().trimmed();
+            QString pwd2 = pwdFrm_->getWidget()->lineEditPwd2->text().trimmed();
+            if (pwd1.isEmpty() || pwd2.isEmpty()) {
+                QMessageBox::information(0, "Изменение пароля пользовтеля", "Пароль не может быть пустым");
+                return;
+            }
+            if (pwd1.compare(pwd2, Qt::CaseSensitive) != 0) {
+                QMessageBox::information(0, "Изменение пароля пользовтеля", "Пароли не совпадают");
+                return;
+            }
+            qDebug() << "pwdFrm Yes was clicked";
+            User* user = new User();
+            user->setId(userV.getId());
+            user->setFio(userV.getFio());
+            user->setName(userV.getName());
+            user->setPassword(pwdFrm_->getWidget()->lineEditPwd->text());
+            emit setPwd(*user);
+            emit waitServer();
+            delete user;
+        }
+    }
+
     //pwdFrm * frm=new pwdFrm(this);
     //frm->show();
     //QMessageBox::information(0, "Редактирование пользовтеля","");
