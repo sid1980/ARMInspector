@@ -108,6 +108,8 @@ void DBManager::login() {
     QString asPassword = param["password"].toString();
     //Создать модель данных User
     User user;
+    user.setName(asLogin);
+
     //Задать  функцию для установки результата выполнения команды сервера
     //и собщения о результате выполнения команды.
     auto setResult = [this](User user, Message msg) {
@@ -116,7 +118,7 @@ void DBManager::login() {
         m_pModelWrapper->setData(json);
         //Установить сообщение и результат выполнения команды.
         ServerMessage::Result result = ServerMessage::outPut(msg);
-        m_pModelWrapper->setMessage(result.str);
+        m_pModelWrapper->setMessage(result.str + QString("<a style='color:red'> ") + user.getName() + QString("</a>"));
         m_pModelWrapper->setSuccess(result.success);
     };
     if (!asLogin.isEmpty()&&!asPassword.isEmpty()) {
@@ -195,9 +197,12 @@ void DBManager::login() {
 
         return;
     } else {
-        setResult(user, Message::USER_LOGIN_FAILURE);
+        if (asLogin.isEmpty()) {
+            setResult(user, Message::USER_NAME_EMPTY);
+            return;
+        }
+        setResult(user, Message::USER_PASSWORD_EMPTY);
         return;
-
     }
 }
 
@@ -298,6 +303,69 @@ void DBManager::removeDatabase() {
     QSqlDatabase::removeDatabase(QString().setNum(m_pModelWrapper->getSessionID()));
 }
 
+///-----------------------------------------------------------------------------
+///
+///                     Изменить пароль  пользователя 
+///
+///-----------------------------------------------------------------------------
+
+void DBManager::changePassword() {
+    //Задать  функцию для установки результата выполнения команды сервера
+    //и собщения о результате выполнения команды.
+    auto setResult = [this](User user, Message msg) {
+        //Подготовить данные.
+        QString json = JsonSerializer::serialize(user);
+        m_pModelWrapper->setData(json);
+        //Установить сообщение и результат выполнения команды.
+        ServerMessage::Result result = ServerMessage::outPut(msg);
+        m_pModelWrapper->setMessage(result.str);
+        m_pModelWrapper->setSuccess(result.success);
+    };
+    //Создать модель данных User
+    User user;
+    JsonSerializer::parse(m_pModelWrapper->getData(), user);
+    //Взять ранее созданное подключение к  базе данных.
+    QSqlDatabase database = QSqlDatabase::database(QString().setNum(m_pModelWrapper->getSessionID()));
+    //Проверить подключение  к  базе данных.
+    if (!database.isValid()) {
+        //Подключение  к базе данных некорректно.
+        //Установить сообщение.
+        setResult(user, Message::DATABASE_CONNECTION_INCORRECT);
+        //Прекратить работу менеджера базы данных.
+        return;
+    }
+
+    //Проверить, открыта ли база данных.
+    if (!database.isOpen()) {
+        //База данных не открыта.Авторизация не возможна.
+        setResult(user, Message::DATABASE_IS_NOT_OPENED);
+        return;
+    }
+
+    //База данных открыта. Можно проводить авторизацию пользователя. 
+    QSqlQuery queryAdd(database);
+    //qDebug() << user.getName();
+    //QString query;
+    //Получить хеш пароля.
+    QString pasword_hash = QString(QCryptographicHash::hash((user.getPassword().toStdString().c_str()), QCryptographicHash::Md5).toHex());
+
+    queryAdd.prepare("UPDATE  user set password=:password where id=:id");
+    queryAdd.bindValue(":id", user.getId());
+    queryAdd.bindValue(":password", pasword_hash);
+
+    if (queryAdd.exec()) {
+        setResult(user, Message::PASSWORD_CHANGE_SUCCESS);
+        qDebug() << user.getName();
+        qDebug() << user.getId();
+        qDebug() << "update user password  succes: ";
+    } else {
+        setResult(user, Message::PASSWORD_CHANGE_FAILURE);
+        qDebug() << "update user password  failed: " << queryAdd.lastError();
+        qDebug() << user.getName();
+    }
+
+    return;
+}
 ///-----------------------------------------------------------------------------
 ///
 ///                     Редактировать пользователя 
