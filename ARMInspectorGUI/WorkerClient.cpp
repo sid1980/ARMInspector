@@ -35,11 +35,24 @@
 
 WorkerClient::WorkerClient(QObject *apParent) : QObject(apParent) {
     dialog_ = new Dialog();
+    ///сигнализировать о завершении обработки информации
+    connect(dialog_, SIGNAL(ready()), this, SIGNAL(ready()));
+    ///добавить пользователя
     connect(dialog_, SIGNAL(addUser(const User&)), this, SIGNAL(addUser(const User&)));
+    ///редактировать пользователя
     connect(dialog_, SIGNAL(updateUser(const User&)), this, SIGNAL(updateUser(const User&)));
+    ///поменять пароль
     connect(dialog_, SIGNAL(setPwd(const User&)), this, SIGNAL(setPwd(const User&)));
+    ///запросить данные о пользователе
     connect(dialog_, SIGNAL(getUserData(const qint64&)), this, SIGNAL(getUserData(const qint64&)));
+    ///удалить пользователя
     connect(dialog_, SIGNAL(deleteUser(const qint64&)), this, SIGNAL(deleteUser(const qint64&)));
+    ///получить список инспекций
+    connect(dialog_, SIGNAL(getInspections()), this, SIGNAL(getInspections()));
+    ///список инспекции получен от сервера 
+    connect(this, SIGNAL(listInspectionsReady(const QList<Inspection>&)), dialog_,
+            SLOT(setListInspections(const QList<Inspection>&)));
+    ///ждать готовности сервера
     connect(dialog_, SIGNAL(waitServer()), this, SIGNAL(waitServer()));
 }
 
@@ -114,8 +127,9 @@ void WorkerClient::process() {
                         ItemContainer<Inspection> inspectionContainer;
                         JsonSerializer::parse(wrapper.getData(), inspectionContainer);
                         QList<Inspection> inspections = inspectionContainer.getItemsList();
-                        dialog_->setListInspection(inspections);
-                        dialog_->showBox();
+                        //QMessageBox::information(0, "Information Box", inspections[1].getName());
+                        emit listInspectionsReady(inspections);
+
                     }
                         break;
                     case ModelWrapper::Model::UserView:
@@ -123,9 +137,11 @@ void WorkerClient::process() {
                         //QMessageBox::information(0, "Information Box", "This is information text");
                         ItemContainer<UserView> userContainer;
                         JsonSerializer::parse(wrapper.getData(), userContainer);
+
                         dialog_->setModel(userContainer.getItemsList());
                         //dialog_->getUI()->tableView->setModel(new ModelList<UserView>(userContainer.getItemsList()));
-                        emit getInspections();
+                        dialog_->showBox();
+
                     }
                         break;
                 }

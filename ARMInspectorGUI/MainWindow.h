@@ -28,11 +28,13 @@ public:
 private slots:
     void Report();
     void ListUsers();
+    void spanTbl();
+    void verticalResizeTableViewToContents();
 private:
     Ui::MainWindow widget;
     ///Контроллер клиента.
     ClientController *m_pClientController{nullptr};
-
+    reportFrm* reportDlg_;
 };
 
 

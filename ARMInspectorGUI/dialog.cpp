@@ -164,7 +164,8 @@ void Dialog::fillUserEditFrm(const User& user) {
 ///          
 ///-----------------------------------------------------------------------------
 
-void Dialog::setListInspection(const QList<Inspection>& inspections) {
+void Dialog::setListInspections(const QList<Inspection>& inspections) {
+    //QMessageBox::information(0, "Information Box", inspections[1].getName());
     usrFrm_->setInspections(inspections);
     usrEdtFrm_->setInspections(inspections);
 };
@@ -180,6 +181,7 @@ void Dialog::setModel(const QList<UserView>& users) {
     proxyModel_->setSourceModel(listusers_);
     this->getUI()->tableView->setSortingEnabled(true); // enable sortingEnabled
     this->getUI()->tableView->setModel(proxyModel_);
+    //this->getUI()->tableView->setSpan(0,1,2,2);
 }
 
 ///-----------------------------------------------------------------------------
@@ -192,6 +194,8 @@ void Dialog::showBox() {
     this->getUI()->tableView->setColumnHidden(0, true);
     this->getUI()->tableView->resizeColumnsToContents();
     this->getUI()->tableView->resizeRowsToContents();
+
+    emit getInspections();
     this->show();
 
 }

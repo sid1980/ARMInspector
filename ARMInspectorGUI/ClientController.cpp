@@ -45,7 +45,7 @@ void ClientController::init(ServerClient *apServerClient) {
     // Сигнально-слотовое соединение установки идентификатора сессии.
     connect(m_pWorkerClient, SIGNAL(ready()), SLOT(formReady()));
     // Сигнально-слотовое соединение получения списка организаций.
-    connect(m_pWorkerClient, SIGNAL(getInspections()), SLOT(getListInspection()));
+    connect(m_pWorkerClient, SIGNAL(getInspections()), SLOT(getListInspections()));
     // Сигнально-слотовое соединение для добавления нового пользователя в базу данных.
     connect(m_pWorkerClient, SIGNAL(addUser(const User&)), SLOT(addUser(const User&)));
     // Сигнально-слотовое соединение для редактирования  пользователя .
@@ -76,7 +76,7 @@ void ClientController::formReady() {
 
 ///Полчить список инспекций
 
-void ClientController::getListInspection() {
+void ClientController::getListInspections() {
     this->getListModels(ModelWrapper::Model::Inspection);
 };
 

@@ -54,7 +54,7 @@ private slots:
     ///Установить идентификатор сессии
     void setSessionID(int asID);
     ///Полчить список инспекций
-    void getListInspection();
+    void getListInspections();
     ///заменить пароль пользователя
     void setPwd(const User&);
     ///Установить сигнал готовности формы 

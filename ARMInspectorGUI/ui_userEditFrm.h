@@ -1,10 +1,10 @@
 /********************************************************************************
- ** Form generated from reading UI file 'userEditFrm.ui'
- **
- ** Created by: Qt User Interface Compiler version 5.13.0
- **
- ** WARNING! All changes made in this file will be lost when recompiling UI file!
- ********************************************************************************/
+** Form generated from reading UI file 'userEditFrm.ui'
+**
+** Created by: Qt User Interface Compiler version 5.13.0
+**
+** WARNING! All changes made in this file will be lost when recompiling UI file!
+********************************************************************************/
 
 #ifndef UI_USEREDITFRM_H
 #define UI_USEREDITFRM_H
@@ -24,7 +24,8 @@
 
 QT_BEGIN_NAMESPACE
 
-class Ui_userEditFrm {
+class Ui_userEditFrm
+{
 public:
     QWidget *layoutWidget;
     QGridLayout *gridLayout;
@@ -49,7 +50,8 @@ public:
     QLabel *labelRole;
     QLabel *labelFio;
 
-    void setupUi(QDialog *userForm) {
+    void setupUi(QDialog *userForm)
+    {
         if (userForm->objectName().isEmpty())
             userForm->setObjectName(QString::fromUtf8("userForm"));
         userForm->resize(626, 472);
@@ -133,7 +135,7 @@ public:
         buttonBox = new QDialogButtonBox(layoutWidget);
         buttonBox->setObjectName(QString::fromUtf8("buttonBox"));
         buttonBox->setOrientation(Qt::Horizontal);
-        buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+        buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
 
         gridLayout->addWidget(buttonBox, 6, 1, 1, 1);
 
@@ -155,7 +157,8 @@ public:
         QMetaObject::connectSlotsByName(userForm);
     } // setupUi
 
-    void retranslateUi(QDialog *userForm) {
+    void retranslateUi(QDialog *userForm)
+    {
         userForm->setWindowTitle(QCoreApplication::translate("userEditFrm", "\320\240\320\265\320\264\320\260\320\272\321\202\320\270\321\200\320\276\320\262\320\260\320\275\320\270\320\265 \320\277\320\276\320\273\321\214\320\267\320\276\320\262\320\260\321\202\320\265\320\273\321\217", nullptr));
         labelName->setText(QCoreApplication::translate("userEditFrm", "\320\230\320\274\321\217 \320\277\320\276\320\273\321\214\320\267\320\276\320\262\320\260\321\202\320\265\320\273\321\217", nullptr));
         labelInspection->setText(QCoreApplication::translate("userEditFrm", "\320\230\320\275\321\201\320\277\320\265\320\272\321\206\320\270\321\217", nullptr));
@@ -178,9 +181,7 @@ public:
 };
 
 namespace Ui {
-
-    class userEditFrm : public Ui_userEditFrm {
-    };
+    class userEditFrm: public Ui_userEditFrm {};
 } // namespace Ui
 
 QT_END_NAMESPACE

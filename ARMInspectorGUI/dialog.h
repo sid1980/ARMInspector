@@ -52,8 +52,6 @@ public:
     ~Dialog();
     ///Получить ссылку на виджет
     Ui::dialog* getUI();
-    ///Инициализировать список инспекций
-    void setListInspection(const QList<Inspection>& inspections);
     ///определить модель вывода данных
     void setModel(const QList<UserView>& users);
     ///заполнить форму редактирования пользователя
@@ -76,6 +74,9 @@ public slots:
     ///показать отредактированные данные о  пользователе в  окне списка пользователей
     void showEditUserData(const User&);
 signals:
+    ///Сигнализировать о завершении процесса обработки сообщения от сервера.
+    void ready();
+
     ///заменить пароль пользователя
     void setPwd(const User&);
     ///пользователе подготовлены и необходимо их передать на сервер
@@ -89,9 +90,14 @@ signals:
     ///сигнализировать  о  необходимости удалить на сервере данные о
     ///пользователе
     void deleteUser(const qint64&);
+    ///Запросить список инспекций
+    void getInspections();
     ///сигнализировать  о  необходимости  ожидания ответа от сервера 
     ///с результатом предыдущей операции
     void waitServer();
+public slots:
+    ///Инициализировать список инспекций
+    void setListInspections(const QList<Inspection>&);
 
 private:
     ///ссылка на виджет основного окна

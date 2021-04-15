@@ -28,6 +28,7 @@
 #include "UserView.h"
 #include "Inspection.h"
 #include "dialog.h"
+#include "reportFrm.h"
 
 class WorkerClient : public QObject {
     Q_OBJECT
@@ -50,8 +51,6 @@ signals:
     void setID(int asID);
     ///Ждать ответ сервера
     void waitServer();
-    ///Получить список инспекций
-    void getInspections();
     ///Сигнализировать о завершении процесса обработки сообщения от сервера.
     void ready();
     ///Передать список инспекций
@@ -66,6 +65,10 @@ signals:
     void getUserData(const qint64&);
     ///Удалить  данные о пользователе
     void deleteUser(const qint64&);
+    ///Запросить список инспекций
+    void  getInspections();    
+    ///Cписок инспекций подготовлен  
+    void listInspectionsReady(const QList<Inspection>&);
     ///Сигнал завершения работы.
     /// @param asResult Результат выполнения запроса 
     void finished(QString asResult);
@@ -74,6 +77,7 @@ private:
     ///Командная обёртка в форме строки.
     QString m_aModelWrapperString;
     Dialog* dialog_;
+    reportFrm* reportDlg_;
 };
 
 #endif /* WORKERCLIENT_H */

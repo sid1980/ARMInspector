@@ -1,10 +1,10 @@
 /********************************************************************************
- ** Form generated from reading UI file 'userForm.ui'
- **
- ** Created by: Qt User Interface Compiler version 5.15.2
- **
- ** WARNING! All changes made in this file will be lost when recompiling UI file!
- ********************************************************************************/
+** Form generated from reading UI file 'userForm.ui'
+**
+** Created by: Qt User Interface Compiler version 5.13.0
+**
+** WARNING! All changes made in this file will be lost when recompiling UI file!
+********************************************************************************/
 
 #ifndef UI_USERFORM_H
 #define UI_USERFORM_H
@@ -24,7 +24,8 @@
 
 QT_BEGIN_NAMESPACE
 
-class Ui_userForm {
+class Ui_userForm
+{
 public:
     QWidget *layoutWidget;
     QGridLayout *gridLayout;
@@ -53,7 +54,8 @@ public:
     QRadioButton *radioButton_2;
     QRadioButton *radioButton_3;
 
-    void setupUi(QDialog *userForm) {
+    void setupUi(QDialog *userForm)
+    {
         if (userForm->objectName().isEmpty())
             userForm->setObjectName(QString::fromUtf8("userForm"));
         userForm->resize(626, 586);
@@ -112,7 +114,7 @@ public:
         buttonBox = new QDialogButtonBox(layoutWidget);
         buttonBox->setObjectName(QString::fromUtf8("buttonBox"));
         buttonBox->setOrientation(Qt::Horizontal);
-        buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+        buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
 
         gridLayout->addWidget(buttonBox, 8, 1, 1, 1);
 
@@ -185,7 +187,8 @@ public:
         QMetaObject::connectSlotsByName(userForm);
     } // setupUi
 
-    void retranslateUi(QDialog *userForm) {
+    void retranslateUi(QDialog *userForm)
+    {
         userForm->setWindowTitle(QCoreApplication::translate("userForm", "\320\241\320\276\320\267\320\264\320\260\320\275\320\270\320\265 \320\275\320\276\320\262\320\276\320\263\320\276 \320\277\320\276\320\273\321\214\320\267\320\276\320\262\320\260\321\202\320\265\320\273\321\217", nullptr));
         labelInspection->setText(QCoreApplication::translate("userForm", "\320\230\320\275\321\201\320\277\320\265\320\272\321\206\320\270\321\217", nullptr));
         labelName->setText(QCoreApplication::translate("userForm", "\320\230\320\274\321\217 \320\277\320\276\320\273\321\214\320\267\320\276\320\262\320\260\321\202\320\265\320\273\321\217", nullptr));
@@ -215,9 +218,7 @@ public:
 };
 
 namespace Ui {
-
-    class userForm : public Ui_userForm {
-    };
+    class userForm: public Ui_userForm {};
 } // namespace Ui
 
 QT_END_NAMESPACE
