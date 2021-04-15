@@ -18,6 +18,7 @@
 #include <RpcSocket.h>
 #include "ModelWrapper.h"
 #include "ServerMessage.h"
+#include "ItemContainer.h"
 
 class DBManager : public QObject {
     Q_OBJECT
@@ -50,12 +51,16 @@ public:
     template<typename T> void getListModels();
     /// Удалить  модель.
     void deleteModel();
+    ///удалить модель из списка
     template<typename T> void deleteModel();
     /// Получить  модель.
     void getModel();
     template<typename T> void getModel();
     ///Получить  запись из базы данных.
     template<typename T> T getRecord(const QString&);
+    ///Получить  записи из базы данных.
+    template<typename T> ItemContainer<T> getAllRecordS();
+    ///удалить запись
     template<typename T> void delRecord(const T&, const QString&);
     ///Проверить  подключение к базе данных.
     template<typename T> bool connectDB();

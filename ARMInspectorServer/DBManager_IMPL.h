@@ -20,6 +20,7 @@
 #include "ModelWrapper.h"
 #include "ServerMessage.h"
 
+
 ///-----------------------------------------------------------------------------
 ///
 ///             Получить список моделей.
@@ -33,56 +34,11 @@
 template<typename T> void DBManager::getListModels() {
     //Блокировать ресурсы SQL от использования их  другими потоками. 
     QMutexLocker lock(&m_Mutex);
-    //Задать  функцию для установки результата выполнения команды сервера
-    //и собщения о результате выполнения команды.
-    auto setResult = [this](ItemContainer<T> container, Message msg) {
-        //Подготовить данные.
-        QString json = JsonSerializer::serialize(container);
-        m_pModelWrapper->setData(json);
-        //Установить сообщение и результат выполнения команды.
-        ServerMessage::Result result = ServerMessage::outPut(msg);
-        m_pModelWrapper->setMessage(result.str);
-        m_pModelWrapper->setSuccess(result.success);
-    };
-    //Контейнер, в который записываются  объекты сериализаци.
-    ItemContainer<T> container;
     //Проверить , открыта ли  база данных. 
-    QSqlDatabase database = QSqlDatabase::database(QString().setNum(m_pModelWrapper->getSessionID()));
-    //Проверить подключение подключение к  базе данных.
-    if (!database.isValid()) {
-        //Подключение  к базе данных некорректно.
-        //Установить сообщение.
-        setResult(container, Message::DATABASE_CONNECTION_INCORRECT);
-        //Прекратить работу менеджера базы данных.
+    if (!connectDB<T>()) {
         return;
     }
-
-    if (!database.isOpen()) {
-        setResult(container, Message::DATABASE_IS_NOT_OPENED);
-        return;
-    }
-    //Проверить  и выполнить  SQL запрос.
-    QSqlQuery queryStatementInfo(database);
-    qDebug() << T::getQuery();
-
-    if (!queryStatementInfo.exec(T::getQuery())) {
-        setResult(container, Message::SQL_ERROR);
-        return;
-    }
-    //Выборка данных.
-    while (queryStatementInfo.next()) {
-        QJsonObject recordObject;
-        ///Экземпляр объекта класса T, который будет  сериализоваться.
-        T model;
-        for (int x = 0; x < queryStatementInfo.record().count(); x++) {
-            recordObject.insert(queryStatementInfo.record().fieldName(x), QJsonValue::fromVariant(queryStatementInfo.value(x)));
-        }
-        ///Считать запись базы данных  в объект класса T.  
-        model.read(recordObject);
-        ///Добавить объект класса T в контейнер сериализации.
-        container.add(model);
-    }
-    setResult(container, Message::SQL_SUCCESS);
+    getAllRecordS<T>();
     return;
 
 }
@@ -173,6 +129,7 @@ template<typename T> bool DBManager::connectDB() {
     }
     return m_pModelWrapper->getSuccess();
 }
+
 ///-----------------------------------------------------------------------------
 ///
 ///             Получить запись из базы.
@@ -215,9 +172,56 @@ template<typename T> T DBManager::getRecord(const QString& queryStr) {
     setResult(model, Message::MODEL_GET_SUCCESS);
     return model;
 }
+
+
 ///-----------------------------------------------------------------------------
 ///
-///             Удаліть запись из базы.
+///             Получить запись из базы.
+///
+///-----------------------------------------------------------------------------
+
+template<typename T> ItemContainer<T> DBManager::getAllRecordS() {
+    //Контейнер, в который записываются  объекты сериализаци-модели.
+    ItemContainer<T> container;
+    //Задать  функцию для установки результата выполнения команды сервера
+    //и собщения о результате выполнения команды.
+    auto setResult = [this](ItemContainer<T> container, Message msg) {
+        //Подготовить данные.
+        QString json = JsonSerializer::serialize(container);
+        m_pModelWrapper->setData(json);
+        //Установить сообщение и результат выполнения команды.
+        ServerMessage::Result result = ServerMessage::outPut(msg);
+        m_pModelWrapper->setMessage(result.str);
+        m_pModelWrapper->setSuccess(result.success);
+    };
+
+    //Проверить  и выполнить  SQL запрос.
+    QSqlQuery query(m_Db);
+    ///Выполнить SQL запрос
+    if (!query.exec(T::getQuery())) {
+        setResult(container, Message::SQL_ERROR);
+        return container;
+    }
+    //Выборка данных.
+    while (query.next()) {
+        QJsonObject recordObject;
+        ///Экземпляр объекта класса T, который будет  сериализоваться.
+        T model;
+        for (int x = 0; x < query.record().count(); x++) {
+            recordObject.insert(query.record().fieldName(x), QJsonValue::fromVariant(query.value(x)));
+        }
+        ///Считать запись базы данных  в объект класса T.  
+        model.read(recordObject);
+        ///Добавить объект класса T в контейнер сериализации.
+        container.add(model);
+    }
+    setResult(container, Message::SQL_SUCCESS);
+    return container;
+
+}
+///-----------------------------------------------------------------------------
+///
+///             Удалить запись из базы.
 ///
 ///-----------------------------------------------------------------------------
 
