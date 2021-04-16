@@ -1,5 +1,4 @@
 #include "ClientController.h"
-#include "User.h"
 #include "ModelWrapper.h"
 #include "JsonSerializer.h"
 #include "ItemContainer.h"
@@ -56,6 +55,10 @@ void ClientController::init(ServerClient *apServerClient) {
     connect(m_pWorkerClient, SIGNAL(deleteUser(const qint64&)), SLOT(deleteUser(const qint64&)));
     // Сигнально-слотовое соединение для полуяения  сведений о   пользователе из  базы данных.
     connect(m_pWorkerClient, SIGNAL(getUserData(const qint64&)), SLOT(getUser(const qint64&)));
+    ///пользователь прошёл аутентификацию
+    ///необходимо установить данные сессионного пользователя
+    connect(m_pWorkerClient, SIGNAL(setSessionUser(const User&)), SLOT(setSessionUser(const User& )));
+
     // Сигнально-слотовое соединение  ожидания ответа от сервера.
     connect(m_pWorkerClient, SIGNAL(waitServer()), SLOT(waitReady()));
 }
@@ -282,5 +285,14 @@ void ClientController::setLogged(bool asLogged) {
     this->m_aLogged = asLogged;
 }
 
-/// Создать новый поток.
+///Получить пользователя сессии
+
+const User& ClientController::getSessionUser() {
+    return m_aSessionUser;
+}
+///Установить пользователя сессии
+
+void ClientController::setSessionUser(const User& user) {
+    m_aSessionUser = user;
+}
 

@@ -19,6 +19,19 @@
   <property name="autoFillBackground">
    <bool>true</bool>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QTableView {
+         Color: white; /* text color in the table */
+         Gridline-color: black; /*The inner frame color*/
+         Background-color: rgb(108, 108, 108); /* background color in the table*/
+    alternate-background-color: rgb(64, 64, 64);
+         Selection-color: white; /* The text color of the selected area*/
+         Selection-background-color: rgb(77, 77, 77); /*The background color of the selected area*/
+    border: 2px groove gray;
+    border-radius: 0px;
+    padding: 2px 4px;
+}</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">

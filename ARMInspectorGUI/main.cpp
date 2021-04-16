@@ -8,6 +8,7 @@
 #include "ModelWrapper.h"
 #include "myForm.h"
 #include "MainWindow.h"
+#include "juristFrm.h"
 
 int main(int argc, char *argv[]) {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -55,12 +56,24 @@ int main(int argc, char *argv[]) {
     if (!clientController.getLogged()) {
         return 0;
     }
+
+    User user = clientController.getSessionUser();
+
     /// ПРИМЕР ИСПОЛЬЗОВАНИЯ
     //clientController.getListModels("Select * from pass_list", ModelWrapper::Model::PassList);QApplication app(argc, argv);
-
-    MainWindow w;
-    w.setWindowState(Qt::WindowMaximized);
-    w.initClient(&clientController);
-    w.show();
-    return app.exec();
+    if (user.getName() == "admin") {
+        //QMessageBox::information(0, "Информация о пользователе", user.getName());
+        MainWindow w;
+        w.setWindowState(Qt::WindowMaximized);
+        w.initClient(&clientController);
+        w.show();
+        return app.exec();
+    } else {
+        juristFrm frm;
+        //QMenuBar * menuBar = frm.getMenuBar();
+        frm.setWindowTitle("АРМ юриста");
+        frm.setWindowState(Qt::WindowMaximized);
+        frm.show();
+        return app.exec();
+    }
 }

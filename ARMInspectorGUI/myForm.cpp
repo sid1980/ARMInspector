@@ -83,3 +83,4 @@ void myForm::initClient(ClientController *clientController) {
     connect(this, SIGNAL(ready()), m_pClientController, SLOT(formReady()));
 
 };
+

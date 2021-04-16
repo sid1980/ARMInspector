@@ -44,6 +44,17 @@ public:
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(839, 570);
         MainWindow->setAutoFillBackground(true);
+        MainWindow->setStyleSheet(QString::fromUtf8("QTableView {\n"
+"         Color: white; /* text color in the table */\n"
+"         Gridline-color: black; /*The inner frame color*/\n"
+"         Background-color: rgb(108, 108, 108); /* background color in the table*/\n"
+"    alternate-background-color: rgb(64, 64, 64);\n"
+"         Selection-color: white; /* The text color of the selected area*/\n"
+"         Selection-background-color: rgb(77, 77, 77); /*The background color of the selected area*/\n"
+"    border: 2px groove gray;\n"
+"    border-radius: 0px;\n"
+"    padding: 2px 4px;\n"
+"}"));
         actionAccount = new QAction(MainWindow);
         actionAccount->setObjectName(QString::fromUtf8("actionAccount"));
         action = new QAction(MainWindow);

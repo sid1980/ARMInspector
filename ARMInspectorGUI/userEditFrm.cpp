@@ -65,6 +65,7 @@ const QList<Inspection>& userEditFrm::getInspections()const {
 
 void userEditFrm::setInspections(const QList<Inspection>& inspections) {
     inspections_ = inspections;
+    this->getWidget()->comboBoxInspection->clear();
     for (auto& t : inspections_) {
         this->getWidget()->comboBoxInspection->addItem(t.getName());
     }

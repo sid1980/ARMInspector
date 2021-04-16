@@ -157,6 +157,7 @@ void WorkerClient::process() {
                 //Процесс обработки возвращённого реультата.    
                 User user;
                 JsonSerializer::parse(wrapper.getData(), user);
+                emit setSessionUser(user);
                 //MessageBox::information(0, "LOGIN",
                 //        "User with name " + user.getName().trimmed() + " is logged in");
                 qInfo() << "User with name " << user.getName().trimmed() << " is logged in";

@@ -50,12 +50,29 @@ public:
     QLabel *labelRole;
     QLabel *labelFio;
 
-    void setupUi(QDialog *userForm)
+    void setupUi(QDialog *userEditFrm)
     {
-        if (userForm->objectName().isEmpty())
-            userForm->setObjectName(QString::fromUtf8("userForm"));
-        userForm->resize(626, 472);
-        layoutWidget = new QWidget(userForm);
+        if (userEditFrm->objectName().isEmpty())
+            userEditFrm->setObjectName(QString::fromUtf8("userEditFrm"));
+        userEditFrm->resize(626, 472);
+        userEditFrm->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"color: white;\n"
+"background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #88d, stop: 0.1 #99e, stop: 0.49 #77c, stop: 0.5 #66b, stop: 1 #77c);\n"
+"border-width: 1px;\n"
+"border-color: #339;\n"
+"border-style: solid;\n"
+"border-radius: 7;\n"
+"padding: 3px;\n"
+"font-size: 10px;\n"
+"padding-left: 5px;\n"
+"padding-right: 5px;\n"
+"min-width: 50px;\n"
+"max-width: 50px;\n"
+"min-height: 13px;\n"
+"max-height: 13px;\n"
+"}\n"
+""));
+        layoutWidget = new QWidget(userEditFrm);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
         layoutWidget->setGeometry(QRect(20, 20, 581, 401));
         gridLayout = new QGridLayout(layoutWidget);
@@ -105,6 +122,46 @@ public:
 
         comboBoxInspection = new QComboBox(layoutWidget);
         comboBoxInspection->setObjectName(QString::fromUtf8("comboBoxInspection"));
+        comboBoxInspection->setStyleSheet(QString::fromUtf8("QComboBox{\n"
+"border:                 none;\n"
+"background-color:   rgb(87, 96, 134);\n"
+"color:                      rgb(255, 255, 255);\n"
+"font-weight:            bold;\n"
+"padding:                    5px \n"
+"\n"
+"}\n"
+"\n"
+"QComboBox::drop-down{\n"
+"    border:                 none;\n"
+"    background-color:   rgb(87, 96, 134);\n"
+"    color:                      rgb(255, 255, 255);\n"
+"    font-weight:            bold;\n"
+"    padding:                    0px;\n"
+"}\n"
+"\n"
+"QComboBox::down-arrow{\n"
+"    image:                      url(icons/combobox_down_arrow.png);\n"
+"    padding-right:          5px;\n"
+"}\n"
+"\n"
+"QListView{\n"
+"    border:                 none;\n"
+"    color:                      rgb(87, 96, 134);\n"
+"    background-color:   rgb(255, 255, 255);\n"
+"    font-weight:            bold;\n"
+"    selection-background-color: rgb(47, 175, 178);\n"
+"    show-decoration-selected: 1;\n"
+"    margin-left:                -10px;\n"
+"    padding-left    :           15px;\n"
+"}\n"
+"\n"
+"QListView::"
+                        "item:hover{\n"
+"\n"
+"    background-color:   rgb(47, 175, 178);\n"
+"    border:                 none;\n"
+"}\n"
+""));
 
         gridLayout->addWidget(comboBoxInspection, 1, 1, 1, 1);
 
@@ -150,16 +207,16 @@ public:
         gridLayout->addWidget(labelFio, 0, 0, 1, 1);
 
 
-        retranslateUi(userForm);
-        QObject::connect(buttonBox, SIGNAL(accepted()), userForm, SLOT(accept()));
-        QObject::connect(buttonBox, SIGNAL(rejected()), userForm, SLOT(reject()));
+        retranslateUi(userEditFrm);
+        QObject::connect(buttonBox, SIGNAL(accepted()), userEditFrm, SLOT(accept()));
+        QObject::connect(buttonBox, SIGNAL(rejected()), userEditFrm, SLOT(reject()));
 
-        QMetaObject::connectSlotsByName(userForm);
+        QMetaObject::connectSlotsByName(userEditFrm);
     } // setupUi
 
-    void retranslateUi(QDialog *userForm)
+    void retranslateUi(QDialog *userEditFrm)
     {
-        userForm->setWindowTitle(QCoreApplication::translate("userEditFrm", "\320\240\320\265\320\264\320\260\320\272\321\202\320\270\321\200\320\276\320\262\320\260\320\275\320\270\320\265 \320\277\320\276\320\273\321\214\320\267\320\276\320\262\320\260\321\202\320\265\320\273\321\217", nullptr));
+        userEditFrm->setWindowTitle(QCoreApplication::translate("userEditFrm", "\320\240\320\265\320\264\320\260\320\272\321\202\320\270\321\200\320\276\320\262\320\260\320\275\320\270\320\265 \320\277\320\276\320\273\321\214\320\267\320\276\320\262\320\260\321\202\320\265\320\273\321\217", nullptr));
         labelName->setText(QCoreApplication::translate("userEditFrm", "\320\230\320\274\321\217 \320\277\320\276\320\273\321\214\320\267\320\276\320\262\320\260\321\202\320\265\320\273\321\217", nullptr));
         labelInspection->setText(QCoreApplication::translate("userEditFrm", "\320\230\320\275\321\201\320\277\320\265\320\272\321\206\320\270\321\217", nullptr));
         groupBoxRole->setTitle(QString());

@@ -57,6 +57,7 @@ Ui::userForm* userForm::getWidget() {
 const QList<Inspection>& userForm::getInspections()const {
     return inspections_;
 };
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Инициализировать список инспекций и
@@ -66,8 +67,11 @@ const QList<Inspection>& userForm::getInspections()const {
 
 void userForm::setInspections(const QList<Inspection>& inspections) {
     inspections_ = inspections;
+    this->getWidget()->comboBoxInspection->clear();
     for (auto& t : inspections_) {
         this->getWidget()->comboBoxInspection->addItem(t.getName());
     }
 
 }
+
+

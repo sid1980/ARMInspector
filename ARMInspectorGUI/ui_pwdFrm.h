@@ -40,10 +40,33 @@ public:
         if (pwdFrm->objectName().isEmpty())
             pwdFrm->setObjectName(QString::fromUtf8("pwdFrm"));
         pwdFrm->setWindowModality(Qt::WindowModal);
-        pwdFrm->resize(400, 292);
+        pwdFrm->resize(400, 235);
+        pwdFrm->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"color: white;\n"
+"background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #88d, stop: 0.1 #99e, stop: 0.49 #77c, stop: 0.5 #66b, stop: 1 #77c);\n"
+"border-width: 1px;\n"
+"border-color: #339;\n"
+"border-style: solid;\n"
+"border-radius: 7;\n"
+"padding: 3px;\n"
+"font-size: 10px;\n"
+"padding-left: 5px;\n"
+"padding-right: 5px;\n"
+"min-width: 50px;\n"
+"max-width: 50px;\n"
+"min-height: 13px;\n"
+"max-height: 13px;\n"
+"}\n"
+"QLineEdit {\n"
+"padding: 1px;\n"
+"border-style: solid;\n"
+"border: 2px solid gray;\n"
+"border-radius: 8px;\n"
+"}\n"
+""));
         layoutWidget = new QWidget(pwdFrm);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(20, 70, 371, 181));
+        layoutWidget->setGeometry(QRect(20, 50, 351, 171));
         gridLayout = new QGridLayout(layoutWidget);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         gridLayout->setContentsMargins(0, 0, 0, 0);
@@ -80,7 +103,7 @@ public:
 
         layoutWidget1 = new QWidget(pwdFrm);
         layoutWidget1->setObjectName(QString::fromUtf8("layoutWidget1"));
-        layoutWidget1->setGeometry(QRect(20, 30, 371, 40));
+        layoutWidget1->setGeometry(QRect(20, 10, 351, 40));
         gridLayout_2 = new QGridLayout(layoutWidget1);
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         gridLayout_2->setContentsMargins(0, 0, 0, 0);

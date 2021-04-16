@@ -7,6 +7,7 @@
 #include "ServerClient.h"
 #include "ModelWrapper.h"
 #include "WorkerClient.h"
+#include "User.h"
 
 class ClientController : public QObject {
 
@@ -40,6 +41,8 @@ public:
     void getModel(const qint64&, ModelWrapper::Model model);
     ///Удалить модель
     void deleteModel(const qint64&, ModelWrapper::Model model);
+    ///Получить пользователя сессии
+    const User& getSessionUser();
 
 
 signals:
@@ -67,6 +70,8 @@ public slots:
     /// @param asLogin  Имя пользователя. 
     /// @param asPassword Пароль пользователя.
     void login(const QString &asLogin, const QString & asPassword);
+    ///Установить пользователя сессии
+    void  setSessionUser(const User& );
     /// Получить список моделей.
     /// @param asQuery SQL запрос.
     /// @param asModel Модель данных.
@@ -75,7 +80,7 @@ public slots:
     void addUser(const User&);
     ///отредактировать данные о  пользователе
     void updateUser(const User&);
-    ///добавить в базу нового пользователя
+    ///получить   пользователя
     void getUser(const qint64&);
     ///Удалить пользователя
     void deleteUser(const qint64&);
@@ -87,7 +92,7 @@ private:
     bool m_aLogged{false};
     ///Командная обёртка в форме строки.
     QString m_aModelWrapperString;
-
+    User m_aSessionUser;
 
 
 };

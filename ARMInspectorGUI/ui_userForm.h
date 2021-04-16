@@ -59,6 +59,23 @@ public:
         if (userForm->objectName().isEmpty())
             userForm->setObjectName(QString::fromUtf8("userForm"));
         userForm->resize(626, 586);
+        userForm->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"color: white;\n"
+"background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #88d, stop: 0.1 #99e, stop: 0.49 #77c, stop: 0.5 #66b, stop: 1 #77c);\n"
+"border-width: 1px;\n"
+"border-color: #339;\n"
+"border-style: solid;\n"
+"border-radius: 7;\n"
+"padding: 3px;\n"
+"font-size: 10px;\n"
+"padding-left: 5px;\n"
+"padding-right: 5px;\n"
+"min-width: 50px;\n"
+"max-width: 50px;\n"
+"min-height: 13px;\n"
+"max-height: 13px;\n"
+"}\n"
+""));
         layoutWidget = new QWidget(userForm);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
         layoutWidget->setGeometry(QRect(20, 50, 581, 461));
@@ -142,6 +159,46 @@ public:
 
         comboBoxInspection = new QComboBox(layoutWidget);
         comboBoxInspection->setObjectName(QString::fromUtf8("comboBoxInspection"));
+        comboBoxInspection->setStyleSheet(QString::fromUtf8("QComboBox{\n"
+"border:                 none;\n"
+"background-color:   rgb(87, 96, 134);\n"
+"color:                      rgb(255, 255, 255);\n"
+"font-weight:            bold;\n"
+"padding:                    5px \n"
+"\n"
+"}\n"
+"\n"
+"QComboBox::drop-down{\n"
+"    border:                 none;\n"
+"    background-color:   rgb(87, 96, 134);\n"
+"    color:                      rgb(255, 255, 255);\n"
+"    font-weight:            bold;\n"
+"    padding:                    0px;\n"
+"}\n"
+"\n"
+"QComboBox::down-arrow{\n"
+"    image:                      url(icons/combobox_down_arrow.png);\n"
+"    padding-right:          5px;\n"
+"}\n"
+"\n"
+"QListView{\n"
+"    border:                 none;\n"
+"    color:                      rgb(87, 96, 134);\n"
+"    background-color:   rgb(255, 255, 255);\n"
+"    font-weight:            bold;\n"
+"    selection-background-color: rgb(47, 175, 178);\n"
+"    show-decoration-selected: 1;\n"
+"    margin-left:                -10px;\n"
+"    padding-left    :           15px;\n"
+"}\n"
+"\n"
+"QListView::"
+                        "item:hover{\n"
+"\n"
+"    background-color:   rgb(47, 175, 178);\n"
+"    border:                 none;\n"
+"}\n"
+""));
 
         gridLayout->addWidget(comboBoxInspection, 1, 1, 1, 1);
 

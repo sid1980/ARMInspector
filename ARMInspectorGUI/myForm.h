@@ -40,7 +40,6 @@ public:
     void initApp(QApplication *app);
     ///Обработчик события закрытия окна
     void closeEvent(QCloseEvent* ev);
-
 public slots:
     ///Закрытие приложения
     void exit_app();

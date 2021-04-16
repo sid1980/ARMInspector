@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>userEditFrm</class>
- <widget class="QDialog" name="userForm">
+ <widget class="QDialog" name="userEditFrm">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -12,6 +12,25 @@
   </property>
   <property name="windowTitle">
    <string>Редактирование пользователя</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QPushButton {
+color: white;
+background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #88d, stop: 0.1 #99e, stop: 0.49 #77c, stop: 0.5 #66b, stop: 1 #77c);
+border-width: 1px;
+border-color: #339;
+border-style: solid;
+border-radius: 7;
+padding: 3px;
+font-size: 10px;
+padding-left: 5px;
+padding-right: 5px;
+min-width: 50px;
+max-width: 50px;
+min-height: 13px;
+max-height: 13px;
+}
+</string>
   </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
@@ -110,7 +129,49 @@
      <widget class="QLineEdit" name="lineEditFio"/>
     </item>
     <item row="1" column="1">
-     <widget class="QComboBox" name="comboBoxInspection"/>
+     <widget class="QComboBox" name="comboBoxInspection">
+      <property name="styleSheet">
+       <string notr="true">QComboBox{
+border:                 none;
+background-color:   rgb(87, 96, 134);
+color:                      rgb(255, 255, 255);
+font-weight:            bold;
+padding:                    5px 
+
+}
+
+QComboBox::drop-down{
+    border:                 none;
+    background-color:   rgb(87, 96, 134);
+    color:                      rgb(255, 255, 255);
+    font-weight:            bold;
+    padding:                    0px;
+}
+
+QComboBox::down-arrow{
+    image:                      url(icons/combobox_down_arrow.png);
+    padding-right:          5px;
+}
+
+QListView{
+    border:                 none;
+    color:                      rgb(87, 96, 134);
+    background-color:   rgb(255, 255, 255);
+    font-weight:            bold;
+    selection-background-color: rgb(47, 175, 178);
+    show-decoration-selected: 1;
+    margin-left:                -10px;
+    padding-left    :           15px;
+}
+
+QListView::item:hover{
+
+    background-color:   rgb(47, 175, 178);
+    border:                 none;
+}
+</string>
+      </property>
+     </widget>
     </item>
     <item row="3" column="1">
      <widget class="QGroupBox" name="groupBoxStatus">
@@ -204,7 +265,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>userForm</receiver>
+   <receiver>userEditFrm</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -220,7 +281,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>userForm</receiver>
+   <receiver>userEditFrm</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

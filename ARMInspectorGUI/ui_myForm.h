@@ -23,7 +23,7 @@ QT_BEGIN_NAMESPACE
 class Ui_myForm
 {
 public:
-    QWidget *widget;
+    QWidget *layoutWidget;
     QGridLayout *gridLayout;
     QLabel *label;
     QLineEdit *nameEdit;
@@ -37,51 +37,80 @@ public:
         if (myForm->objectName().isEmpty())
             myForm->setObjectName(QString::fromUtf8("myForm"));
         myForm->setWindowModality(Qt::WindowModal);
-        myForm->resize(400, 300);
-        widget = new QWidget(myForm);
-        widget->setObjectName(QString::fromUtf8("widget"));
-        widget->setGeometry(QRect(70, 56, 281, 121));
-        gridLayout = new QGridLayout(widget);
+        myForm->resize(400, 252);
+        myForm->setStyleSheet(QString::fromUtf8("#myForm\n"
+"{\n"
+"background: rgba(32, 80, 96, 100);\n"
+"border-radius: 8px;\n"
+"}\n"
+"\n"
+"QPushButton {\n"
+"color: white;\n"
+"background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #88d, stop: 0.1 #99e, stop: 0.49 #77c, stop: 0.5 #66b, stop: 1 #77c);\n"
+"border-width: 1px;\n"
+"border-color: #339;\n"
+"border-style: solid;\n"
+"border-radius: 7;\n"
+"padding: 3px;\n"
+"font-size: 10px;\n"
+"padding-left: 5px;\n"
+"padding-right: 5px;\n"
+"min-width: 50px;\n"
+"max-width: 50px;\n"
+"min-height: 13px;\n"
+"max-height: 13px;\n"
+"}\n"
+"\n"
+"QLabel  {\n"
+"font-size: 15px;\n"
+"color: white;\n"
+"}\n"
+"\n"
+"QLineEdit {\n"
+"padding: 1px;\n"
+"border-style: solid;\n"
+"border: 2px solid gray;\n"
+"border-radius: 8px;\n"
+"}\n"
+""));
+        layoutWidget = new QWidget(myForm);
+        layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
+        layoutWidget->setGeometry(QRect(60, 40, 261, 161));
+        gridLayout = new QGridLayout(layoutWidget);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         gridLayout->setContentsMargins(0, 0, 0, 0);
-        label = new QLabel(widget);
+        label = new QLabel(layoutWidget);
         label->setObjectName(QString::fromUtf8("label"));
 
         gridLayout->addWidget(label, 0, 0, 1, 1);
 
-        nameEdit = new QLineEdit(widget);
+        nameEdit = new QLineEdit(layoutWidget);
         nameEdit->setObjectName(QString::fromUtf8("nameEdit"));
 
         gridLayout->addWidget(nameEdit, 0, 1, 1, 2);
 
-        label_2 = new QLabel(widget);
+        label_2 = new QLabel(layoutWidget);
         label_2->setObjectName(QString::fromUtf8("label_2"));
 
         gridLayout->addWidget(label_2, 1, 0, 1, 1);
 
-        passEdit = new QLineEdit(widget);
+        passEdit = new QLineEdit(layoutWidget);
         passEdit->setObjectName(QString::fromUtf8("passEdit"));
         passEdit->setEchoMode(QLineEdit::Password);
 
         gridLayout->addWidget(passEdit, 1, 1, 1, 2);
 
-        okButton = new QPushButton(widget);
+        okButton = new QPushButton(layoutWidget);
         okButton->setObjectName(QString::fromUtf8("okButton"));
         okButton->setToolTipDuration(-5);
 
         gridLayout->addWidget(okButton, 2, 1, 1, 1);
 
-        cancelButton = new QPushButton(widget);
+        cancelButton = new QPushButton(layoutWidget);
         cancelButton->setObjectName(QString::fromUtf8("cancelButton"));
 
         gridLayout->addWidget(cancelButton, 2, 2, 1, 1);
 
-        okButton->raise();
-        nameEdit->raise();
-        passEdit->raise();
-        label->raise();
-        label_2->raise();
-        cancelButton->raise();
 
         retranslateUi(myForm);
 

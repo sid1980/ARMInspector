@@ -49,6 +49,8 @@ public:
 signals:
     ///Установить идентификатор клиента
     void setID(int asID);
+    ///Установить сессионого пользователя
+    void setSessionUser(const User&);
     ///Ждать ответ сервера
     void waitServer();
     ///Сигнализировать о завершении процесса обработки сообщения от сервера.
@@ -66,7 +68,7 @@ signals:
     ///Удалить  данные о пользователе
     void deleteUser(const qint64&);
     ///Запросить список инспекций
-    void  getInspections();    
+    void getInspections();
     ///Cписок инспекций подготовлен  
     void listInspectionsReady(const QList<Inspection>&);
     ///Сигнал завершения работы.
