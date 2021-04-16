@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>626</width>
-    <height>586</height>
+    <height>516</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,49 +30,62 @@ max-width: 50px;
 min-height: 13px;
 max-height: 13px;
 }
+QLineEdit {
+padding: 1px;
+border-style: solid;
+border: 1px solid gray;
+border-radius: 8px;
+ min-height: 30px;
+}
+QGroupBox {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #E0E0E0, stop: 1 #FFFFFF);
+    border: 2px solid gray;
+    border-radius: 5px;
+    margin-top: 1ex; /* leave space at the top for the title */
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top center; /* position at the top center */
+    padding: 0 3px;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #FFOECE, stop: 1 #FFFFFF);
+}
+
 </string>
   </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>50</y>
+     <y>20</y>
      <width>581</width>
-     <height>461</height>
+     <height>481</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
-     <widget class="QLabel" name="labelInspection">
-      <property name="text">
-       <string>Инспекция</string>
+    <item row="8" column="1">
+     <widget class="QDialogButtonBox" name="buttonBox">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="standardButtons">
+       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
       </property>
      </widget>
     </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="labelName">
-      <property name="text">
-       <string>Имя пользователя</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QLineEdit" name="lineEditPassword_2">
-      <property name="frame">
-       <bool>true</bool>
-      </property>
-      <property name="echoMode">
-       <enum>QLineEdit::Password</enum>
-      </property>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="lineEditFio">
       <property name="placeholderText">
-       <string>пароль(повторить)</string>
+       <string>фио</string>
       </property>
      </widget>
     </item>
-    <item row="7" column="0">
-     <widget class="QLabel" name="labelAccess">
+    <item row="3" column="0">
+     <widget class="QLabel" name="labelPassword">
       <property name="text">
-       <string>Доступ</string>
+       <string>Пароль</string>
       </property>
      </widget>
     </item>
@@ -80,6 +93,27 @@ max-height: 13px;
      <widget class="QLabel" name="labelRole">
       <property name="text">
        <string>Роль</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="labelFio">
+      <property name="text">
+       <string>ФИО</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="labelInspection">
+      <property name="text">
+       <string>Инспекция</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0">
+     <widget class="QLabel" name="labelAccess">
+      <property name="text">
+       <string>Доступ</string>
       </property>
      </widget>
     </item>
@@ -102,27 +136,76 @@ max-height: 13px;
       </property>
      </widget>
     </item>
+    <item row="5" column="1">
+     <widget class="QGroupBox" name="groupBoxStatus">
+      <property name="title">
+       <string/>
+      </property>
+      <widget class="QRadioButton" name="radioButton_1">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>341</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Старший государственный инспектор</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="radioButton_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>40</y>
+         <width>311</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Государственный инспектор</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="radioButton_3">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>60</y>
+         <width>100</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Секретарь</string>
+       </property>
+      </widget>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="labelStatus">
+      <property name="text">
+       <string>Статус</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="QLineEdit" name="lineEditPassword_2">
+      <property name="frame">
+       <bool>true</bool>
+      </property>
+      <property name="echoMode">
+       <enum>QLineEdit::Password</enum>
+      </property>
+      <property name="placeholderText">
+       <string>пароль(повторить)</string>
+      </property>
+     </widget>
+    </item>
     <item row="4" column="0">
      <widget class="QLabel" name="labelPassword_2">
       <property name="text">
        <string>Пароль(Повторить)</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="labelFio">
-      <property name="text">
-       <string>ФИО</string>
-      </property>
-     </widget>
-    </item>
-    <item row="8" column="1">
-     <widget class="QDialogButtonBox" name="buttonBox">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="standardButtons">
-       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
       </property>
      </widget>
     </item>
@@ -185,76 +268,52 @@ max-height: 13px;
       </widget>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEditFio">
-      <property name="placeholderText">
-       <string>фио</string>
-      </property>
-     </widget>
-    </item>
     <item row="1" column="1">
      <widget class="QComboBox" name="comboBoxInspection">
       <property name="styleSheet">
-       <string notr="true">QComboBox{
-border:                 none;
-background-color:   rgb(87, 96, 134);
-color:                      rgb(255, 255, 255);
-font-weight:            bold;
-padding:                    5px 
-
+       <string notr="true">QComboBox {
+   background: qlineargradient(
+   x1:0, y1:0, x2:0, y2:1,
+   stop:0 #f9f9f9,
+   stop: 0.5 #c6c6c6,
+   stop: 0.6 #dfdfdf,
+   stop:1 #f9f9f9 );
+   border-style: solid;
+   border-width: 1px;
+   border-color: rgb(0, 93, 168);
+   border-radius: 8px;
+   color: rgb(0, 93, 168);
+   min-width: 170px;
+   min-height: 30px;
+   padding-left: 15px;
 }
-
-QComboBox::drop-down{
-    border:                 none;
-    background-color:   rgb(87, 96, 134);
-    color:                      rgb(255, 255, 255);
-    font-weight:            bold;
-    padding:                    0px;
+QComboBox:on {
+   border-radius: 30px;
+   background:transparent;
 }
-
-QComboBox::down-arrow{
-    image:                      url(icons/combobox_down_arrow.png);
-    padding-right:          5px;
+QComboBox::drop-down {
+   image: url(:/bwt/downarrow.png);
+   subcontrol-position: center right;
+   margin-right: 10px;
 }
-
-QListView{
-    border:                 none;
-    color:                      rgb(87, 96, 134);
-    background-color:   rgb(255, 255, 255);
-    font-weight:            bold;
-    selection-background-color: rgb(47, 175, 178);
-    show-decoration-selected: 1;
-    margin-left:                -10px;
-    padding-left    :           15px;
+QComboBox QAbstractItemView::item {
+   padding: 10px 10px 10px 10px;
 }
-
-QListView::item:hover{
-
-    background-color:   rgb(47, 175, 178);
-    border:                 none;
+QComboBox QAbstractItemView {
+   color: rgb(0, 93, 168);
+   background: transparent;
 }
-</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="labelPassword">
-      <property name="text">
-       <string>Пароль</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="1">
-     <widget class="QCheckBox" name="checkBox">
-      <property name="text">
-       <string>Только чтение</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0">
-     <widget class="QLabel" name="labelStatus">
-      <property name="text">
-       <string>Статус</string>
+QComboBox QListView::item {
+   background: qradialgradient(
+   cx: 0.5, cy: -1.6, fx: 0.5, fy: 0,
+   radius: 2,
+   stop: 0 #C4C4C4,
+   stop: 1 #DBDBDB );
+   border-style: solid;
+   border-width: 1px;
+   border-color: rgb(0, 93, 168);
+   border-radius: 20px;
+}</string>
       </property>
      </widget>
     </item>
@@ -268,50 +327,18 @@ QListView::item:hover{
       </property>
      </widget>
     </item>
-    <item row="5" column="1">
-     <widget class="QGroupBox" name="groupBoxStatus">
-      <property name="title">
-       <string/>
+    <item row="2" column="0">
+     <widget class="QLabel" name="labelName">
+      <property name="text">
+       <string>Имя пользователя</string>
       </property>
-      <widget class="QRadioButton" name="radioButton_1">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>20</y>
-         <width>341</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Старший государственный инспектор</string>
-       </property>
-      </widget>
-      <widget class="QRadioButton" name="radioButton_2">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>40</y>
-         <width>311</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Государственный инспектор</string>
-       </property>
-      </widget>
-      <widget class="QRadioButton" name="radioButton_3">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>60</y>
-         <width>100</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Секретарь</string>
-       </property>
-      </widget>
+     </widget>
+    </item>
+    <item row="7" column="1">
+     <widget class="QCheckBox" name="checkBox">
+      <property name="text">
+       <string>Только чтение</string>
+      </property>
      </widget>
     </item>
    </layout>
