@@ -30,6 +30,12 @@
     border: 2px groove gray;
     border-radius: 0px;
     padding: 2px 4px;
+}
+QHeaderView::section {
+    background-color: #646464;
+    padding: 4px;
+    border: 0px;
+    font-size: 14pt;
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">

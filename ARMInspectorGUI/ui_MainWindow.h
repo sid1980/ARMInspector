@@ -54,6 +54,12 @@ public:
 "    border: 2px groove gray;\n"
 "    border-radius: 0px;\n"
 "    padding: 2px 4px;\n"
+"}\n"
+"QHeaderView::section {\n"
+"    background-color: #646464;\n"
+"    padding: 4px;\n"
+"    border: 0px;\n"
+"    font-size: 14pt;\n"
 "}"));
         actionAccount = new QAction(MainWindow);
         actionAccount->setObjectName(QString::fromUtf8("actionAccount"));
