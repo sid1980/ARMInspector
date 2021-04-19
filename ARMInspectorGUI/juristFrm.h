@@ -17,6 +17,7 @@
 #include "ui_juristFrm.h"
 #include <QMenuBar>
 #include <QTableView>
+#include <QModelIndex>
 
 class juristFrm : public QMainWindow {
     Q_OBJECT
@@ -29,7 +30,8 @@ public:
     void OnFileNew();
     void OnFileSave();
     void OnFileOpen();
-
+   private slots:
+    void onTableClicked(const QModelIndex &);
 private:
     Ui::juristFrm widget;
     QMenuBar * m_pMenuBar;

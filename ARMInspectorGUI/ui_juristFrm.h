@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'juristFrm.ui'
 **
-** Created by: Qt User Interface Compiler version 5.13.0
+** Created by: Qt User Interface Compiler version 5.15.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -52,7 +52,7 @@ public:
 "    background-color: #fff;\n"
 "    background-image: url(:/img/other/background.png);\n"
 "    gridline-color: #777;\n"
-"    selection-background-color: #ccdfff;\n"
+"    selection-background-color: royalblue;\n"
 "    color:#333;\n"
 "    font-size:11px;\n"
 " }\n"
@@ -66,8 +66,8 @@ public:
 " }\n"
 " QScrollBar::handle:vertical {\n"
 "    background-color: qlineargradient( x1: 0, y1: 0, x2: 1, y2: 0,\n"
-"                                    stop: 0 #4287ff, stop: 1 #356ccc)"
-                        ";\n"
+"                                    stop: 0 #4287ff, stop: 1 #356cc"
+                        "c);\n"
 "     border-radius: 4px;\n"
 "     min-height: 20px;\n"
 "     margin: 0px 2px 0px 2px;\n"

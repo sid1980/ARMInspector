@@ -192,6 +192,7 @@ void juristFrm::report() {
                 QStandardItem *item = new QStandardItem(value);
                 model->setItem(lineindex, j, item);
                 item->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+                item->setEditable(false);
             }
             lineindex++;
         }
@@ -230,6 +231,7 @@ void juristFrm::report() {
                 this->widget.tableView->setRowHeight(i, 35);
         }
     }
+    connect(this->widget.tableView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
     //this->widget.tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     //this->widget.tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     //QString style = R"(
@@ -242,7 +244,13 @@ void juristFrm::report() {
     //               )";
 
 }
-
+void juristFrm::onTableClicked(const QModelIndex &index){
+    if (index.isValid()) {
+        QString cellText = index.data().toString(); 
+        QMessageBox::information(this, "АРМ Юриста", cellText);
+        
+    }
+}
 void juristFrm::spanTbl() {
     QFile file("test2.csv");
     if (file.open(QIODevice::ReadOnly)) {
