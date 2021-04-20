@@ -151,28 +151,33 @@ max-height: 30px;
          </size>
         </property>
         <property name="styleSheet">
-         <string notr="true">QDateEdit
-{
-    background-color: white;
-    border-style: solid;
-    border-width: 3px;
-    border-color: rgb(100,100,100);
-    spacing: 5px; 
+         <string notr="true">QDateEdit {
+	border: 2px solid lightgray;
+	border-radius: 8px;
+	height: 30px;
 }
 
-
 QDateEdit::drop-down {
-    image: url(:/new/myapp/cbarrowdn.png);
-    width:50px;
-    height:15px;
-    subcontrol-position: right top;
-    subcontrol-origin:margin;
-    background-color: white;
-    border-style: solid;
-    border-width: 3px;
-    border-color: rgb(100,100,100);
-   spacing: 5px; 
-}</string>
+	subcontrol-origin: padding;
+	subcontrol-position: top right;
+	width: 15px;
+
+	border-left-width: 1px;
+	border-left-color: darkgray;
+	border-left-style: solid;
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+}
+
+QDateEdit::down-arrow {
+	image: url(:/DateEditTest/Resources/Combobox Arrow.png);
+}
+
+QDateEdit::drop-down:hover {
+	/* Does this work with QDateEdit??? */
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #d8d7d7, stop: 1 #e9e9e9);
+}
+</string>
         </property>
         <property name="frame">
          <bool>true</bool>

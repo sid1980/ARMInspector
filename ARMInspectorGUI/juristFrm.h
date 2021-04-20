@@ -19,6 +19,7 @@
 #include <QTableView>
 #include <QModelIndex>
 #include "ClientController.h"
+#include "Mro.h"
 
 class juristFrm : public QMainWindow {
     Q_OBJECT
@@ -35,10 +36,13 @@ public:
     void OnFileOpen();
 private slots:
     void onTableClicked(const QModelIndex &);
+    void setlistMro(const QList<Mro>&);
 private:
     Ui::juristFrm widget;
     QMenuBar * m_pMenuBar;
     QMenu * m_pMenu;
+     ///список МРО
+    QList<Mro> mro_;
     ///указатель контроллера клиента.
     ClientController *m_pClientController{nullptr};
 

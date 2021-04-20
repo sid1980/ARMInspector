@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'juristFrm.ui'
 **
-** Created by: Qt User Interface Compiler version 5.13.0
+** Created by: Qt User Interface Compiler version 5.15.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -158,28 +158,33 @@ public:
         sizePolicy.setHeightForWidth(dateEdit->sizePolicy().hasHeightForWidth());
         dateEdit->setSizePolicy(sizePolicy);
         dateEdit->setMaximumSize(QSize(16777213, 16777214));
-        dateEdit->setStyleSheet(QString::fromUtf8("QDateEdit\n"
-"{\n"
-"    background-color: white;\n"
-"    border-style: solid;\n"
-"    border-width: 3px;\n"
-"    border-color: rgb(100,100,100);\n"
-"    spacing: 5px; \n"
+        dateEdit->setStyleSheet(QString::fromUtf8("QDateEdit {\n"
+"	border: 2px solid lightgray;\n"
+"	border-radius: 8px;\n"
+"	height: 30px;\n"
 "}\n"
 "\n"
-"\n"
 "QDateEdit::drop-down {\n"
-"    image: url(:/new/myapp/cbarrowdn.png);\n"
-"    width:50px;\n"
-"    height:15px;\n"
-"    subcontrol-position: right top;\n"
-"    subcontrol-origin:margin;\n"
-"    background-color: white;\n"
-"    border-style: solid;\n"
-"    border-width: 3px;\n"
-"    border-color: rgb(100,100,100);\n"
-"   spacing: 5px; \n"
-"}"));
+"	subcontrol-origin: padding;\n"
+"	subcontrol-position: top right;\n"
+"	width: 15px;\n"
+"\n"
+"	border-left-width: 1px;\n"
+"	border-left-color: darkgray;\n"
+"	border-left-style: solid;\n"
+"	border-top-right-radius: 3px;\n"
+"	border-bottom-right-radius: 3px;\n"
+"}\n"
+"\n"
+"QDateEdit::down-arrow {\n"
+"	image: url(:/DateEditTest/Resources/Combobox Arrow.png);\n"
+"}\n"
+"\n"
+"QDateEdit::drop-down:hover {\n"
+"	/* Does this work with QDateEdit??? */\n"
+"	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #d8d7d7, stop: 1 #e9e9e9);\n"
+"}\n"
+""));
         dateEdit->setFrame(true);
         dateEdit->setButtonSymbols(QAbstractSpinBox::NoButtons);
         dateEdit->setProperty("showGroupSeparator", QVariant(true));

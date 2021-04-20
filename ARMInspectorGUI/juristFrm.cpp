@@ -318,10 +318,24 @@ void juristFrm::initClient(ClientController *clientController) {
     m_pClientController = clientController;
     // Сигнально-слотовое соединение, сигнализирующее, что   контроллер комманд
     // готов вернуть  результат  выполнения запроса к серверу.
-    //connect(this, SIGNAL(ready()), m_pClientController, SLOT(formReady()));
+    connect(m_pClientController, SIGNAL(listMroReady(const QList<Mro>&)),
+            this, SLOT(setlistMro(const QList<Mro>&)));
 
 };
+///-----------------------------------------------------------------------------
+///
+///         Инициализация ссылки на контроллер клиента.
+///          
+///-----------------------------------------------------------------------------
 
+    void juristFrm::setlistMro(const QList<Mro>& mro){
+        mro_=mro;
+            this->widget.comboBox->clear();
+    for (auto& t : mro_) {
+        this->widget.comboBox->addItem(t.getName());
+    }
+
+    }
 
 //  QFile styleF;
 //    styleF.setFileName(":/qss/style.qss");

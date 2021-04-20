@@ -25,6 +25,7 @@
 #include "ItemContainer.h"
 #include "ModelList.h"
 #include "User.h"
+#include "Mro.h"
 #include "UserView.h"
 #include "Inspection.h"
 #include "dialog.h"
@@ -71,6 +72,8 @@ signals:
     void getInspections();
     ///Cписок инспекций подготовлен  
     void listInspectionsReady(const QList<Inspection>&);
+    ///Cписок МРО подготовлен  
+    void listMroReady(const QList<Mro>&);
     ///Сигнал завершения работы.
     /// @param asResult Результат выполнения запроса 
     void finished(QString asResult);

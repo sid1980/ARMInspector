@@ -58,6 +58,9 @@ void ClientController::init(ServerClient *apServerClient) {
     ///пользователь прошёл аутентификацию
     ///необходимо установить данные сессионного пользователя
     connect(m_pWorkerClient, SIGNAL(setSessionUser(const User&)), SLOT(setSessionUser(const User& )));
+    ///список МРО получен от сервера 
+    connect(m_pWorkerClient, SIGNAL(listMroReady(const QList<Mro>&)), this,
+            SIGNAL(listMroReady(const QList<Mro>&)));
 
     // Сигнально-слотовое соединение  ожидания ответа от сервера.
     connect(m_pWorkerClient, SIGNAL(waitServer()), SLOT(waitReady()));

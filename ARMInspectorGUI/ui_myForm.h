@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'myForm.ui'
 **
-** Created by: Qt User Interface Compiler version 5.13.0
+** Created by: Qt User Interface Compiler version 5.15.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -57,8 +57,8 @@ public:
 "padding-right: 5px;\n"
 "min-width: 50px;\n"
 "max-width: 100px;\n"
-"min-height: 13px;\n"
-"max-height: 13px;\n"
+"min-height: 23px;\n"
+"max-height: 23px;\n"
 "}\n"
 "\n"
 "QLabel  {\n"

@@ -122,6 +122,15 @@ void WorkerClient::process() {
                 //Процесс обработки возвращённого реультата.    
 
                 switch (model) {
+                    case ModelWrapper::Model::Mro:
+                    {
+                        ItemContainer<Mro> mroContainer;
+                        JsonSerializer::parse(wrapper.getData(), mroContainer);
+                        QList<Mro> mro = mroContainer.getItemsList();
+                        //QMessageBox::information(0, "Information Box", inspections[1].getName());
+                        emit listMroReady(mro);
+
+                    }
                     case ModelWrapper::Model::Inspection:
                     {
                         ItemContainer<Inspection> inspectionContainer;

@@ -8,6 +8,7 @@
 #include "ModelWrapper.h"
 #include "WorkerClient.h"
 #include "User.h"
+#include "Mro.h"
 
 class ClientController : public QObject {
 
@@ -43,10 +44,14 @@ public:
     void deleteModel(const qint64&, ModelWrapper::Model model);
     ///Получить пользователя сессии
     const User& getSessionUser();
+    ///Полчить список МРО
+    void getListMRO();
 
 
 signals:
     void ready();
+    ///Cписок МРО подготовлен  
+    void listMroReady(const QList<Mro>&);
 
 private slots:
 
@@ -58,8 +63,6 @@ private slots:
     void setSessionID(int asID);
     ///Полчить список инспекций
     void getListInspections();
-    ///Полчить список МРО
-    void getListMRO();
     ///заменить пароль пользователя
     void setPwd(const User&);
     ///Установить сигнал готовности формы 
