@@ -82,6 +82,9 @@ void ClientController::formReady() {
 void ClientController::getListInspections() {
     this->getListModels(ModelWrapper::Model::Inspection);
 };
+void ClientController::getListMRO() {
+    this->getListModels(ModelWrapper::Model::Mro);
+};
 
 ///Ждать сигнала готовности данных.
 

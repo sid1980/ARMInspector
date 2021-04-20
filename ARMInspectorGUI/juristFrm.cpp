@@ -160,7 +160,11 @@ void juristFrm::OnFileOpen() {
 
 
 
-///Отчёт
+///-----------------------------------------------------------------------------
+///
+///         Отчёт.
+///          
+///-----------------------------------------------------------------------------
 
 void juristFrm::report() {
     //QMessageBox::critical(0, qApp->tr("Cannot open database"),
@@ -242,7 +246,6 @@ void juristFrm::report() {
     //                 background: #FF0000;
     //                }
     //               )";
-
 }
 void juristFrm::onTableClicked(const QModelIndex &index){
     if (index.isValid()) {
@@ -251,6 +254,12 @@ void juristFrm::onTableClicked(const QModelIndex &index){
         
     }
 }
+///-----------------------------------------------------------------------------
+///
+///         Объединение ячеек таблицы.
+///          
+///-----------------------------------------------------------------------------
+
 void juristFrm::spanTbl() {
     QFile file("test2.csv");
     if (file.open(QIODevice::ReadOnly)) {
@@ -298,6 +307,22 @@ void juristFrm::spanTbl() {
         file.close();
     }
 }
+
+///-----------------------------------------------------------------------------
+///
+///         Инициализация ссылки на контроллер клиента.
+///          
+///-----------------------------------------------------------------------------
+
+void juristFrm::initClient(ClientController *clientController) {
+    m_pClientController = clientController;
+    // Сигнально-слотовое соединение, сигнализирующее, что   контроллер комманд
+    // готов вернуть  результат  выполнения запроса к серверу.
+    //connect(this, SIGNAL(ready()), m_pClientController, SLOT(formReady()));
+
+};
+
+
 //  QFile styleF;
 //    styleF.setFileName(":/qss/style.qss");
 //    styleF.open(QFile::ReadOnly);

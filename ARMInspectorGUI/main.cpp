@@ -24,8 +24,8 @@ int main(int argc, char *argv[]) {
     //                QCoreApplication::exit(-1);
     //        }, Qt::QueuedConnection);
     //engine.load(url);
-    
-QString style = R"(
+
+    QString style = R"(
 QPushButton {
 color: white;
 background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #88d, stop: 0.1 #99e, stop: 0.49 #77c, stop: 0.5 #66b, stop: 1 #77c);
@@ -42,8 +42,8 @@ max-width: 50px;
 min-height: 13px;
 max-height: 13px;
 }
-               )";    
-app.setStyleSheet(style);
+               )";
+    app.setStyleSheet(style);
     /// Создание обработчика событий логирования.
     CoreLogger coreLogger;
 #if defined(Q_OS_LINUX)
@@ -89,6 +89,7 @@ app.setStyleSheet(style);
         return app.exec();
     } else {
         juristFrm frm;
+        frm.initClient(&clientController);
         //QMenuBar * menuBar = frm.getMenuBar();
         frm.setWindowTitle("АРМ юриста");
         frm.setWindowState(Qt::WindowMaximized);
