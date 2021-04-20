@@ -6,6 +6,7 @@
 
 #include "DBManager.h"
 #include "User.h"
+#include "Mro.h"
 #include "UserView.h"
 #include "Inspection.h"
 #include <QSqlError>
@@ -252,6 +253,9 @@ void DBManager::getListModels() {
     switch (model) {
         case ModelWrapper::Model::User:
             getListModels<User>();
+            break;
+        case ModelWrapper::Model::Mro:
+            getListModels<Mro>();
             break;
         case ModelWrapper::Model::UserView:
             getListModels<UserView>();
