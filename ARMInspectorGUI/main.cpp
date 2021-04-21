@@ -94,6 +94,7 @@ max-height: 13px;
         //QMenuBar * menuBar = frm.getMenuBar();
         frm.setWindowTitle("АРМ юриста");
         frm.setWindowState(Qt::WindowMaximized);
+        frm.hideControlsFrm();
         frm.show();
         return app.exec();
     }

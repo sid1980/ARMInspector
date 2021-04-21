@@ -13,150 +13,87 @@
 
 #include "juristFrm.h"
 #include <QMessageBox>
-#include <QStandardItemModel>
 #include <QFile>
 #include <QTextStream>
 
 juristFrm::juristFrm() {
     widget.setupUi(this);
+    model_ = new QStandardItemModel;
     m_pMenuBar = new QMenuBar(this);
     this->setMenuBar(m_pMenuBar);
+    QMenu * menu1 = m_pMenuBar->addMenu("&Журнал");
     QMenu * menu = m_pMenuBar->addMenu("&Отчеты по АП");
+    //menu->setLayoutDirection(Qt::RightToLeft); // Display menu bar to the right
     // New
     QAction * action = new QAction("&Отчёт Приложение 1", this);
-    connect(action, &QAction::triggered, this, &juristFrm::OnFileNew);
+    action->setIcon(QPixmap("Icons/icons8-file-48.png"));
+    connect(action, &QAction::triggered, this, &juristFrm::OnGenerateReport);
     menu->addAction(action);
     // Open
     action = new QAction("&Отчёт Приложение 2", this);
-    connect(action, &QAction::triggered, this, &juristFrm::OnFileOpen);
+    connect(action, &QAction::triggered, this, &juristFrm::OnGenerateReprt2);
     menu->addAction(action);
     // Save
     action = new QAction("&Выход", this);
-    connect(action, &QAction::triggered, this, &juristFrm::OnFileSave);
+    connect(action, &QAction::triggered, this, &juristFrm::OnExit);
     menu->addAction(action);
-    QString style = R"(
-QMenuBar {
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                      stop:0 lightgray, stop:1 darkgray);
-    spacing: 3px; /* spacing between menu bar items */
-}
+    //qApp->setStyleSheet("QMainWindow { background-color: yellow; border: 1px solid #424242 }"
+    //        "QLCDNumber { background-color: red }"
+    //        "QMenu::separator{height: 2px; background: lightblue; margin-left: 10px; margin-right: 5px;}"
+    //        "QMenu::indicator { width: 13px; height: 13px; }"
+    //        "QMenuBar::item { spacing: 3px;  padding: 1px 4px; background: transparent; border-radius: 4px; }"
+    //        "QMenuBar::item:selected {background: #a8a8a8;}"
+    //        "QMenuBar::item:pressed { background: #888888; }"
+    //        "QToolBar { background: blue; spacing: 10px;}"
+    //        "QTableWidget QTableCornerButton::section { background: red; border: 2px outset red; }");
+    //   QString style = R"(
+    //               )";
+    //m_pMenuBar->setStyleSheet(style);
 
-QMenuBar::item {
-    padding: 1px 4px;
-    background: transparent;
-    border-radius: 4px;
-}
-
-QMenuBar::item:selected { /* when selected using mouse or keyboard */
-    background: #a8a8a8;
-}
-
-QMenuBar::item:pressed {
-    background: #888888;
-}
-               )";
-    m_pMenuBar->setStyleSheet(style);
-
-    QString style1 = R"(
-QMenu {
-    background-color: white;
-    margin: 2px; /* some spacing around the menu */
-}
-
-QMenu::item {
-    padding: 2px 25px 2px 20px;
-    border: 1px solid transparent; /* reserve space for selection border */
-}
-
-QMenu::item:selected {
-    border-color: darkblue;
-    background: rgba(100, 100, 100, 150);
-}
-
-QMenu::icon:checked { /* appearance of a 'checked' icon */
-    background: gray;
-    border: 1px inset gray;
-    position: absolute;
-    top: 1px;
-    right: 1px;
-    bottom: 1px;
-    left: 1px;
-}
-
-QMenu::separator {
-    height: 2px;
-    background: lightblue;
-    margin-left: 10px;
-    margin-right: 5px;
-}
-
-QMenu::indicator {
-    width: 13px;
-    height: 13px;
-}
-
-/* non-exclusive indicator = check box style indicator (see QActionGroup::setExclusive) */
-QMenu::indicator:non-exclusive:unchecked {
-    image: url(:/images/checkbox_unchecked.png);
-}
-
-QMenu::indicator:non-exclusive:unchecked:selected {
-    image: url(:/images/checkbox_unchecked_hover.png);
-}
-
-QMenu::indicator:non-exclusive:checked {
-    image: url(:/images/checkbox_checked.png);
-}
-
-QMenu::indicator:non-exclusive:checked:selected {
-    image: url(:/images/checkbox_checked_hover.png);
-}
-
-/* exclusive indicator = radio button style indicator (see QActionGroup::setExclusive) */
-QMenu::indicator:exclusive:unchecked {
-    image: url(:/images/radiobutton_unchecked.png);
-}
-
-QMenu::indicator:exclusive:unchecked:selected {
-    image: url(:/images/radiobutton_unchecked_hover.png);
-}
-
-QMenu::indicator:exclusive:checked {
-    image: url(:/images/radiobutton_checked.png);
-}
-
-QMenu::indicator:exclusive:checked:selected {
-    image: url(:/images/radiobutton_checked_hover.png);
-}
-               )";
-    menu->setStyleSheet(style1);
+    //QString style1 = R"(
+    //               )";
+    //menu->setStyleSheet(style1);
     //m_pMenuBar->setStyle();
+    //m_pMenuBar->adjustSize();
+
 }
 
 juristFrm::~juristFrm() {
     delete m_pMenuBar;
+    delete model_;
 }
 
 QMenuBar * juristFrm::getMenuBar() {
     return m_pMenuBar;
 }
 
-void juristFrm::OnFileNew() {
+void juristFrm::OnGenerateReport() {
     //QVBoxLayout *layout = new QVBoxLayout;
     //ayout->addWidget(widget->tableView);
+    this->showControlsFrm();
     report();
     //QMessageBox::information(0, "Menu", "Отчёт Приложение 1");
 }
 
-void juristFrm::OnFileSave() {
-    QMessageBox::information(0, "Menu", "Выход");
+void juristFrm::OnGenerateReprt2() {
+    model_->clear();
+    this->hideControlsFrm();
 
 }
 
-void juristFrm::OnFileOpen() {
-    QMessageBox::information(0, "Menu", "Отчёт Приложение 2");
-
+void juristFrm::OnExit() {
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Завершение работы АРМ Инспектор",
+            "Вы действительно хотите завершить работу ? ",
+            QMessageBox::Yes | QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        qDebug() << "Yes was clicked";
+        qApp->quit();
+    } else {
+        qDebug() << "Yes was *not* clicked";
+    }
 }
+
 
 
 
@@ -174,7 +111,6 @@ void juristFrm::report() {
     //        "to build it.\n\n"
     //        "Click Cancel to exit."), QMessageBox::Ok);
 
-    QStandardItemModel *model = new QStandardItemModel;
     QFile file("test2.csv");
     if (file.open(QIODevice::ReadOnly)) {
         //QMessageBox::information(this, "АРМ Юриста", "Отчет об АП");
@@ -194,7 +130,7 @@ void juristFrm::report() {
             for (int j = 0; j < lineToken.size(); j++) {
                 QString value = lineToken.at(j);
                 QStandardItem *item = new QStandardItem(value);
-                model->setItem(lineindex, j, item);
+                model_->setItem(lineindex, j, item);
                 item->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
                 item->setEditable(false);
             }
@@ -203,7 +139,7 @@ void juristFrm::report() {
 
         file.close();
     }
-    this->widget.tableView->setModel(model);
+    this->widget.tableView->setModel(model_);
     spanTbl();
     //this->widget.tableView->resizeColumnsToContents();
     //this->widget.tableView->resizeRowsToContents();
@@ -247,11 +183,12 @@ void juristFrm::report() {
     //                }
     //               )";
 }
-void juristFrm::onTableClicked(const QModelIndex &index){
+
+void juristFrm::onTableClicked(const QModelIndex &index) {
     if (index.isValid()) {
-        QString cellText = index.data().toString(); 
+        QString cellText = index.data().toString();
         QMessageBox::information(this, "АРМ Юриста", cellText);
-        
+
     }
 }
 ///-----------------------------------------------------------------------------
@@ -328,15 +265,65 @@ void juristFrm::initClient(ClientController *clientController) {
 ///          
 ///-----------------------------------------------------------------------------
 
-    void juristFrm::setlistMro(const QList<Mro>& mro){
-        mro_=mro;
-            this->widget.comboBox->clear();
+void juristFrm::setlistMro(const QList<Mro>& mro) {
+    mro_ = mro;
+    this->widget.comboBox->clear();
     for (auto& t : mro_) {
         this->widget.comboBox->addItem(t.getName());
     }
 
-    }
+}
+///-----------------------------------------------------------------------------
+///
+///         Нажата кнопка формирования отчёта.
+///          
+///-----------------------------------------------------------------------------
 
+void juristFrm::on_pushButton_Report_clicked() {
+    //QMessageBox::information(this, "АРМ Юриста", "Отчет об АП");
+    model_->clear();
+    this->showControlsFrm();
+    this->report();
+}
+
+///-----------------------------------------------------------------------------
+///
+///         Спрятать элементы формы отчёта.
+///          
+///-----------------------------------------------------------------------------
+
+void juristFrm::hideControlsFrm() {
+    this->widget.comboBox->setHidden(true);
+    this->widget.dateEdit->setHidden(true);
+    this->widget.groupBox->setHidden(true);
+    this->widget.tableView->setHidden(true);
+    this->widget.pushButton_Excel->setHidden(true);
+    this->widget.pushButton_Report->setHidden(true);
+    this->widget.pushButton_Report->setHidden(true);
+    this->widget.label_Data->setHidden(true);
+    this->widget.label_Mro->setHidden(true);
+    this->widget.label_Period->setHidden(true);
+}
+
+///-----------------------------------------------------------------------------
+///
+///         Показать элементы формы отчёта.
+///          
+///-----------------------------------------------------------------------------
+
+void juristFrm::showControlsFrm() {
+    this->widget.comboBox->setVisible(true);
+    this->widget.dateEdit->setVisible(true);
+    this->widget.groupBox->setVisible(true);
+    this->widget.tableView->setVisible(true);
+    this->widget.pushButton_Excel->setVisible(true);
+    this->widget.pushButton_Report->setVisible(true);
+    this->widget.pushButton_Report->setVisible(true);
+    this->widget.label_Data->setVisible(true);
+    this->widget.label_Mro->setVisible(true);
+    this->widget.label_Period->setVisible(true);
+
+}
 //  QFile styleF;
 //    styleF.setFileName(":/qss/style.qss");
 //    styleF.open(QFile::ReadOnly);

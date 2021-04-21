@@ -18,6 +18,7 @@
 #include <QMenuBar>
 #include <QTableView>
 #include <QModelIndex>
+#include <QStandardItemModel>
 #include "ClientController.h"
 #include "Mro.h"
 
@@ -28,20 +29,24 @@ public:
     virtual ~juristFrm();
     ///Инициализация ссылки на контроллер клинта
     void initClient(ClientController *clientController);
+    void hideControlsFrm();
+    void showControlsFrm();
     void report();
     void spanTbl();
     QMenuBar * getMenuBar();
-    void OnFileNew();
-    void OnFileSave();
-    void OnFileOpen();
+    void OnGenerateReport();
+    void OnExit();
+    void OnGenerateReprt2();
 private slots:
     void onTableClicked(const QModelIndex &);
     void setlistMro(const QList<Mro>&);
+    void on_pushButton_Report_clicked();
 private:
     Ui::juristFrm widget;
     QMenuBar * m_pMenuBar;
     QMenu * m_pMenu;
-     ///список МРО
+    QStandardItemModel *model_;
+    ///список МРО
     QList<Mro> mro_;
     ///указатель контроллера клиента.
     ClientController *m_pClientController{nullptr};

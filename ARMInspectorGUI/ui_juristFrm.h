@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'juristFrm.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.2
+** Created by: Qt User Interface Compiler version 5.13.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -33,21 +33,21 @@ class Ui_juristFrm
 public:
     QWidget *centralwidget;
     QGridLayout *gridLayout_5;
-    QPushButton *pushButton;
+    QPushButton *pushButton_Report;
     QGridLayout *gridLayout_2;
-    QLabel *label;
+    QLabel *label_Data;
     QDateEdit *dateEdit;
+    QGridLayout *gridLayout_4;
+    QLabel *label_Mro;
+    QComboBox *comboBox;
+    QHBoxLayout *horizontalLayout;
     QGridLayout *gridLayout_3;
-    QLabel *label_2;
+    QLabel *label_Period;
     QGroupBox *groupBox;
     QGridLayout *gridLayout;
     QRadioButton *radioButton_2;
     QRadioButton *radioButton;
-    QGridLayout *gridLayout_4;
-    QLabel *label_3;
-    QComboBox *comboBox;
-    QPushButton *pushButton_2;
-    QHBoxLayout *horizontalLayout;
+    QPushButton *pushButton_Excel;
     QTableView *tableView;
     QMenuBar *menubar;
     QStatusBar *statusbar;
@@ -62,7 +62,7 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(juristFrm->sizePolicy().hasHeightForWidth());
         juristFrm->setSizePolicy(sizePolicy);
-        juristFrm->setMaximumSize(QSize(16777211, 16777211));
+        juristFrm->setMaximumSize(QSize(16777204, 16777211));
         juristFrm->setLayoutDirection(Qt::LeftToRight);
         juristFrm->setStyleSheet(QString::fromUtf8("QHeaderView {\n"
 "    background-color: #fff;\n"
@@ -112,17 +112,59 @@ public:
 "     height: 0px;\n"
 "     subcontrol-position: left;\n"
 "     subcontrol-origin: margin;\n"
-" }"));
+" }\n"
+"QMenuBar {\n"
+"background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgb(43, 75, 116), stop:1 rgb(197, 245, 254));\n"
+"min-width: 30px;\n"
+" min-height: 30px;\n"
+" }\n"
+"QMenuBar::item {\n"
+"     spacing: 3px; /* \320\270\320\275\321\202\320\265\321\200\320\262\320\260\320\273 \320\274\320\265\320\266\320\264\321\203 \320\277\321\203\320\275\320\272\321\202\320\260\320\274\320\270 \320\274\320\265\320\275\321\216 */\n"
+"     padding: 1px 4px;\n"
+"     background: transparent;\n"
+"     border-radius: 4px;\n"
+"height:20px;\n"
+" }\n"
+"\n"
+" QMenuBar::item:selected { /* \320\272\320"
+                        "\276\320\263\320\264\320\260 \320\262\321\213\320\264\320\265\320\273\320\265\320\275\320\276 \321\201 \320\277\320\276\320\274\320\276\321\211\321\214\321\216 \320\274\321\213\321\210\320\270 \320\270\320\273\320\270 \320\272\320\273\320\260\320\262\320\270\320\260\321\202\321\203\321\200\321\213 */\n"
+"     background: #a8a8a8;\n"
+" }\n"
+"\n"
+" QMenuBar::item:pressed {\n"
+"     background: #888888;\n"
+" }\n"
+"QMenu {\n"
+"                     background-color:rgb(89,87,87);\n"
+"                     border: 3px solid rgb(235,110,36);\n"
+"                     }\n"
+"                 QMenu::item {                    \n"
+"                     font-size: 10pt; \n"
+"                     color: rgb(225,225,225);\n"
+"                     border: 3px solid rgb(60,60,60);   \n"
+"                     background-color:rgb(89,87,87);\n"
+"                     padding:16px 16px; \n"
+"                     margin:2px 2px;\n"
+"                      }\n"
+"                QMenu::item:selected {\n"
+"                     background"
+                        "-color:rgb(235,110,36);\n"
+"                     }\n"
+"                 QMenu::item:pressed {\n"
+"                                           border: 1px solid rgb(60,60,61); \n"
+"                                           background-color: rgb(220,80,6);\n"
+"                                       }\n"
+""));
         juristFrm->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         centralwidget = new QWidget(juristFrm);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         gridLayout_5 = new QGridLayout(centralwidget);
         gridLayout_5->setObjectName(QString::fromUtf8("gridLayout_5"));
-        pushButton = new QPushButton(centralwidget);
-        pushButton->setObjectName(QString::fromUtf8("pushButton"));
-        sizePolicy.setHeightForWidth(pushButton->sizePolicy().hasHeightForWidth());
-        pushButton->setSizePolicy(sizePolicy);
-        pushButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        pushButton_Report = new QPushButton(centralwidget);
+        pushButton_Report->setObjectName(QString::fromUtf8("pushButton_Report"));
+        sizePolicy.setHeightForWidth(pushButton_Report->sizePolicy().hasHeightForWidth());
+        pushButton_Report->setSizePolicy(sizePolicy);
+        pushButton_Report->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "color: white;\n"
 "background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #88d, stop: 0.1 #99e, stop: 0.49 #77c, stop: 0.5 #66b, stop: 1 #77c);\n"
 "border-width: 1px;\n"
@@ -139,18 +181,18 @@ public:
 "max-height: 30px;\n"
 "}\n"
 ""));
-        pushButton->setFlat(true);
+        pushButton_Report->setFlat(true);
 
-        gridLayout_5->addWidget(pushButton, 0, 3, 1, 1);
+        gridLayout_5->addWidget(pushButton_Report, 0, 3, 1, 1);
 
         gridLayout_2 = new QGridLayout();
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
-        label = new QLabel(centralwidget);
-        label->setObjectName(QString::fromUtf8("label"));
-        sizePolicy.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
-        label->setSizePolicy(sizePolicy);
+        label_Data = new QLabel(centralwidget);
+        label_Data->setObjectName(QString::fromUtf8("label_Data"));
+        sizePolicy.setHeightForWidth(label_Data->sizePolicy().hasHeightForWidth());
+        label_Data->setSizePolicy(sizePolicy);
 
-        gridLayout_2->addWidget(label, 0, 0, 1, 1);
+        gridLayout_2->addWidget(label_Data, 0, 0, 1, 1);
 
         dateEdit = new QDateEdit(centralwidget);
         dateEdit->setObjectName(QString::fromUtf8("dateEdit"));
@@ -167,7 +209,7 @@ public:
 "QDateEdit::drop-down {\n"
 "	subcontrol-origin: padding;\n"
 "	subcontrol-position: top right;\n"
-"	width: 15px;\n"
+"	width: 25px;\n"
 "\n"
 "	border-left-width: 1px;\n"
 "	border-left-color: darkgray;\n"
@@ -177,7 +219,7 @@ public:
 "}\n"
 "\n"
 "QDateEdit::down-arrow {\n"
-"	image: url(:/DateEditTest/Resources/Combobox Arrow.png);\n"
+"	image: url(Icons/combobox_down_arrow1.png);\n"
 "}\n"
 "\n"
 "QDateEdit::drop-down:hover {\n"
@@ -197,23 +239,102 @@ public:
 
         gridLayout_5->addLayout(gridLayout_2, 0, 1, 1, 1);
 
+        gridLayout_4 = new QGridLayout();
+        gridLayout_4->setObjectName(QString::fromUtf8("gridLayout_4"));
+        label_Mro = new QLabel(centralwidget);
+        label_Mro->setObjectName(QString::fromUtf8("label_Mro"));
+        sizePolicy.setHeightForWidth(label_Mro->sizePolicy().hasHeightForWidth());
+        label_Mro->setSizePolicy(sizePolicy);
+        label_Mro->setLayoutDirection(Qt::LeftToRight);
+        label_Mro->setAutoFillBackground(false);
+        label_Mro->setStyleSheet(QString::fromUtf8(""));
+        label_Mro->setFrameShadow(QFrame::Sunken);
+        label_Mro->setAlignment(Qt::AlignJustify|Qt::AlignVCenter);
+
+        gridLayout_4->addWidget(label_Mro, 0, 0, 1, 1);
+
+        comboBox = new QComboBox(centralwidget);
+        comboBox->setObjectName(QString::fromUtf8("comboBox"));
+        QSizePolicy sizePolicy1(QSizePolicy::Maximum, QSizePolicy::Fixed);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(comboBox->sizePolicy().hasHeightForWidth());
+        comboBox->setSizePolicy(sizePolicy1);
+        comboBox->setMaximumSize(QSize(16777215, 16777205));
+        comboBox->setAutoFillBackground(false);
+        comboBox->setStyleSheet(QString::fromUtf8("QComboBox {\n"
+"   background: qlineargradient(\n"
+"   x1:0, y1:0, x2:0, y2:1,\n"
+"   stop:0 #f9f9f9,\n"
+"   stop: 0.5 #c6c6c6,\n"
+"   stop: 0.6 #dfdfdf,\n"
+"   stop:1 #f9f9f9 );\n"
+"   border-style: solid;\n"
+"   border-width: 1px;\n"
+"   border-color: rgb(0, 93, 168);\n"
+"   border-radius: 8px;\n"
+"   color: rgb(0, 93, 168);\n"
+"   min-width: 230px;\n"
+"   min-height: 30px;\n"
+"   padding-left: 15px;\n"
+"}\n"
+"QComboBox:on {\n"
+"   border-radius: 30px;\n"
+"   background:transparent;\n"
+"}\n"
+"QComboBox::drop-down {\n"
+"   image: url(Icons/combobox_down_arrow1.png);\n"
+"   subcontrol-position: center right;\n"
+"   margin-right: 10px;\n"
+"}\n"
+"QComboBox QAbstractItemView::item {\n"
+"   padding: 10px 10px 10px 10px;\n"
+"}\n"
+"QComboBox QAbstractItemView {\n"
+"   color: rgb(0, 93, 168);\n"
+"   background: transparent;\n"
+"}\n"
+"QComboBox QListView::item {\n"
+"   background: qradialgradient(\n"
+"   cx: 0.5, cy: -1.6, fx: 0.5, fy: 0,\n"
+"   radius: 2,\n"
+"   stop: 0 #C4C4C4,\n"
+"   stop: 1 #DBDBDB );\n"
+"   borde"
+                        "r-style: solid;\n"
+"   border-width: 1px;\n"
+"   border-color: rgb(0, 93, 168);\n"
+"   border-radius: 20px;\n"
+"}"));
+        comboBox->setEditable(false);
+
+        gridLayout_4->addWidget(comboBox, 0, 1, 1, 1);
+
+
+        gridLayout_5->addLayout(gridLayout_4, 0, 0, 1, 1);
+
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+
+        gridLayout_5->addLayout(horizontalLayout, 0, 5, 1, 1);
+
         gridLayout_3 = new QGridLayout();
         gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
-        label_2 = new QLabel(centralwidget);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
-        sizePolicy.setHeightForWidth(label_2->sizePolicy().hasHeightForWidth());
-        label_2->setSizePolicy(sizePolicy);
-        label_2->setMaximumSize(QSize(16777215, 16777211));
+        label_Period = new QLabel(centralwidget);
+        label_Period->setObjectName(QString::fromUtf8("label_Period"));
+        sizePolicy.setHeightForWidth(label_Period->sizePolicy().hasHeightForWidth());
+        label_Period->setSizePolicy(sizePolicy);
+        label_Period->setMaximumSize(QSize(16777215, 16777211));
 
-        gridLayout_3->addWidget(label_2, 0, 0, 1, 1);
+        gridLayout_3->addWidget(label_Period, 0, 0, 1, 1);
 
         groupBox = new QGroupBox(centralwidget);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
-        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(groupBox->sizePolicy().hasHeightForWidth());
-        groupBox->setSizePolicy(sizePolicy1);
+        QSizePolicy sizePolicy2(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(groupBox->sizePolicy().hasHeightForWidth());
+        groupBox->setSizePolicy(sizePolicy2);
         groupBox->setMaximumSize(QSize(16777215, 16777211));
         groupBox->setStyleSheet(QString::fromUtf8("QGroupBox {\n"
 "    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
@@ -267,83 +388,9 @@ public:
 
         gridLayout_5->addLayout(gridLayout_3, 0, 2, 1, 1);
 
-        gridLayout_4 = new QGridLayout();
-        gridLayout_4->setObjectName(QString::fromUtf8("gridLayout_4"));
-        label_3 = new QLabel(centralwidget);
-        label_3->setObjectName(QString::fromUtf8("label_3"));
-        sizePolicy.setHeightForWidth(label_3->sizePolicy().hasHeightForWidth());
-        label_3->setSizePolicy(sizePolicy);
-        label_3->setLayoutDirection(Qt::LeftToRight);
-        label_3->setAutoFillBackground(false);
-        label_3->setStyleSheet(QString::fromUtf8(""));
-        label_3->setFrameShadow(QFrame::Sunken);
-        label_3->setAlignment(Qt::AlignJustify|Qt::AlignVCenter);
-
-        gridLayout_4->addWidget(label_3, 0, 0, 1, 1);
-
-        comboBox = new QComboBox(centralwidget);
-        comboBox->setObjectName(QString::fromUtf8("comboBox"));
-        QSizePolicy sizePolicy2(QSizePolicy::Maximum, QSizePolicy::Fixed);
-        sizePolicy2.setHorizontalStretch(0);
-        sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(comboBox->sizePolicy().hasHeightForWidth());
-        comboBox->setSizePolicy(sizePolicy2);
-        comboBox->setMaximumSize(QSize(16777215, 16777205));
-        comboBox->setAutoFillBackground(false);
-        comboBox->setStyleSheet(QString::fromUtf8("QComboBox {\n"
-"   background: qlineargradient(\n"
-"   x1:0, y1:0, x2:0, y2:1,\n"
-"   stop:0 #f9f9f9,\n"
-"   stop: 0.5 #c6c6c6,\n"
-"   stop: 0.6 #dfdfdf,\n"
-"   stop:1 #f9f9f9 );\n"
-"   border-style: solid;\n"
-"   border-width: 1px;\n"
-"   border-color: rgb(0, 93, 168);\n"
-"   border-radius: 8px;\n"
-"   color: rgb(0, 93, 168);\n"
-"   min-width: 230px;\n"
-"   min-height: 30px;\n"
-"   padding-left: 15px;\n"
-"}\n"
-"QComboBox:on {\n"
-"   border-radius: 30px;\n"
-"   background:transparent;\n"
-"}\n"
-"QComboBox::drop-down {\n"
-"   image: url(:/bwt/downarrow.png);\n"
-"   subcontrol-position: center right;\n"
-"   margin-right: 10px;\n"
-"}\n"
-"QComboBox QAbstractItemView::item {\n"
-"   padding: 10px 10px 10px 10px;\n"
-"}\n"
-"QComboBox QAbstractItemView {\n"
-"   color: rgb(0, 93, 168);\n"
-"   background: transparent;\n"
-"}\n"
-"QComboBox QListView::item {\n"
-"   background: qradialgradient(\n"
-"   cx: 0.5, cy: -1.6, fx: 0.5, fy: 0,\n"
-"   radius: 2,\n"
-"   stop: 0 #C4C4C4,\n"
-"   stop: 1 #DBDBDB );\n"
-"   border-style: so"
-                        "lid;\n"
-"   border-width: 1px;\n"
-"   border-color: rgb(0, 93, 168);\n"
-"   border-radius: 20px;\n"
-"}"));
-        comboBox->setEditable(false);
-
-        gridLayout_4->addWidget(comboBox, 0, 1, 1, 1);
-
-
-        gridLayout_5->addLayout(gridLayout_4, 0, 0, 1, 1);
-
-        pushButton_2 = new QPushButton(centralwidget);
-        pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
-        pushButton_2->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        pushButton_Excel = new QPushButton(centralwidget);
+        pushButton_Excel->setObjectName(QString::fromUtf8("pushButton_Excel"));
+        pushButton_Excel->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "color: white;\n"
 "background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #88d, stop: 0.1 #99e, stop: 0.49 #77c, stop: 0.5 #66b, stop: 1 #77c);\n"
 "border-width: 1px;\n"
@@ -361,12 +408,7 @@ public:
 "}\n"
 ""));
 
-        gridLayout_5->addWidget(pushButton_2, 0, 4, 1, 1);
-
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-
-        gridLayout_5->addLayout(horizontalLayout, 0, 5, 1, 1);
+        gridLayout_5->addWidget(pushButton_Excel, 0, 4, 1, 1);
 
         tableView = new QTableView(centralwidget);
         tableView->setObjectName(QString::fromUtf8("tableView"));
@@ -376,7 +418,7 @@ public:
         juristFrm->setCentralWidget(centralwidget);
         menubar = new QMenuBar(juristFrm);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1509, 21));
+        menubar->setGeometry(QRect(0, 0, 1509, 33));
         juristFrm->setMenuBar(menubar);
         statusbar = new QStatusBar(juristFrm);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -390,15 +432,15 @@ public:
     void retranslateUi(QMainWindow *juristFrm)
     {
         juristFrm->setWindowTitle(QCoreApplication::translate("juristFrm", "juristFrm", nullptr));
-        pushButton->setText(QCoreApplication::translate("juristFrm", "\320\241\321\204\320\276\321\200\320\274\320\270\321\200\320\276\320\262\320\260\321\202\321\214 \320\276\321\202\321\207\321\221\321\202", nullptr));
-        label->setText(QCoreApplication::translate("juristFrm", "\320\264\320\260\321\202\320\260", nullptr));
+        pushButton_Report->setText(QCoreApplication::translate("juristFrm", "\320\241\321\204\320\276\321\200\320\274\320\270\321\200\320\276\320\262\320\260\321\202\321\214 \320\276\321\202\321\207\321\221\321\202", nullptr));
+        label_Data->setText(QCoreApplication::translate("juristFrm", "\320\264\320\260\321\202\320\260", nullptr));
         dateEdit->setDisplayFormat(QCoreApplication::translate("juristFrm", "MM.yyyy", nullptr));
-        label_2->setText(QCoreApplication::translate("juristFrm", "\320\237\320\265\321\200\320\270\320\276\320\264", nullptr));
+        label_Mro->setText(QCoreApplication::translate("juristFrm", "\320\234\320\240\320\236", nullptr));
+        label_Period->setText(QCoreApplication::translate("juristFrm", "\320\237\320\265\321\200\320\270\320\276\320\264", nullptr));
         groupBox->setTitle(QString());
         radioButton_2->setText(QCoreApplication::translate("juristFrm", "\320\272\320\262\320\260\321\200\321\202\320\260\320\273", nullptr));
         radioButton->setText(QCoreApplication::translate("juristFrm", "\320\274\320\265\321\201\321\217\321\206", nullptr));
-        label_3->setText(QCoreApplication::translate("juristFrm", "\320\234\320\240\320\236", nullptr));
-        pushButton_2->setText(QCoreApplication::translate("juristFrm", "\320\222\321\213\320\263\321\203\320\267\320\270\321\202\321\214 \320\262 EXCEL", nullptr));
+        pushButton_Excel->setText(QCoreApplication::translate("juristFrm", "\320\222\321\213\320\263\321\203\320\267\320\270\321\202\321\214 \320\262 EXCEL", nullptr));
     } // retranslateUi
 
 };

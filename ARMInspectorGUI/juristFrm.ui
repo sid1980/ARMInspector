@@ -18,7 +18,7 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>16777211</width>
+    <width>16777204</width>
     <height>16777211</height>
    </size>
   </property>
@@ -76,7 +76,47 @@ QScrollBar:vertical {
      height: 0px;
      subcontrol-position: left;
      subcontrol-origin: margin;
- }</string>
+ }
+QMenuBar {
+background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgb(43, 75, 116), stop:1 rgb(197, 245, 254));
+min-width: 30px;
+ min-height: 30px;
+ }
+QMenuBar::item {
+     spacing: 3px; /* интервал между пунктами меню */
+     padding: 1px 4px;
+     background: transparent;
+     border-radius: 4px;
+height:20px;
+ }
+
+ QMenuBar::item:selected { /* когда выделено с помощью мыши или клавиатуры */
+     background: #a8a8a8;
+ }
+
+ QMenuBar::item:pressed {
+     background: #888888;
+ }
+QMenu {
+                     background-color:rgb(89,87,87);
+                     border: 3px solid rgb(235,110,36);
+                     }
+                 QMenu::item {                    
+                     font-size: 10pt; 
+                     color: rgb(225,225,225);
+                     border: 3px solid rgb(60,60,60);   
+                     background-color:rgb(89,87,87);
+                     padding:16px 16px; 
+                     margin:2px 2px;
+                      }
+                QMenu::item:selected {
+                     background-color:rgb(235,110,36);
+                     }
+                 QMenu::item:pressed {
+                                           border: 1px solid rgb(60,60,61); 
+                                           background-color: rgb(220,80,6);
+                                       }
+</string>
   </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonTextUnderIcon</enum>
@@ -84,7 +124,7 @@ QScrollBar:vertical {
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_5">
     <item row="0" column="3">
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="pushButton_Report">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
         <horstretch>0</horstretch>
@@ -121,7 +161,7 @@ max-height: 30px;
     <item row="0" column="1">
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="label_Data">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
           <horstretch>0</horstretch>
@@ -160,7 +200,7 @@ max-height: 30px;
 QDateEdit::drop-down {
 	subcontrol-origin: padding;
 	subcontrol-position: top right;
-	width: 15px;
+	width: 25px;
 
 	border-left-width: 1px;
 	border-left-color: darkgray;
@@ -170,7 +210,7 @@ QDateEdit::drop-down {
 }
 
 QDateEdit::down-arrow {
-	image: url(:/DateEditTest/Resources/Combobox Arrow.png);
+	image: url(Icons/combobox_down_arrow1.png);
 }
 
 QDateEdit::drop-down:hover {
@@ -211,10 +251,112 @@ QDateEdit::drop-down:hover {
       </item>
      </layout>
     </item>
+    <item row="0" column="0">
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_Mro">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <property name="text">
+         <string>МРО</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignJustify|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="comboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777205</height>
+         </size>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QComboBox {
+   background: qlineargradient(
+   x1:0, y1:0, x2:0, y2:1,
+   stop:0 #f9f9f9,
+   stop: 0.5 #c6c6c6,
+   stop: 0.6 #dfdfdf,
+   stop:1 #f9f9f9 );
+   border-style: solid;
+   border-width: 1px;
+   border-color: rgb(0, 93, 168);
+   border-radius: 8px;
+   color: rgb(0, 93, 168);
+   min-width: 230px;
+   min-height: 30px;
+   padding-left: 15px;
+}
+QComboBox:on {
+   border-radius: 30px;
+   background:transparent;
+}
+QComboBox::drop-down {
+   image: url(Icons/combobox_down_arrow1.png);
+   subcontrol-position: center right;
+   margin-right: 10px;
+}
+QComboBox QAbstractItemView::item {
+   padding: 10px 10px 10px 10px;
+}
+QComboBox QAbstractItemView {
+   color: rgb(0, 93, 168);
+   background: transparent;
+}
+QComboBox QListView::item {
+   background: qradialgradient(
+   cx: 0.5, cy: -1.6, fx: 0.5, fy: 0,
+   radius: 2,
+   stop: 0 #C4C4C4,
+   stop: 1 #DBDBDB );
+   border-style: solid;
+   border-width: 1px;
+   border-color: rgb(0, 93, 168);
+   border-radius: 20px;
+}</string>
+        </property>
+        <property name="editable">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="5">
+     <layout class="QHBoxLayout" name="horizontalLayout"/>
+    </item>
     <item row="0" column="2">
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0">
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="label_Period">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
           <horstretch>0</horstretch>
@@ -307,107 +449,8 @@ QGroupBox::title {
       </item>
      </layout>
     </item>
-    <item row="0" column="0">
-     <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
-        </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Sunken</enum>
-        </property>
-        <property name="text">
-         <string>МРО</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignJustify|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="comboBox">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777205</height>
-         </size>
-        </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">QComboBox {
-   background: qlineargradient(
-   x1:0, y1:0, x2:0, y2:1,
-   stop:0 #f9f9f9,
-   stop: 0.5 #c6c6c6,
-   stop: 0.6 #dfdfdf,
-   stop:1 #f9f9f9 );
-   border-style: solid;
-   border-width: 1px;
-   border-color: rgb(0, 93, 168);
-   border-radius: 8px;
-   color: rgb(0, 93, 168);
-   min-width: 230px;
-   min-height: 30px;
-   padding-left: 15px;
-}
-QComboBox:on {
-   border-radius: 30px;
-   background:transparent;
-}
-QComboBox::drop-down {
-   image: url(:/bwt/downarrow.png);
-   subcontrol-position: center right;
-   margin-right: 10px;
-}
-QComboBox QAbstractItemView::item {
-   padding: 10px 10px 10px 10px;
-}
-QComboBox QAbstractItemView {
-   color: rgb(0, 93, 168);
-   background: transparent;
-}
-QComboBox QListView::item {
-   background: qradialgradient(
-   cx: 0.5, cy: -1.6, fx: 0.5, fy: 0,
-   radius: 2,
-   stop: 0 #C4C4C4,
-   stop: 1 #DBDBDB );
-   border-style: solid;
-   border-width: 1px;
-   border-color: rgb(0, 93, 168);
-   border-radius: 20px;
-}</string>
-        </property>
-        <property name="editable">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
     <item row="0" column="4">
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QPushButton" name="pushButton_Excel">
       <property name="styleSheet">
        <string notr="true">QPushButton {
 color: white;
@@ -432,9 +475,6 @@ max-height: 30px;
       </property>
      </widget>
     </item>
-    <item row="0" column="5">
-     <layout class="QHBoxLayout" name="horizontalLayout"/>
-    </item>
     <item row="1" column="0" colspan="6">
      <widget class="QTableView" name="tableView"/>
     </item>
@@ -446,7 +486,7 @@ max-height: 30px;
      <x>0</x>
      <y>0</y>
      <width>1509</width>
-     <height>21</height>
+     <height>33</height>
     </rect>
    </property>
   </widget>
