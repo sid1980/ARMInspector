@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'dialog.ui'
 **
-** Created by: Qt User Interface Compiler version 5.13.0
+** Created by: Qt User Interface Compiler version 5.15.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -70,7 +70,7 @@ public:
 "    background-image: url(:/img/other/background.png);\n"
 "    gridline-color: #777;\n"
 "    selec"
-                        "tion-background-color: royalblue;\n"
+                        "tion-background-color: rgb(235,110,36);\n"
 "    color:#333;\n"
 "    font-size:11px;\n"
 " }\n"
@@ -104,8 +104,8 @@ public:
 "\n"
 "QMessageBox QPushButton {\n"
 "color: white;\n"
-"background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #88d, stop"
-                        ": 0.1 #99e, stop: 0.49 #77c, stop: 0.5 #66b, stop: 1 #77c);\n"
+"background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #88d"
+                        ", stop: 0.1 #99e, stop: 0.49 #77c, stop: 0.5 #66b, stop: 1 #77c);\n"
 "border-width: 1px;\n"
 "border-color: #339;\n"
 "border-style: solid;\n"

@@ -6,6 +6,8 @@
 #include <QMessageBox>
 #include <QTcpSocket>
 #include <QTcpServer>
+#include "QMessageBoxEx.h"
+
 typedef QTcpSocket UiSocket;
 typedef QTcpServer UiServer;
 typedef QTcpSocket::SocketError UiSocketError;

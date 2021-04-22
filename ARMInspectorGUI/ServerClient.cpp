@@ -72,11 +72,12 @@ void ServerClient::handleSocketError(UiSocketError aSocketEror) {
 void ServerClient::reconnectToServer() {
     ++m_launchAttemptCounter;
     if (m_launchAttemptCounter == NUMBER_LAUNCH_ATTEMPTS) {
-        QMessageBox msgBox;
-        msgBox.setText("Сервер не доступен");
-        msgBox.exec();
         qCritical() << "Server not running";
-        //        QMessageBox::critical(Q_NULLPTR, ARM_BRAND, "Unable to connect to server", QMessageBox::Ok);
+        //ARM_BRAND
+        QMessageBoxEx::setCustomTextForButton(QMessageBox::Yes, "Да");
+        QMessageBoxEx::critical(Q_NULLPTR, "АРМ Инспектора.",
+        " Не возможно подключиться к серверу. Сервер не работает или отсутствует подключение к серверу."
+        " Пожалуйста, обратитесь к системному администратору");
         exit(-1);
     } else {
         connectToServer();
@@ -89,10 +90,10 @@ void ServerClient::connectToServer() {
     if (m_pClientSocket->state() == QAbstractSocket::ConnectedState)
         return;
 
-    qInfo() << QString("connectToServer(%1, %2)").arg("10.174.0.9").arg(7071);
-    m_pClientSocket->connectToHost("10.174.0.9", 7071); // Windows
-    //qInfo() << QString("connectToServer(%1, %2)").arg("127.0.0.1").arg(7071);
-    //m_pClientSocket->connectToHost("127.0.0.1", 7071); // Linux
+    //qInfo() << QString("connectToServer(%1, %2)").arg("10.174.0.9").arg(7071);
+    //m_pClientSocket->connectToHost("10.174.0.9", 7071); // Windows
+    qInfo() << QString("connectToServer(%1, %2)").arg("127.0.0.1").arg(7071);
+    m_pClientSocket->connectToHost("127.0.0.1", 7071); // Linux
 }
 
 

@@ -22,20 +22,20 @@ juristFrm::juristFrm() {
     m_pMenuBar = new QMenuBar(this);
     this->setMenuBar(m_pMenuBar);
     QMenu * menu1 = m_pMenuBar->addMenu("&Журнал");
+    // Выход
+    QAction * action = new QAction("&Выход", this);
+    connect(action, &QAction::triggered, this, &juristFrm::OnExit);
+    menu1->addAction(action);
     QMenu * menu = m_pMenuBar->addMenu("&Отчеты по АП");
     //menu->setLayoutDirection(Qt::RightToLeft); // Display menu bar to the right
     // New
-    QAction * action = new QAction("&Отчёт Приложение 1", this);
+    action = new QAction("&Отчёт Приложение 1", this);
     action->setIcon(QPixmap("Icons/icons8-file-48.png"));
     connect(action, &QAction::triggered, this, &juristFrm::OnGenerateReport);
     menu->addAction(action);
     // Open
     action = new QAction("&Отчёт Приложение 2", this);
     connect(action, &QAction::triggered, this, &juristFrm::OnGenerateReprt2);
-    menu->addAction(action);
-    // Save
-    action = new QAction("&Выход", this);
-    connect(action, &QAction::triggered, this, &juristFrm::OnExit);
     menu->addAction(action);
     //qApp->setStyleSheet("QMainWindow { background-color: yellow; border: 1px solid #424242 }"
     //        "QLCDNumber { background-color: red }"

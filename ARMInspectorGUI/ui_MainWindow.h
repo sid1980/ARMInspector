@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'MainWindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.13.0
+** Created by: Qt User Interface Compiler version 5.15.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -57,7 +57,52 @@ public:
 "    padding: 4px;\n"
 "    border: 0px;\n"
 "    font-size: 14pt;\n"
-"}"));
+"}\n"
+"QMenuBar {\n"
+"  background-color:rgb(89,87,87);\n"
+" min-width: 20px;\n"
+" min-height: 20px;\n"
+" }\n"
+"QMenuBar::item {\n"
+"     spacing: 3px; /* \320\270\320\275\321\202\320\265\321\200\320\262\320\260\320\273 \320\274\320\265\320\266\320\264\321\203 \320\277\321\203\320\275\320\272\321\202\320\260\320\274\320\270 \320\274\320\265\320"
+                        "\275\321\216 */\n"
+"                     font-size: 10pt; \n"
+"                     color: rgb(225,225,225);\n"
+"                     border: 1px solid rgb(60,60,60);   \n"
+"                     background-color:rgb(89,87,87);\n"
+"                     padding:2px 2px; \n"
+"                     margin:2px 2px;\n"
+" }\n"
+"\n"
+" QMenuBar::item:selected { /* \320\272\320\276\320\263\320\264\320\260 \320\262\321\213\320\264\320\265\320\273\320\265\320\275\320\276 \321\201 \320\277\320\276\320\274\320\276\321\211\321\214\321\216 \320\274\321\213\321\210\320\270 \320\270\320\273\320\270 \320\272\320\273\320\260\320\262\320\270\320\260\321\202\321\203\321\200\321\213 */\n"
+"                     background-color:rgb(235,110,36);\n"
+" }\n"
+"\n"
+" QMenuBar::item:pressed {\n"
+"                                           border: 1px solid rgb(60,60,61); \n"
+"                                           background-color: rgb(220,80,6);\n"
+" }\n"
+"QMenu {\n"
+"                     background-color:rgb(89,87,87);\n"
+"            "
+                        "         border: 3px solid rgb(235,110,36);\n"
+"                     }\n"
+"                 QMenu::item {                    \n"
+"                     font-size: 10pt; \n"
+"                     color: rgb(225,225,225);\n"
+"                     border: 3px solid rgb(60,60,60);   \n"
+"                     background-color:rgb(89,87,87);\n"
+"                     padding:6px 6px; \n"
+"                     margin:2px 2px;\n"
+"                      }\n"
+"                QMenu::item:selected {\n"
+"                     background-color:rgb(235,110,36);\n"
+"                     }\n"
+"                 QMenu::item:pressed {\n"
+"                                           border: 1px solid rgb(60,60,61); \n"
+"                                           background-color: rgb(220,80,6);\n"
+"                                       }\n"
+""));
         actionAccount = new QAction(MainWindow);
         actionAccount->setObjectName(QString::fromUtf8("actionAccount"));
         action = new QAction(MainWindow);
@@ -80,7 +125,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 839, 21));
+        menubar->setGeometry(QRect(0, 0, 839, 30));
         menuFile = new QMenu(menubar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
         menuFile->setTearOffEnabled(false);

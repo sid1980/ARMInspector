@@ -36,7 +36,50 @@ QHeaderView::section {
     padding: 4px;
     border: 0px;
     font-size: 14pt;
-}</string>
+}
+QMenuBar {
+  background-color:rgb(89,87,87);
+ min-width: 20px;
+ min-height: 20px;
+ }
+QMenuBar::item {
+     spacing: 3px; /* интервал между пунктами меню */
+                     font-size: 10pt; 
+                     color: rgb(225,225,225);
+                     border: 1px solid rgb(60,60,60);   
+                     background-color:rgb(89,87,87);
+                     padding:2px 2px; 
+                     margin:2px 2px;
+ }
+
+ QMenuBar::item:selected { /* когда выделено с помощью мыши или клавиатуры */
+                     background-color:rgb(235,110,36);
+ }
+
+ QMenuBar::item:pressed {
+                                           border: 1px solid rgb(60,60,61); 
+                                           background-color: rgb(220,80,6);
+ }
+QMenu {
+                     background-color:rgb(89,87,87);
+                     border: 3px solid rgb(235,110,36);
+                     }
+                 QMenu::item {                    
+                     font-size: 10pt; 
+                     color: rgb(225,225,225);
+                     border: 3px solid rgb(60,60,60);   
+                     background-color:rgb(89,87,87);
+                     padding:6px 6px; 
+                     margin:2px 2px;
+                      }
+                QMenu::item:selected {
+                     background-color:rgb(235,110,36);
+                     }
+                 QMenu::item:pressed {
+                                           border: 1px solid rgb(60,60,61); 
+                                           background-color: rgb(220,80,6);
+                                       }
+</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout"/>
@@ -47,7 +90,7 @@ QHeaderView::section {
      <x>0</x>
      <y>0</y>
      <width>839</width>
-     <height>21</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

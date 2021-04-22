@@ -47,7 +47,7 @@ QTableView {
     background-color: #fff;
     background-image: url(:/img/other/background.png);
     gridline-color: #777;
-    selection-background-color: royalblue;
+    selection-background-color: rgb(235,110,36);
     color:#333;
     font-size:11px;
  }
