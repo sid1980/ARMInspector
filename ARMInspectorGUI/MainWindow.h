@@ -26,14 +26,12 @@ public:
     virtual ~MainWindow();
     void initClient(ClientController *clientController);
 private slots:
-    void Report();
     void ListUsers();
-    void spanTbl();
+    void OnExit();
 private:
     Ui::MainWindow widget;
     ///Контроллер клиента.
     ClientController *m_pClientController{nullptr};
-    reportFrm* reportDlg_;
 };
 
 

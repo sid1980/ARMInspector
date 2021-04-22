@@ -40,7 +40,7 @@ public:
         if (pwdFrm->objectName().isEmpty())
             pwdFrm->setObjectName(QString::fromUtf8("pwdFrm"));
         pwdFrm->setWindowModality(Qt::WindowModal);
-        pwdFrm->resize(400, 235);
+        pwdFrm->resize(400, 263);
         pwdFrm->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "color: white;\n"
 "background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #88d, stop: 0.1 #99e, stop: 0.49 #77c, stop: 0.5 #66b, stop: 1 #77c);\n"
@@ -54,19 +54,20 @@ public:
 "padding-right: 5px;\n"
 "min-width: 50px;\n"
 "max-width: 50px;\n"
-"min-height: 13px;\n"
-"max-height: 13px;\n"
+"min-height: 15px;\n"
+"max-height: 15px;\n"
 "}\n"
 "QLineEdit {\n"
 "padding: 1px;\n"
 "border-style: solid;\n"
 "border: 2px solid gray;\n"
 "border-radius: 8px;\n"
+"min-height:20px;\n"
 "}\n"
 ""));
         layoutWidget = new QWidget(pwdFrm);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(20, 50, 351, 171));
+        layoutWidget->setGeometry(QRect(20, 50, 351, 191));
         gridLayout = new QGridLayout(layoutWidget);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         gridLayout->setContentsMargins(0, 0, 0, 0);

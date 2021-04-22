@@ -25,8 +25,10 @@
 ///-----------------------------------------------------------------------------
 
 userForm::userForm(QWidget *parent) :
-QDialog(parent), widget_(new Ui::userForm) {
+QDialog(parent), widget_(new Ui::userForm) {  
     widget_->setupUi(this);
+    
+
 }
 ///-----------------------------------------------------------------------------
 ///

@@ -24,7 +24,7 @@
  */
 
 #include "WorkerClient.h"
-#include <QMessageBox>
+#include "QMessageBoxEx.h"
 #include <QTableView>
 #include "dialog.h"
 ///-----------------------------------------------------------------------------
@@ -107,6 +107,8 @@ void WorkerClient::process() {
     //Проверяем результат выполнения команды 
     ModelWrapper::Command command = wrapper.getEnumCommand();
     ModelWrapper::Model model = wrapper.getEnumModel();
+    QMessageBoxEx::setCustomTextForButton(QMessageBox::Yes, "Да");
+    QMessageBoxEx::setCustomTextForButton(QMessageBox::No, "Нет");
     if (wrapper.getSuccess()) {
         //*******************************************************************************************************************************************
         //                                  Команда на сервере выполнена успешно.
@@ -228,7 +230,7 @@ void WorkerClient::process() {
                 //dialog_->showUserData(user);
                 //emit readyUserData(user);
                 QMessageBox::information(0, wrapper.getHead(), wrapper.getMessage() +
-                        QString(": <a style='color:royalblue'> ") + user.getName() + QString("</a>"));
+                        QString(":<br><br> <a style='font-size:14px;color:royalblue'> ") + user.getName() + QString("</a>"));
                 //QMessageBox::information(0, "Редактирование пользовтеля",
                 //        "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно отредактирован");
                 //dialog_->showEditUserData(user);
@@ -276,7 +278,7 @@ void WorkerClient::process() {
                         User user;
                         JsonSerializer::parse(wrapper.getData(), user);
                         //emit dialog_->showUserData(user);
-                        QMessageBox::information(0, wrapper.getHead(), wrapper.getMessage() +
+                        QMessageBoxEx::information(0, wrapper.getHead(), wrapper.getMessage() +
                                 "пользователя <a style='color:royalblue'> " + user.getFio() + "</a>");
                         emit ready();
 
@@ -326,7 +328,8 @@ void WorkerClient::process() {
         //*******************************************************************************************************************************************
         //                                  Ошибка выполнения команды на сервере.
         //*******************************************************************************************************************************************
-        QMessageBox::information(0, wrapper.getHead(), wrapper.getMessage());
+
+        QMessageBoxEx::information(0, wrapper.getHead(), wrapper.getMessage());
     }
 }
 

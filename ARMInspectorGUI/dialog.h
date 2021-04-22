@@ -26,7 +26,7 @@
 #define DIALOG_H
 
 #include <QDialog>
-#include<QMessageBox>
+#include "QMessageBoxEx.h"
 
 #include "ui_dialog.h"
 #include "Inspection.h"

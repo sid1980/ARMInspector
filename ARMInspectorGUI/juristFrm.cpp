@@ -12,7 +12,7 @@
  */
 
 #include "juristFrm.h"
-#include <QMessageBox>
+#include "QMessageBoxEx.h"
 #include <QFile>
 #include <QTextStream>
 
@@ -55,7 +55,8 @@ juristFrm::juristFrm() {
     //menu->setStyleSheet(style1);
     //m_pMenuBar->setStyle();
     //m_pMenuBar->adjustSize();
-
+    QMessageBoxEx::setCustomTextForButton(QMessageBox::Yes, "Да");
+    QMessageBoxEx::setCustomTextForButton(QMessageBox::No, "Нет");
 }
 
 juristFrm::~juristFrm() {
@@ -82,8 +83,9 @@ void juristFrm::OnGenerateReprt2() {
 }
 
 void juristFrm::OnExit() {
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Завершение работы АРМ Инспектор",
+
+    QMessageBoxEx::StandardButton reply;
+    reply = QMessageBoxEx::question(this, "Завершение работы АРМ Инспектор",
             "Вы действительно хотите завершить работу ? ",
             QMessageBox::Yes | QMessageBox::No);
     if (reply == QMessageBox::Yes) {

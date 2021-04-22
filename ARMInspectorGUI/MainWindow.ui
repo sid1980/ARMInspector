@@ -39,11 +39,7 @@ QHeaderView::section {
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QTableView" name="tableView"/>
-    </item>
-   </layout>
+   <layout class="QGridLayout" name="gridLayout"/>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -65,15 +61,10 @@ QHeaderView::section {
      <bool>true</bool>
     </property>
     <addaction name="actionListUsers"/>
-   </widget>
-   <widget class="QMenu" name="menu">
-    <property name="title">
-     <string>АРМ Юриста</string>
-    </property>
-    <addaction name="actionReport"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionAccount">
@@ -95,7 +86,7 @@ QHeaderView::section {
      <normaloff>../../xmlParser/images/information.png</normaloff>../../xmlParser/images/information.png</iconset>
    </property>
    <property name="text">
-    <string>Список пользователей</string>
+    <string>Управление пользователями</string>
    </property>
    <property name="shortcut">
     <string>Alt+A</string>
@@ -104,6 +95,14 @@ QHeaderView::section {
   <action name="actionReport">
    <property name="text">
     <string>Отчёт</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Выход</string>
+   </property>
+   <property name="autoRepeat">
+    <bool>true</bool>
    </property>
   </action>
  </widget>

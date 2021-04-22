@@ -13,12 +13,10 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QGridLayout>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QStatusBar>
-#include <QtWidgets/QTableView>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -30,12 +28,11 @@ public:
     QAction *action;
     QAction *actionListUsers;
     QAction *actionReport;
+    QAction *actionExit;
     QWidget *centralwidget;
     QGridLayout *gridLayout;
-    QTableView *tableView;
     QMenuBar *menubar;
     QMenu *menuFile;
-    QMenu *menu;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -73,15 +70,13 @@ public:
         actionListUsers->setIcon(icon);
         actionReport = new QAction(MainWindow);
         actionReport->setObjectName(QString::fromUtf8("actionReport"));
+        actionExit = new QAction(MainWindow);
+        actionExit->setObjectName(QString::fromUtf8("actionExit"));
+        actionExit->setAutoRepeat(true);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         gridLayout = new QGridLayout(centralwidget);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        tableView = new QTableView(centralwidget);
-        tableView->setObjectName(QString::fromUtf8("tableView"));
-
-        gridLayout->addWidget(tableView, 0, 0, 1, 1);
-
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
@@ -90,17 +85,15 @@ public:
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
         menuFile->setTearOffEnabled(false);
         menuFile->setToolTipsVisible(true);
-        menu = new QMenu(menubar);
-        menu->setObjectName(QString::fromUtf8("menu"));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
         MainWindow->setStatusBar(statusbar);
 
         menubar->addAction(menuFile->menuAction());
-        menubar->addAction(menu->menuAction());
         menuFile->addAction(actionListUsers);
-        menu->addAction(actionReport);
+        menuFile->addSeparator();
+        menuFile->addAction(actionExit);
 
         retranslateUi(MainWindow);
 
@@ -115,13 +108,13 @@ public:
 #endif // QT_CONFIG(tooltip)
         actionAccount->setText(QCoreApplication::translate("MainWindow", "Account", nullptr));
         action->setText(QCoreApplication::translate("MainWindow", "\320\236\321\202\321\207\321\221\321\202 \320\276\320\261 \320\220\320\237", nullptr));
-        actionListUsers->setText(QCoreApplication::translate("MainWindow", "\320\241\320\277\320\270\321\201\320\276\320\272 \320\277\320\276\320\273\321\214\320\267\320\276\320\262\320\260\321\202\320\265\320\273\320\265\320\271", nullptr));
+        actionListUsers->setText(QCoreApplication::translate("MainWindow", "\320\243\320\277\321\200\320\260\320\262\320\273\320\265\320\275\320\270\320\265 \320\277\320\276\320\273\321\214\320\267\320\276\320\262\320\260\321\202\320\265\320\273\321\217\320\274\320\270", nullptr));
 #if QT_CONFIG(shortcut)
         actionListUsers->setShortcut(QCoreApplication::translate("MainWindow", "Alt+A", nullptr));
 #endif // QT_CONFIG(shortcut)
         actionReport->setText(QCoreApplication::translate("MainWindow", "\320\236\321\202\321\207\321\221\321\202", nullptr));
+        actionExit->setText(QCoreApplication::translate("MainWindow", "\320\222\321\213\321\205\320\276\320\264", nullptr));
         menuFile->setTitle(QCoreApplication::translate("MainWindow", "\320\220\320\240\320\234 \320\220\320\264\320\274\320\270\320\275\320\270\321\201\321\202\321\200\320\260\321\202\320\276\321\200\320\260", nullptr));
-        menu->setTitle(QCoreApplication::translate("MainWindow", "\320\220\320\240\320\234 \320\256\321\200\320\270\321\201\321\202\320\260", nullptr));
     } // retranslateUi
 
 };

@@ -57,6 +57,8 @@ ui(new Ui::dialog) {
     p.setColor(QPalette::Highlight, hlClr);
     p.setColor(QPalette::HighlightedText, txtClr);
     setPalette(p);
+    QMessageBoxEx::setCustomTextForButton(QMessageBox::Yes, "Да");
+    QMessageBoxEx::setCustomTextForButton(QMessageBox::No, "Нет");
 }
 
 ///-----------------------------------------------------------------------------
@@ -214,7 +216,10 @@ void Dialog::showBox() {
 
 void Dialog::on_pushButton_addUser_clicked() {
     this->getUI()->tableView->model()->sort(-1);
+    usrFrm_->getWidget()->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Сохранить"));
+    usrFrm_->getWidget()->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Отменить"));
     if (usrFrm_->exec() == QDialog::Accepted) {
+
         User* user = new User();
         user->setFio(usrFrm_->getWidget()->lineEditFio->text());
         user->setInspection(usrFrm_->getInspections()[usrFrm_->getWidget()->comboBoxInspection->currentIndex()].getId());
@@ -243,7 +248,6 @@ void Dialog::on_pushButton_addUser_clicked() {
         emit addUser(*user);
         emit waitServer();
         delete user;
-
     }
 }
 
@@ -262,6 +266,8 @@ void Dialog::on_pushButton_editUser_clicked() {
         auto id = userV.getId();
         emit getUserData(id);
         emit waitServer();
+        usrEdtFrm_->getWidget()->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Сохранить"));
+        usrEdtFrm_->getWidget()->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Отменить"));
         if (usrEdtFrm_->exec() == QDialog::Accepted) {
             User* user = new User();
             user->setId(id);
@@ -303,10 +309,10 @@ void Dialog::on_pushButton_deleteUser_clicked() {
     if (rowidx >= 0) {
         UserView user = listusers_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
         auto id = user.getId();
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Удаление пользователя",
-                "Вы действительно хотите удалить пользователя <a style='color:royalblue'> " +
-                user.getFio() + "</a> ? ",
+        QMessageBoxEx::StandardButton reply;
+        reply = QMessageBoxEx::question(this, "Удаление пользователя",
+                "Вы действительно хотите удалить пользователя <br><br><a style='font-size:14px;color:red;'> " +
+                user.getFio() + "</a> ?<br>",
                 QMessageBox::Yes | QMessageBox::No);
         if (reply == QMessageBox::Yes) {
             qDebug() << "Yes was clicked";
@@ -330,6 +336,9 @@ void Dialog::on_pushButton_changePassword_clicked() {
     if (rowidx >= 0) {
         UserView userV = listusers_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
         pwdFrm_->getWidget()->labelUser->setText(userV.getFio());
+        pwdFrm_->getWidget()->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Сохранить"));
+        pwdFrm_->getWidget()->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Отменить"));
+
         if (pwdFrm_->exec() == QDialog::Accepted) {
             QString pwd1 = pwdFrm_->getWidget()->lineEditPwd->text().trimmed();
             QString pwd2 = pwdFrm_->getWidget()->lineEditPwd2->text().trimmed();

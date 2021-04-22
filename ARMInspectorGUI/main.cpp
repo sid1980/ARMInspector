@@ -1,6 +1,8 @@
 #include <QApplication>
 #include <QtQml/QQmlApplicationEngine>
-
+#include <QtCore>
+#include <QLocale>
+#include <QTranslator>
 #include "ServerClient.h"
 #include "ClientController.h"
 #include "CoreLogger.h"
@@ -9,6 +11,7 @@
 #include "myForm.h"
 #include "MainWindow.h"
 #include "juristFrm.h"
+#include "QMessageBoxEx.cpp"
 
 int main(int argc, char *argv[]) {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -44,6 +47,21 @@ max-height: 13px;
 }
                )";
     app.setStyleSheet(style);
+    QTranslator translator_my;
+    translator_my.load("i18n/i18n_" + QLocale::system().name() + ".qm");
+    //translator_my.load('i18n/i18n_ru_Ru.qm')
+     QCoreApplication::installTranslator(&translator_my);
+    //app.installTranslator(&translator_my);
+
+    QTranslator translator_qt;
+    translator_qt.load("i18n/qt_" + QLocale::system().name()[2] + ".qm");
+    //translator_qt.load('i18n/qt_ru.qm')
+    QCoreApplication::installTranslator(&translator_qt);
+    //app.installTranslator(&translator_qt);
+
+
+
+
     /// Создание обработчика событий логирования.
     CoreLogger coreLogger;
 #if defined(Q_OS_LINUX)
