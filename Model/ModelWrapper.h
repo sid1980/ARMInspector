@@ -44,6 +44,7 @@ public:
         Unknown,
         User,
         Mro,
+        RptColumn,
         UserView,
         Inspection
     };

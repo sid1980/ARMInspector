@@ -154,8 +154,6 @@ void Dialog::fillUserEditFrm(const User& user) {
             allButtons[i - 1]->setChecked(true);
         }
     }
-
-
 }
 
 
