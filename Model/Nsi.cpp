@@ -12,8 +12,12 @@
  */
 
 #include "Nsi.h"
+QString Nsi::num_={""};
 
 Nsi::Nsi() {
+}
+Nsi::Nsi(const QString& num) {
+    Nsi::num_=num;
 }
 
 
@@ -47,7 +51,7 @@ const QString& Nsi::getName() const {
 ///          
 ///-----------------------------------------------------------------------------
 
-void Mro::read(const QJsonObject &jsonObj) {
+void Nsi::read(const QJsonObject &jsonObj) {
     this->setId(jsonObj["id"].toInt());
     this->setName(jsonObj["name"].toString());
 };
@@ -59,7 +63,7 @@ void Mro::read(const QJsonObject &jsonObj) {
 ///
 ///-----------------------------------------------------------------------------
 
-void Mro::write(QJsonObject &jsonObj) const {
+void Nsi::write(QJsonObject &jsonObj) const {
 
     jsonObj["id"] = this->getId();
     jsonObj["name"] = this->getName();
