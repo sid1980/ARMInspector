@@ -9,6 +9,7 @@
 #include "Mro.h"
 #include "UserView.h"
 #include "Inspection.h"
+#include "Nsi.h"
 #include <QSqlError>
 
 
@@ -125,7 +126,7 @@ void DBManager::login() {
     if (!asLogin.isEmpty()&&!asPassword.isEmpty()) {
         //Взять ранее созданное подключение к  базе данных.
         if (!connectDB<User>()) {
-                qDebug() << "DB not connected";
+            qDebug() << "DB not connected";
             return;
         }
         //База данных открыта. Можно проводить авторизацию пользователя. 
@@ -214,6 +215,13 @@ void DBManager::deleteModel() {
         case ModelWrapper::Model::Inspection:
             deleteModel<Inspection>();
             break;
+        case ModelWrapper::Model::Nsi:
+            QJsonObject param;
+            JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
+            //ноиер НСИ
+            Nsi::num_ = param["num"].toString();
+            deleteModel<Nsi>();
+            break;
 
     }
 }
@@ -236,6 +244,13 @@ void DBManager::getModel() {
             break;
         case ModelWrapper::Model::Inspection:
             getModel<Inspection>();
+            break;
+        case ModelWrapper::Model::Nsi:
+            QJsonObject param;
+            JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
+            //ноиер НСИ
+            Nsi::num_ = param["num"].toString();
+            getModel<Nsi>();
             break;
 
     }
@@ -262,6 +277,13 @@ void DBManager::getListModels() {
             break;
         case ModelWrapper::Model::Inspection:
             getListModels<Inspection>();
+            break;
+        case ModelWrapper::Model::Nsi:
+            QJsonObject param;
+            JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
+            //ноиер НСИ
+            Nsi::num_ = param["num"].toString();
+            getListModels<Nsi>();
             break;
 
     }
