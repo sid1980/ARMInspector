@@ -37,6 +37,7 @@ public:
     void OnGenerateReport();
     void OnExit();
     void OnGenerateReprt2();
+    void OnArticle();
 private slots:
     void onTableClicked(const QModelIndex &);
     void setlistMro(const QList<Mro>&);

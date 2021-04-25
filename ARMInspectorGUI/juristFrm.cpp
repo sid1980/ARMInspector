@@ -37,6 +37,12 @@ juristFrm::juristFrm() {
     action = new QAction("&Отчёт Приложение 2", this);
     connect(action, &QAction::triggered, this, &juristFrm::OnGenerateReprt2);
     menu->addAction(action);
+    QMenu * menu2 = m_pMenuBar->addMenu("&Справочники");
+    // Справочники
+    action = new QAction("&Статьи", this);
+    connect(action, &QAction::triggered, this, &juristFrm::OnArticle);
+    menu2->addAction(action);
+
     //qApp->setStyleSheet("QMainWindow { background-color: yellow; border: 1px solid #424242 }"
     //        "QLCDNumber { background-color: red }"
     //        "QMenu::separator{height: 2px; background: lightblue; margin-left: 10px; margin-right: 5px;}"
@@ -96,6 +102,9 @@ void juristFrm::OnExit() {
     }
 }
 
+void juristFrm::OnArticle() {
+    
+}
 
 
 
