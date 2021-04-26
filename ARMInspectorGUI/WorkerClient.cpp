@@ -133,6 +133,17 @@ void WorkerClient::process() {
                         emit listMroReady(mro);
 
                     }
+                        break;
+                    case ModelWrapper::Model::Nsi:
+                    {
+                        ItemContainer<Nsi> nsiContainer;
+                        JsonSerializer::parse(wrapper.getData(), nsiContainer);
+                        QList<Nsi> nsi = nsiContainer.getItemsList();
+                        //QMessageBox::information(0, "Information Box", nsi[1].getName());
+                        emit listNsiReady(nsi);
+
+                    }
+                        break;
                     case ModelWrapper::Model::Inspection:
                     {
                         ItemContainer<Inspection> inspectionContainer;

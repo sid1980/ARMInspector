@@ -39,7 +39,7 @@ public:
 
     static const QJsonArray getColumnArray() {
         const QJsonArray jsonArray = {
-            "Идентификатор",
+            "№",
             "Название "
         };
         return jsonArray;

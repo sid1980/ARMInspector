@@ -38,6 +38,10 @@ public:
     void OnExit();
     void OnGenerateReprt2();
     void OnArticle();
+    void OnSubject();
+signals:
+    ///Ждать ответ сервера
+    void waitServer();
 private slots:
     void onTableClicked(const QModelIndex &);
     void setlistMro(const QList<Mro>&);

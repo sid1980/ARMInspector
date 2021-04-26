@@ -12,9 +12,15 @@
  */
 
 #include "juristFrm.h"
+#include "nsiFrm.h"
 #include "QMessageBoxEx.h"
 #include <QFile>
 #include <QTextStream>
+///-----------------------------------------------------------------------------
+///
+///         Конструктор.
+///          
+///-----------------------------------------------------------------------------
 
 juristFrm::juristFrm() {
     widget.setupUi(this);
@@ -39,8 +45,11 @@ juristFrm::juristFrm() {
     menu->addAction(action);
     QMenu * menu2 = m_pMenuBar->addMenu("&Справочники");
     // Справочники
-    action = new QAction("&Статьи", this);
+    action = new QAction("&Статьи КоАП", this);
     connect(action, &QAction::triggered, this, &juristFrm::OnArticle);
+    menu2->addAction(action);
+    action = new QAction("&Субъекты АП", this);
+    connect(action, &QAction::triggered, this, &juristFrm::OnSubject);
     menu2->addAction(action);
 
     //qApp->setStyleSheet("QMainWindow { background-color: yellow; border: 1px solid #424242 }"
@@ -64,15 +73,30 @@ juristFrm::juristFrm() {
     QMessageBoxEx::setCustomTextForButton(QMessageBox::Yes, "Да");
     QMessageBoxEx::setCustomTextForButton(QMessageBox::No, "Нет");
 }
+///-----------------------------------------------------------------------------
+///
+///         Деструктор.
+///          
+///-----------------------------------------------------------------------------
 
 juristFrm::~juristFrm() {
     delete m_pMenuBar;
     delete model_;
 }
+///-----------------------------------------------------------------------------
+///
+///         getMenuBar.
+///          
+///-----------------------------------------------------------------------------
 
 QMenuBar * juristFrm::getMenuBar() {
     return m_pMenuBar;
 }
+///-----------------------------------------------------------------------------
+///
+///         Формирование отчёта.Приложение 1.
+///          
+///-----------------------------------------------------------------------------
 
 void juristFrm::OnGenerateReport() {
     //QVBoxLayout *layout = new QVBoxLayout;
@@ -81,12 +105,22 @@ void juristFrm::OnGenerateReport() {
     report();
     //QMessageBox::information(0, "Menu", "Отчёт Приложение 1");
 }
+///-----------------------------------------------------------------------------
+///
+///         Формирование отчёта.Приложение 2.
+///          
+///-----------------------------------------------------------------------------
 
 void juristFrm::OnGenerateReprt2() {
     model_->clear();
     this->hideControlsFrm();
 
 }
+///-----------------------------------------------------------------------------
+///
+///         Выход из приложения.
+///          
+///-----------------------------------------------------------------------------
 
 void juristFrm::OnExit() {
 
@@ -102,15 +136,51 @@ void juristFrm::OnExit() {
     }
 }
 
+
+///-----------------------------------------------------------------------------
+///
+///         Справочник статей КоАП.
+///          
+///-----------------------------------------------------------------------------
+
 void juristFrm::OnArticle() {
-    
+    //QMessageBox::information(this, "АРМ Юриста", "Статьи КоАП");
+    nsiFrm frm;
+    ///получить список записей справочника НСИ
+    connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)), &frm, SLOT(setModel(const QList<Nsi>&)));
+    connect(&frm, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
+    m_pClientController->getListNSI("71");
+    frm.setWindowTitle("Статьи КоАП");
+    emit waitServer();
+    frm.setSizeTbl(353, 570);
+    frm.exec();
+}
+
+
+///-----------------------------------------------------------------------------
+///
+///         Справочник субъектов АП.
+///          
+///-----------------------------------------------------------------------------
+
+void juristFrm::OnSubject() {
+    //QMessageBox::information(this, "АРМ Юриста", "Статьи КоАП");
+    nsiFrm frm;
+    ///получить список записей справочника НСИ
+    connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)), &frm, SLOT(setModel(const QList<Nsi>&)));
+    connect(&frm, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
+    m_pClientController->getListNSI("5");
+    frm.setWindowTitle("Субъекты АП");
+    emit waitServer();
+    frm.setSizeTbl(353, 200);
+    frm.exec();
 }
 
 
 
 ///-----------------------------------------------------------------------------
 ///
-///         Отчёт.
+///         Генерация формы отчёта из Excel.
 ///          
 ///-----------------------------------------------------------------------------
 
@@ -268,6 +338,8 @@ void juristFrm::initClient(ClientController *clientController) {
     // готов вернуть  результат  выполнения запроса к серверу.
     connect(m_pClientController, SIGNAL(listMroReady(const QList<Mro>&)),
             this, SLOT(setlistMro(const QList<Mro>&)));
+    // Сигнально - слотовое соединение ожидания ответа от сервера.
+    connect(this, SIGNAL(waitServer()), m_pClientController, SLOT(waitReady()));
 
 };
 ///-----------------------------------------------------------------------------

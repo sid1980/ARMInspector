@@ -36,6 +36,10 @@ public:
     void init(ServerClient *apServerClient);
     ///установить флаг  авторизации клиента
     void setLogged(bool asLogged);
+    ///установить номер справочника
+    void setNsiNum(const QString& nsinum);
+    ///получить номер справочника
+    const QString&  getNsiNum();
     ///получить флаг  авторизации клиента
     bool getLogged();
     ///Получить модель
@@ -46,12 +50,16 @@ public:
     const User& getSessionUser();
     ///Полчить список МРО
     void getListMRO();
+    ///Полчить список МРО
+    void getListNSI(const QString& asNumNsi);
 
 
 signals:
     void ready();
     ///Cписок МРО подготовлен  
     void listMroReady(const QList<Mro>&);
+    ///Cписок НСИ подготовлен  
+    void listNsiReady(const QList<Nsi>&);
 
 private slots:
 
@@ -97,7 +105,10 @@ private:
     bool m_aLogged{false};
     ///Командная обёртка в форме строки.
     QString m_aModelWrapperString;
+    ///Пользователь, открывший сессию
     User m_aSessionUser;
+    ///
+    QString m_aNsiNum;
 
 
 };

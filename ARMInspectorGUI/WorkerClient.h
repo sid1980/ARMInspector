@@ -30,6 +30,7 @@
 #include "Inspection.h"
 #include "dialog.h"
 #include "reportFrm.h"
+#include "nsiFrm.h"
 
 class WorkerClient : public QObject {
     Q_OBJECT
@@ -72,6 +73,8 @@ signals:
     void getInspections();
     ///Cписок инспекций подготовлен  
     void listInspectionsReady(const QList<Inspection>&);
+    ///Cписок НСИ подготовлен  
+    void listNsiReady(const QList<Nsi>&);
     ///Cписок МРО подготовлен  
     void listMroReady(const QList<Mro>&);
     ///Сигнал завершения работы.

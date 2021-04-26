@@ -57,10 +57,13 @@ void ClientController::init(ServerClient *apServerClient) {
     connect(m_pWorkerClient, SIGNAL(getUserData(const qint64&)), SLOT(getUser(const qint64&)));
     ///пользователь прошёл аутентификацию
     ///необходимо установить данные сессионного пользователя
-    connect(m_pWorkerClient, SIGNAL(setSessionUser(const User&)), SLOT(setSessionUser(const User& )));
+    connect(m_pWorkerClient, SIGNAL(setSessionUser(const User&)), SLOT(setSessionUser(const User&)));
     ///список МРО получен от сервера 
     connect(m_pWorkerClient, SIGNAL(listMroReady(const QList<Mro>&)), this,
             SIGNAL(listMroReady(const QList<Mro>&)));
+    ///список НСИ получен от сервера 
+    connect(m_pWorkerClient, SIGNAL(listNsiReady(const QList<Nsi>&)), this,
+            SIGNAL(listNsiReady(const QList<Nsi>&)));
 
     // Сигнально-слотовое соединение  ожидания ответа от сервера.
     connect(m_pWorkerClient, SIGNAL(waitServer()), SLOT(waitReady()));
@@ -78,6 +81,18 @@ void ClientController::formReady() {
     m_aLogged = true;
     emit ready();
 }
+///установить номер справочника
+
+void ClientController::setNsiNum(const QString& nsinum) {
+    m_aNsiNum = nsinum;
+};
+
+///получить номер справочника
+
+const QString& ClientController::getNsiNum() {
+    return m_aNsiNum;
+};
+
 
 
 ///Полчить список инспекций
@@ -85,8 +100,19 @@ void ClientController::formReady() {
 void ClientController::getListInspections() {
     this->getListModels(ModelWrapper::Model::Inspection);
 };
+
+///Полчить список МРО
+
 void ClientController::getListMRO() {
     this->getListModels(ModelWrapper::Model::Mro);
+};
+
+
+///Полчить список записей справочника NSI
+
+void ClientController::getListNSI(const QString& asNumNsi) {
+    this->setNsiNum(asNumNsi);
+    this->getListModels(ModelWrapper::Model::Nsi);
 };
 
 ///Ждать сигнала готовности данных.
@@ -207,6 +233,9 @@ void ClientController::deleteModel(const qint64& asId, ModelWrapper::Model model
     //Задать параметры команды.
     QJsonObject params;
     params.insert("ID", asId);
+    if (ModelWrapper::Model::Nsi == model) {
+        params.insert("numNSI", m_aNsiNum);
+    }
     //params.insert("model", model);
     //Конвертировать параметры в строку.
     QString query = JsonSerializer::json_encode(params);
@@ -229,6 +258,10 @@ void ClientController::getModel(const qint64& asId, ModelWrapper::Model model) {
     //Задать параметры команды.
     QJsonObject params;
     params.insert("ID", asId);
+    if (ModelWrapper::Model::Nsi == model) {
+        params.insert("numNSI", m_aNsiNum);
+    }
+
     //params.insert("model", model);
     //Конвертировать параметры в строку.
     QString query = JsonSerializer::json_encode(params);
@@ -250,15 +283,24 @@ void ClientController::getListModels(ModelWrapper::Model model) {
     //Установить модель.    
     wrapper.setEnumModel(model);
     //Задать параметры команды.
-    //QJsonObject params;
+    QJsonObject params;
+    if (ModelWrapper::Model::Nsi == model) {
+        params.insert("numNSI", m_aNsiNum);
+    }
+    //Конвертировать параметры в строку.
+    QString query = JsonSerializer::json_encode(params);
+    //Положить параметры в раздел данных.
+    wrapper.setData(query);
+
+
     //params.insert("query", asQuery);
     //params.insert("model", model);
     //Конвертировать параметры в строку.
     //QString query = JsonSerializer::json_encode(params);
     //Положить параметры в раздел данных.
-    wrapper.setData("");
+    //wrapper.setData("");
     //Упаковать  весь запрос в строку
-    QString query = JsonSerializer::serialize(wrapper);
+    query = JsonSerializer::serialize(wrapper);
     //Переслать его на сервер.
     m_pCommandController->requestServer(query);
 

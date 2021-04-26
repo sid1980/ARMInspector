@@ -108,7 +108,7 @@ private:
     pwdFrm *pwdFrm_;
     ///ссылка на окно релактирования выбранного пользователя
     userEditFrm *usrEdtFrm_;
-    ///ссылк на модель выда данных 
+    ///ссылка на модель  данных 
     ModelList<UserView>* listusers_;
     ///ссылк на экземпляр модели вывода данных
     UserView *userview_;
