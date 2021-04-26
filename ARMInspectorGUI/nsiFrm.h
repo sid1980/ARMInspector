@@ -15,6 +15,7 @@
 #define _NSIFRM_H
 
 #include <QDialog>
+#include <QCloseEvent>
 #include "QMessageBoxEx.h"
 #include "ui_nsiFrm.h"
 #include "nsiEditForm.h"
@@ -23,6 +24,7 @@
 #include "pwdFrm.h"
 #include "ModelList.h"
 #include "ModelList.h"
+#include "DialogDestroyer.h"
 
 #include <QSortFilterProxyModel>
 
@@ -34,6 +36,7 @@ public:
     virtual ~nsiFrm();
     ///Получить ссылку на виджет
     Ui::nsiFrm* getUI();
+    void closeEvent(QCloseEvent *event);
     ///Установить размер таблицы
     void setSizeTbl(const int& width, const int& height);
 private slots:
@@ -58,7 +61,6 @@ private:
     Nsi *nsi_;
     ///модель сортировеки 
     QSortFilterProxyModel *proxyModel_;
-
 };
 
 #endif /* _NSIFRM_H */

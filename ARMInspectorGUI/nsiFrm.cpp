@@ -140,3 +140,9 @@ void nsiFrm::on_pushButton_deleteNsi_clicked() {
 
 }
 
+void nsiFrm::closeEvent(QCloseEvent *event)
+{
+   event->accept();
+   QDialog::closeEvent(event);
+   //(new DialogDestroyer())->DelayedDestruction(this);
+}

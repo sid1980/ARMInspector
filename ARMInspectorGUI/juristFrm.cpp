@@ -12,7 +12,6 @@
  */
 
 #include "juristFrm.h"
-#include "nsiFrm.h"
 #include "QMessageBoxEx.h"
 #include <QFile>
 #include <QTextStream>
@@ -26,6 +25,7 @@ juristFrm::juristFrm() {
     widget.setupUi(this);
     model_ = new QStandardItemModel;
     m_pMenuBar = new QMenuBar(this);
+    frm = new nsiFrm(this);
     this->setMenuBar(m_pMenuBar);
     QMenu * menu1 = m_pMenuBar->addMenu("&Журнал");
     // Выход
@@ -80,8 +80,9 @@ juristFrm::juristFrm() {
 ///-----------------------------------------------------------------------------
 
 juristFrm::~juristFrm() {
-    delete m_pMenuBar;
-    delete model_;
+    //delete model_;
+    //delete frm;
+    //delete m_pMenuBar;
 }
 ///-----------------------------------------------------------------------------
 ///
@@ -130,6 +131,8 @@ void juristFrm::OnExit() {
             QMessageBox::Yes | QMessageBox::No);
     if (reply == QMessageBox::Yes) {
         qDebug() << "Yes was clicked";
+        //this->close();
+        //qApp->closeAllWindows();
         qApp->quit();
     } else {
         qDebug() << "Yes was *not* clicked";
@@ -145,15 +148,21 @@ void juristFrm::OnExit() {
 
 void juristFrm::OnArticle() {
     //QMessageBox::information(this, "АРМ Юриста", "Статьи КоАП");
-    nsiFrm frm;
+    //nsiFrm frm;
     ///получить список записей справочника НСИ
-    connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)), &frm, SLOT(setModel(const QList<Nsi>&)));
-    connect(&frm, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
-    m_pClientController->getListNSI("71");
-    frm.setWindowTitle("Статьи КоАП");
+    //nsiFrm* frm = new nsiFrm(this);
+    connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)),
+            frm, SLOT(setModel(const QList<Nsi>&)));
+    connect(frm, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
+    m_pClientController->getListNSI("7");
+    frm->setWindowTitle("Статьи КоАП");
     emit waitServer();
-    frm.setSizeTbl(353, 570);
-    frm.exec();
+    frm->setSizeTbl(353, 570);
+    //frm->setAttribute(Qt::WA_DeleteOnClose);
+    frm->exec();
+    //(new DialogDestroyer())->DelayedDestruction(frm);
+    //frm->deleteLater();
+    //delete frm;
 }
 
 
@@ -165,15 +174,16 @@ void juristFrm::OnArticle() {
 
 void juristFrm::OnSubject() {
     //QMessageBox::information(this, "АРМ Юриста", "Статьи КоАП");
-    nsiFrm frm;
-    ///получить список записей справочника НСИ
-    connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)), &frm, SLOT(setModel(const QList<Nsi>&)));
-    connect(&frm, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
+    nsiFrm* frm = new nsiFrm(this);
+    ///получить список  записей справочника НСИ
+    connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)), frm, SLOT(setModel(const QList<Nsi>&)));
+    connect(frm, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
+    //connect(frm, SIGNAL(finished()), m_pClientController, SIGNAL(ready()));
     m_pClientController->getListNSI("5");
-    frm.setWindowTitle("Субъекты АП");
+    frm->setWindowTitle("Субъекты АП");
     emit waitServer();
-    frm.setSizeTbl(353, 200);
-    frm.exec();
+    frm->setSizeTbl(353, 200);
+    frm->exec();
 }
 
 
@@ -413,3 +423,9 @@ void juristFrm::showControlsFrm() {
 //    QString qssStr = styleF.readAll();
 //    qApp->setStyleSheet(qssStr);
 //https://www.programmersought.com/article/2906246923/
+
+void juristFrm::closeEvent(QCloseEvent *event) {
+    event->accept();
+    QMainWindow::closeEvent(event);
+    //(new DialogDestroyer())->DelayedDestruction(this);
+}

@@ -16,11 +16,14 @@
 
 #include "ui_juristFrm.h"
 #include <QMenuBar>
+#include <QMainWindow>
 #include <QTableView>
 #include <QModelIndex>
 #include <QStandardItemModel>
 #include "ClientController.h"
 #include "Mro.h"
+#include "nsiFrm.h"
+#include "DialogDestroyer.h"
 
 class juristFrm : public QMainWindow {
     Q_OBJECT
@@ -39,6 +42,7 @@ public:
     void OnGenerateReprt2();
     void OnArticle();
     void OnSubject();
+    void closeEvent(QCloseEvent *event);
 signals:
     ///Ждать ответ сервера
     void waitServer();
@@ -55,6 +59,8 @@ private:
     QList<Mro> mro_;
     ///указатель контроллера клиента.
     ClientController *m_pClientController{nullptr};
+    nsiFrm* frm; 
+
 
 };
 
