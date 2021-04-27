@@ -24,13 +24,13 @@
 #include "JsonSerializer.h"
 #include "ItemContainer.h"
 #include "ModelList.h"
-#include "User.h"
-#include "Mro.h"
-#include "UserView.h"
-#include "Inspection.h"
-#include "dialog.h"
-#include "reportFrm.h"
-#include "nsiFrm.h"
+#include "User/User.h"
+#include "Mro/Mro.h"
+#include "User/UserView.h"
+#include "Inspection/Inspection.h"
+#include "User/dialog.h"
+#include "Report/reportFrm.h"
+#include "Nsi/nsiFrm.h"
 
 class WorkerClient : public QObject {
     Q_OBJECT

@@ -29,12 +29,12 @@
 #include "QMessageBoxEx.h"
 
 #include "ui_dialog.h"
-#include "Inspection.h"
-#include "User.h"
+#include "Inspection/Inspection.h"
+#include "User/User.h"
 #include "userForm.h"
 #include "userEditFrm.h"
 #include "ModelList.h"
-#include "UserView.h"
+#include "User/UserView.h"
 #include "pwdFrm.h"
 #include <QSortFilterProxyModel>
 

@@ -72,7 +72,7 @@ public:
         return QString("Delete   from nsi_"+Nsi::num_);
     }
     ///Интерфейс модели.
-    ///Получить  данные  о мрдели.
+    ///Получить  данные  о модели.
     virtual const QVariant getData(const int&) const;
     ///Установить  данные  модели.
     virtual void setData(const int&, const QVariant&);

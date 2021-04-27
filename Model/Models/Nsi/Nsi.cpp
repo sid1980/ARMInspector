@@ -11,7 +11,7 @@
  * Created on 23 апреля 2021 г., 16:15
  */
 
-#include "Nsi.h"
+#include "Nsi/Nsi.h"
 QString Nsi::num_={""};
 
 Nsi::Nsi() {

@@ -29,7 +29,7 @@ void DialogDestroyer::DelayedDestruction(QDialog* lDialog) {
 
 void DialogDestroyer::run() {
 
-    //msleep(300);
+    msleep(300);
 
     mDialog->deleteLater();
     this->deleteLater();

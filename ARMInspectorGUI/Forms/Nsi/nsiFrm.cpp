@@ -107,7 +107,11 @@ void nsiFrm::on_pushButton_addNsi_clicked() {
     frm.getUI()->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Добавить"));
     frm.getUI()->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Отменить"));
     if (frm.exec() == QDialog::Accepted) {
-        QMessageBox::information(this, "Добавление записи НСИ", "QDialog::Accepted");
+        //QMessageBox::information(this, "Добавление записи НСИ", "QDialog::Accepted");
+        Nsi* nsi = new Nsi();
+        //QMessageBox::information(this, "Добавление новой записи НСИ", Nsi::num_);
+        //nsi->setName(frm->getUI()->lineEditName->text());
+        //user->setFio(usrFrm_->getWidget()->lineEditFio->text());
     }
 }
 ///-----------------------------------------------------------------------------
@@ -140,9 +144,13 @@ void nsiFrm::on_pushButton_deleteNsi_clicked() {
 
 }
 
-void nsiFrm::closeEvent(QCloseEvent *event)
-{
-   event->accept();
-   QDialog::closeEvent(event);
-   //(new DialogDestroyer())->DelayedDestruction(this);
+///-----------------------------------------------------------------------------
+///
+///         close event 
+///          
+///-----------------------------------------------------------------------------
+
+void nsiFrm::closeEvent(QCloseEvent *event) {
+    event->accept();
+    QDialog::closeEvent(event);
 }

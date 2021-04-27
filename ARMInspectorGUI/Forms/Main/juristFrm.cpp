@@ -25,7 +25,7 @@ juristFrm::juristFrm() {
     widget.setupUi(this);
     model_ = new QStandardItemModel;
     m_pMenuBar = new QMenuBar(this);
-    frm = new nsiFrm(this);
+    //frm = new nsiFrm(this);
     this->setMenuBar(m_pMenuBar);
     QMenu * menu1 = m_pMenuBar->addMenu("&Журнал");
     // Выход
@@ -80,9 +80,8 @@ juristFrm::juristFrm() {
 ///-----------------------------------------------------------------------------
 
 juristFrm::~juristFrm() {
-    //delete model_;
-    //delete frm;
-    //delete m_pMenuBar;
+    delete model_;
+    delete m_pMenuBar;
 }
 ///-----------------------------------------------------------------------------
 ///
@@ -93,6 +92,7 @@ juristFrm::~juristFrm() {
 QMenuBar * juristFrm::getMenuBar() {
     return m_pMenuBar;
 }
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Формирование отчёта.Приложение 1.
@@ -115,8 +115,8 @@ void juristFrm::OnGenerateReport() {
 void juristFrm::OnGenerateReprt2() {
     model_->clear();
     this->hideControlsFrm();
-
 }
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Выход из приложения.
@@ -150,7 +150,7 @@ void juristFrm::OnArticle() {
     //QMessageBox::information(this, "АРМ Юриста", "Статьи КоАП");
     //nsiFrm frm;
     ///получить список записей справочника НСИ
-    //nsiFrm* frm = new nsiFrm(this);
+    nsiFrm* frm = new nsiFrm();
     connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)),
             frm, SLOT(setModel(const QList<Nsi>&)));
     connect(frm, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
@@ -161,6 +161,7 @@ void juristFrm::OnArticle() {
     //frm->setAttribute(Qt::WA_DeleteOnClose);
     frm->exec();
     //(new DialogDestroyer())->DelayedDestruction(frm);
+    //delete frm;
     //frm->deleteLater();
     //delete frm;
 }
@@ -174,7 +175,7 @@ void juristFrm::OnArticle() {
 
 void juristFrm::OnSubject() {
     //QMessageBox::information(this, "АРМ Юриста", "Статьи КоАП");
-    nsiFrm* frm = new nsiFrm(this);
+    nsiFrm* frm = new nsiFrm();
     ///получить список  записей справочника НСИ
     connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)), frm, SLOT(setModel(const QList<Nsi>&)));
     connect(frm, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
@@ -424,8 +425,8 @@ void juristFrm::showControlsFrm() {
 //    qApp->setStyleSheet(qssStr);
 //https://www.programmersought.com/article/2906246923/
 
-void juristFrm::closeEvent(QCloseEvent *event) {
-    event->accept();
-    QMainWindow::closeEvent(event);
-    //(new DialogDestroyer())->DelayedDestruction(this);
-}
+//void juristFrm::closeEvent(QCloseEvent *event) {
+//    event->accept();
+//    QMainWindow::closeEvent(event);
+//(new DialogDestroyer())->DelayedDestruction(this);
+//}

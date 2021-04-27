@@ -23,8 +23,8 @@
 
 
 #include "dialog.h"
-#include "User.h"
-#include "UserView.h"
+#include "User/User.h"
+#include "User/UserView.h"
 #include <QButtonGroup>
 #include <QRadioButton>
 #include <QDebug>

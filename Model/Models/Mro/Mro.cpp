@@ -11,7 +11,7 @@
  * Created on 20 апреля 2021 г., 15:36
  */
 
-#include "Mro.h" 
+#include "Mro/Mro.h" 
 
 Mro::Mro() : id_(0), name_(""), inspection_(0) {
 }

@@ -20,7 +20,9 @@
 #include "Model.h"
 
 class User : public JsonSerializable, Model {
+    
 public:
+    
     ///Конструктор
     User();
     ///Деструктор

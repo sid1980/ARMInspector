@@ -3,36 +3,37 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 /****************************************************************************
  **
- **             Класс модели пользователя UserView.
- **             Используются для вывода данных о пользователе списком
+ **             Класс модели инспекции Inspection.
  **
  ****************************************************************************/
 
 /* 
- * File:   UserView.cpp
- * Author: kazun_as
+ * File:   Inspection.cpp
+ * Author: kazun
  * 
- * Created on 5 апреля 2021 г., 10:41
+ * 
+ * Created on 3 апреля 2021 г., 21:58
  */
 
-#include "UserView.h"
+#include "Inspection/Inspection.h"
 ///-----------------------------------------------------------------------------
 ///
-///         Стандартный конструктор.
+///         Конструктор.
 ///          
 ///-----------------------------------------------------------------------------
 
-UserView::UserView() {
+Inspection::Inspection() {
 }
 ///-----------------------------------------------------------------------------
 ///
-///         Стандартный деструктор.
+///         Деструктор.
 ///          
 ///-----------------------------------------------------------------------------
 
-UserView::~UserView() {
+Inspection::~Inspection() {
 }
 ///-----------------------------------------------------------------------------
 ///
@@ -40,38 +41,31 @@ UserView::~UserView() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void UserView::setId(const qint64& id) {
+void Inspection::setId(const qint64& id) {
     id_ = id;
 };
 
-void UserView::setFio(const QString& fio) {
-    fio_ = fio;
-};
-
-void UserView::setInspection(const QString& inspection) {
-    inspection_ = inspection;
-};
-
-void UserView::setName(const QString& name) {
+void Inspection::setName(const QString& name) {
     name_ = name;
 };
 
-const qint64& UserView::getId() const {
+void Inspection::setMro(const qint64& mro) {
+    mro_ = mro;
+};
+
+const qint64& Inspection::getId()const {
     return id_;
 };
 
-const QString& UserView::getFio() const {
-    return fio_;
-};
-
-const QString& UserView::getInspection() const {
-    return inspection_;
-};
-
-const QString& UserView::getName() const {
+const QString& Inspection::getName()const {
     return name_;
 };
-//-----------------------------------------------------------------------------
+
+const qint64& Inspection::getMro()const {
+    return mro_;
+};
+
+///-----------------------------------------------------------------------------
 ///
 ///         Считывание данных внешнего JSON объекта и 
 ///         запись их в соответствующие поля класса 
@@ -79,12 +73,12 @@ const QString& UserView::getName() const {
 ///          
 ///-----------------------------------------------------------------------------
 
-void UserView::read(const QJsonObject &jsonObj) {
+void Inspection::read(const QJsonObject &jsonObj) {
     this->setId(jsonObj["id"].toInt());
-    this->setFio(jsonObj["fio"].toString());
-    this->setInspection(jsonObj["name_i"].toString());
-    this->setName(jsonObj["name"].toString());
+    this->setName(jsonObj["name_i"].toString());
+    this->setMro(jsonObj["id_mro"].toInt());
 };
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Запись данных полей класса во внешнний JSON объект. 
@@ -92,62 +86,55 @@ void UserView::read(const QJsonObject &jsonObj) {
 ///
 ///-----------------------------------------------------------------------------
 
-void UserView::write(QJsonObject &jsonObj) const {
+void Inspection::write(QJsonObject &jsonObj) const {
 
     jsonObj["id"] = this->getId();
-    jsonObj["fio"] = this->getFio();
-    jsonObj["name_i"] = this->getInspection();
-    jsonObj["name"] = this->getName();
-
+    jsonObj["name_i"] = this->getName();
+    jsonObj["id_mro"] = this->getMro();
 };
-///-----------------------------------------------------------------------------
-///
-///         Запись данных полей класса во внешнний JSON объект. 
-///         Используется при сериализации объекта класса         
-///
-///-----------------------------------------------------------------------------
 
-void UserView::setData(const int& position, const QVariant& value) {
-    switch (position) {
-        case 0:
-            this->setId(value.toInt());
-            break;
-        case 1:
-            this->setFio(value.toString());
-            break;
-        case 2:
-            this->setInspection(value.toString());
-            break;
-        case 3:
-            this->setName(value.toString());
-            break;
-        default:
-            break;
-    }
-
-};
-//-----------------------------------------------------------------------------
+///-----------------------------------------------------------------------------
 ///
 ///         Прочитать данные любого из полей класса. 
 ///         Используется при моделировании QAbstractTableModel         
 ///
 ///-----------------------------------------------------------------------------
 
-const QVariant UserView::getData(const int& position) const {
+const QVariant Inspection::getData(const int& position) const {
 
     switch (position) {
         case 0:
             return this->getId();
         case 1:
-            return this->getFio();
-        case 2:
-            return this->getInspection();
-        case 3:
             return this->getName();
+        case 2:
+            return this->getMro();
         default:
             return 0;
             break;
     }
-
 };
 
+///-----------------------------------------------------------------------------
+///
+///         Записать  данные в любое з поле класса. 
+///         Используется при моделировании QAbstractTableModel         
+///
+///-----------------------------------------------------------------------------
+
+void Inspection::setData(const int& position, const QVariant& value) {
+    switch (position) {
+        case 0:
+            this->setId(value.toInt());
+            break;
+        case 1:
+            this->setName(value.toString());
+            break;
+        case 2:
+            this->setMro(value.toInt());
+            break;
+        default:
+            break;
+    }
+
+};

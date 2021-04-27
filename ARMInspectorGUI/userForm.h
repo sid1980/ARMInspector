@@ -22,8 +22,8 @@
 #define _USERFORM_H
 
 #include "ui_userForm.h"
-#include "User.h"
-#include "Inspection.h"
+#include "User/User.h"
+#include "Inspection/Inspection.h"
 
 class userForm : public QDialog {
     Q_OBJECT

@@ -7,8 +7,8 @@
 #include "ServerClient.h"
 #include "ModelWrapper.h"
 #include "WorkerClient.h"
-#include "User.h"
-#include "Mro.h"
+#include "User/User.h"
+#include "Mro/Mro.h"
 
 class ClientController : public QObject {
 

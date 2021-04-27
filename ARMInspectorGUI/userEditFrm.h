@@ -21,8 +21,8 @@
 #define _USEREDITFRM_H
 
 #include "ui_userEditFrm.h"
-//#include "User.h"
-#include "Inspection.h"
+//#include "User/User.h"
+#include "Inspection/Inspection.h"
 
 class userEditFrm : public QDialog {
     Q_OBJECT

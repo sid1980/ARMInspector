@@ -21,7 +21,7 @@ class nsiEditForm : public QDialog {
 public:
     ///конструктор
     explicit nsiEditForm(QWidget *parent = 0);
-    virtual ~nsiEditForm();
+    ~nsiEditForm();
     ///Получить ссылку на виджет
     Ui::nsiEditForm* getUI();
 

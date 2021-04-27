@@ -26,7 +26,7 @@
 #include "WorkerClient.h"
 #include "QMessageBoxEx.h"
 #include <QTableView>
-#include "dialog.h"
+#include "User/dialog.h"
 ///-----------------------------------------------------------------------------
 ///
 ///         Конструктор.

@@ -19,9 +19,9 @@
 #include "QMessageBoxEx.h"
 #include "ui_nsiFrm.h"
 #include "nsiEditForm.h"
-#include "Nsi.h"
-#include "UserView.h"
-#include "pwdFrm.h"
+#include "Nsi/Nsi.h"
+#include "User/UserView.h"
+#include "User/pwdFrm.h"
 #include "ModelList.h"
 #include "ModelList.h"
 #include "DialogDestroyer.h"
@@ -33,7 +33,7 @@ class nsiFrm : public QDialog {
 public:
     ///конструктор
     explicit nsiFrm(QWidget *parent = 0);
-    virtual ~nsiFrm();
+    ~nsiFrm();
     ///Получить ссылку на виджет
     Ui::nsiFrm* getUI();
     void closeEvent(QCloseEvent *event);

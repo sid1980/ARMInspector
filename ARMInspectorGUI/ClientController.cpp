@@ -111,6 +111,7 @@ void ClientController::getListMRO() {
 ///Полчить список записей справочника NSI
 
 void ClientController::getListNSI(const QString& asNumNsi) {
+    Nsi::num_ = asNumNsi;
     this->setNsiNum(asNumNsi);
     this->getListModels(ModelWrapper::Model::Nsi);
 };

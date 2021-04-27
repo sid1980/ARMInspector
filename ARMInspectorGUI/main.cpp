@@ -8,9 +8,9 @@
 #include "CoreLogger.h"
 #include "JsonSerializer.h"
 #include "ModelWrapper.h"
-#include "myForm.h"
+#include "Login/myForm.h"
 #include "MainWindow.h"
-#include "juristFrm.h"
+#include "Main/juristFrm.h"
 #include "QMessageBoxEx.cpp"
 
 int main(int argc, char *argv[]) {

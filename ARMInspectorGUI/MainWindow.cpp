@@ -12,7 +12,7 @@
  */
 
 #include "MainWindow.h"
-#include "reportFrm.h"
+#include "Report/reportFrm.h"
 #include <QStandardItemModel>
 #include <QScrollBar>
 
