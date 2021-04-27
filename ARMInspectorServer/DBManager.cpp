@@ -283,6 +283,7 @@ void DBManager::getListModels() {
             JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
             //ноиер НСИ
             Nsi::num_ = param["numNSI"].toString();
+            //qDebug()<<"num_" << Nsi::num_;
             getListModels<Nsi>();
             break;
 

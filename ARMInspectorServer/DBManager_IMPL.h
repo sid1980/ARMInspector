@@ -198,6 +198,7 @@ template<typename T> ItemContainer<T> DBManager::getAllRecordS() {
     //Проверить  и выполнить  SQL запрос.
     QSqlQuery query(m_Db);
     ///Выполнить SQL запрос
+    //qDebug()<<"Выполнить SQL запрос:  " << T::getQuery();
     if (!query.exec(T::getQuery())) {
         setResult(container, Message::SQL_ERROR);
         return container;
@@ -212,6 +213,7 @@ template<typename T> ItemContainer<T> DBManager::getAllRecordS() {
         }
         ///Считать запись базы данных  в объект класса T.  
         model.read(recordObject);
+        //qDebug()<<":  " << model.getFields()[1];
         ///Добавить объект класса T в контейнер сериализации.
         container.add(model);
     }
