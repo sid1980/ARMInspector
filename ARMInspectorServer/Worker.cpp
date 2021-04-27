@@ -6,7 +6,7 @@
  ****************************************************************************/
 
 #include "Worker.h"
-#include "User.h"
+#include "User/User.h"
 #include <QScopedPointer>
 //#include <memory> C++ 14
 

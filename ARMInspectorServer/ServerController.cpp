@@ -5,7 +5,7 @@
  ****************************************************************************/
 
 #include "ServerController.h"
-#include "User.h"
+#include "User/User.h"
 #include "JsonSerializer.h"
 #include <iostream>
 #include <QNetworkProxy>
