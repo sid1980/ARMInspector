@@ -18,7 +18,8 @@
 #include <QVariant>
 #include <QJsonArray>
 #include "Model.h"
-
+#include <array>
+using namespace std;
 class User : public JsonSerializable, Model {
     
 public:
@@ -73,20 +74,8 @@ public:
     }
 
     ///Список названий полей базы
-    static const QJsonArray getFieldArray() {
-        const QJsonArray jsonArray = {
-            "id",
-            "fio",
-            "id_inspection",
-            "name",
-            "password",
-            "status",
-            "role",
-            "access",
-            "claim",
-            "position"
-        };
-        return jsonArray;
+     array<QString, 10>  getFields() {
+        return fld_;
     }
 
 
@@ -111,6 +100,30 @@ public:
     virtual void setData(const int&, const QVariant&);
 
 private:
+    enum Column {
+            ID =0,
+            FIO,
+            ID_INSPECTION,
+            NAME,
+            PASSWORD,
+            STATUS,
+            ROLE,
+            ACCESS,
+            CLAIM,
+            POSITION
+    };     
+    array<QString, 10> fld_= {
+            "id",
+            "fio",
+            "id_inspection",
+            "name",
+            "password",
+            "status",
+            "role",
+            "access",
+            "claim",
+            "position"
+        };
     //Поля класса
     ///Идентификатор пользователя
     qint64 id_;

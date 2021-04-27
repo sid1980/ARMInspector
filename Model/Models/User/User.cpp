@@ -123,16 +123,19 @@ const qint64& User::getPosition() const {
 ///-----------------------------------------------------------------------------
 
 void User::read(const QJsonObject &jsonObj) {
-    this->setId(jsonObj["id"].toInt());
-    this->setFio(jsonObj["fio"].toString());
-    this->setInspection(jsonObj["id_inspection"].toInt());
-    this->setName(jsonObj["name"].toString());
-    this->setPassword(jsonObj["password"].toString());
-    this->setStatus(jsonObj["status"].toInt());
-    this->setRole(jsonObj["role"].toInt());
-    this->setAccess(jsonObj["access"].toInt());
-    this->setClaim(jsonObj["claim"].toInt());
-    this->setPosition(jsonObj["position"].toInt());
+    
+    //array<QString, 10> fld_name=User::getFieldArray();
+    
+    this->setId(jsonObj[fld_[Column::ID]].toInt());
+    this->setFio(jsonObj[fld_[Column::FIO]].toString());
+    this->setInspection(jsonObj[fld_[Column::ID_INSPECTION]].toInt());
+    this->setName(jsonObj[fld_[Column::NAME]].toString());
+    this->setPassword(jsonObj[fld_[Column::PASSWORD]].toString());
+    this->setStatus(jsonObj[fld_[Column::STATUS]].toInt());
+    this->setRole(jsonObj[fld_[Column::ROLE]].toInt());
+    this->setAccess(jsonObj[fld_[Column::ACCESS]].toInt());
+    this->setClaim(jsonObj[fld_[Column::CLAIM]].toInt());
+    this->setPosition(jsonObj[fld_[Column::POSITION]].toInt());
 };
 
 ///-----------------------------------------------------------------------------
@@ -144,16 +147,16 @@ void User::read(const QJsonObject &jsonObj) {
 
 void User::write(QJsonObject &jsonObj) const {
 
-    jsonObj["id"] = this->getId();
-    jsonObj["fio"] = this->getFio();
-    jsonObj["id_inspection"] = this->getInspection();
-    jsonObj["name"] = this->getName();
-    jsonObj["password"] = this->getPassword();
-    jsonObj["status"] = this->getStatus();
-    jsonObj["role"] = this->getRole();
-    jsonObj["access"] = this->getAccess();
-    jsonObj["claim"] = this->getClaim();
-    jsonObj["position"] = this->getPosition();
+    jsonObj[fld_[Column::ID]] = this->getId();
+    jsonObj[fld_[Column::FIO]] = this->getFio();
+    jsonObj[fld_[Column::ID_INSPECTION]] = this->getInspection();
+    jsonObj[fld_[Column::NAME]] = this->getName();
+    jsonObj[fld_[Column::PASSWORD]] = this->getPassword();
+    jsonObj[fld_[Column::STATUS]] = this->getStatus();
+    jsonObj[fld_[Column::ROLE]] = this->getRole();
+    jsonObj[fld_[Column::ACCESS]] = this->getAccess();
+    jsonObj[fld_[Column::CLAIM]] = this->getClaim();
+    jsonObj[fld_[Column::POSITION]] = this->getPosition();
 
 };
 
@@ -167,25 +170,25 @@ void User::write(QJsonObject &jsonObj) const {
 const QVariant User::getData(const int& position) const {
 
     switch (position) {
-        case 0:
+        case Column::ID:
             return this->getId();
-        case 1:
+        case Column::FIO:
             return this->getFio();
-        case 2:
+        case Column::ID_INSPECTION:
             return this->getInspection();
-        case 3:
+        case Column::NAME:
             return this->getName();
-        case 4:
+        case Column::PASSWORD:
             return this->getPassword();
-        case 5:
+        case Column::STATUS:
             return this->getStatus();
-        case 6:
+        case Column::ROLE:
             return this->getRole();
-        case 7:
+        case Column::ACCESS:
             return this->getAccess();
-        case 8:
+        case Column::CLAIM:
             return this->getClaim();
-        case 9:
+        case Column::POSITION:
             return this->getPosition();
         default:
             return 0;
@@ -202,34 +205,34 @@ const QVariant User::getData(const int& position) const {
 
 void User::setData(const int& position, const QVariant& value) {
     switch (position) {
-        case 0:
+        case Column::ID:
             this->setId(value.toInt());
             break;
-        case 1:
+        case Column::FIO:
             this->setFio(value.toString());
             break;
-        case 2:
+        case Column::ID_INSPECTION:
             this->setInspection(value.toInt());
             break;
-        case 3:
+        case Column::NAME:
             this->setName(value.toString());
             break;
-        case 4:
+        case Column::PASSWORD:
             this->setPassword(value.toString());
             break;
-        case 5:
+        case Column::STATUS:
             this->setStatus(value.toInt());
             break;
-        case 6:
+        case Column::ROLE:
             this->setRole(value.toInt());
             break;
-        case 7:
+        case Column::ACCESS:
             this->setAccess(value.toInt());
             break;
-        case 8:
+        case Column::CLAIM:
             this->setClaim(value.toInt());
             break;
-        case 9:
+        case Column::POSITION:
             this->setPosition(value.toInt());
             break;
         default:

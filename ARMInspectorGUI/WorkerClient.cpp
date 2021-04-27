@@ -139,7 +139,7 @@ void WorkerClient::process() {
                         ItemContainer<Nsi> nsiContainer;
                         JsonSerializer::parse(wrapper.getData(), nsiContainer);
                         QList<Nsi> nsi = nsiContainer.getItemsList();
-                        //QMessageBox::information(0, "Information Box", nsi[1].getName());
+                        QMessageBox::information(0, "Information Box", nsi[1].getName());
                         emit listNsiReady(nsi);
 
                     }

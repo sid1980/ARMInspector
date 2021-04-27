@@ -18,6 +18,9 @@
 #include <QVariant>
 #include <QJsonArray>
 #include "Model.h"
+#include <array>
+using namespace std;
+
 class Nsi : public JsonSerializable, Model {
 public:
     Nsi();
@@ -59,17 +62,17 @@ public:
     ///название модели
 
     static const QString getModelName() {
-        return QString("Nsi_"+Nsi::num_);
+        return QString("Nsi_" + Nsi::num_);
     }
     ///SQL запрос вывода данных
 
     static const QString getQuery() {
-        return QString("Select id,name_" + Nsi::num_ +" as name   from nsi_" + Nsi::num_);
+        return QString("Select id, name_" + Nsi::num_ + "    from nsi_" + Nsi::num_);
     }
     ///SQL запрос удаления экземпляра модели в  базе данных
 
     static const QString delQuery() {
-        return QString("Delete   from nsi_"+Nsi::num_);
+        return QString("Delete   from nsi_" + Nsi::num_);
     }
     ///Интерфейс модели.
     ///Получить  данные  о модели.
@@ -79,6 +82,17 @@ public:
 
 
 private:
+
+    enum Column {
+        ID = 0,
+        NAME
+    };
+    array<QString, 2> fld_ = {
+        "id",
+        "name_" +Nsi::num_
+    };
+
+
     qint64 id_;
     QString name_;
 };
