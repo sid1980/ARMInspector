@@ -49,6 +49,11 @@ public:
     /// Получить список моделей.
     void getListModels();
     template<typename T> void getListModels();
+
+    /// Добавить  модель.
+    void addModel();
+    template<typename T> void addModel();
+
     /// Удалить  модель.
     void deleteModel();
     ///удалить модель из списка

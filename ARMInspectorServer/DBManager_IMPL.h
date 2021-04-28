@@ -17,6 +17,7 @@
 #include <JsonSerializable.h>
 #include <JsonSerializer.h>
 #include <ItemContainer.h>
+#include <MQuery.h>
 #include "ModelWrapper.h"
 #include "ServerMessage.h"
 
@@ -63,12 +64,44 @@ template<typename T> void DBManager::getModel() {
         return;
     }
     //Проверить  и выполнить  SQL запрос.
+    //MQuery<T> mquery;
+    //mquery.insert();
     QString query = T::getQuery() + " where id=" + QString::number(asId);
+    //QString query = mquery.select().prepare() + " where id=" + QString::number(asId);
     getRecord<T>(query);
     return;
-
 }
 
+
+///-----------------------------------------------------------------------------
+///
+///             Добавить модель.
+///
+///-----------------------------------------------------------------------------
+
+template<typename T> void DBManager::addModel() {
+    //Блокировать ресурсы SQL от использования их  другими потоками. 
+    QMutexLocker lock(&m_Mutex);
+    //Загружаем параметры команды.
+    QJsonObject param;
+    JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
+    //ID модели.
+    qint64 asId = param["ID"].toInt();
+    if (!connectDB<T>()) {
+        return;
+    }
+
+    //MQuery<T> mQuery;
+    //QString query = mQuery.insert().prepare() + " where id=" + QString::number(asId);
+    QString query = T::getQuery() + " where id=" + QString::number(asId);
+    T model = getRecord<T>(query);
+    if (!m_pModelWrapper->getSuccess()) {
+        return;
+    }
+    query = T::delQuery() + " where id=" + QString::number(asId);
+    delRecord<T>(model, query);
+    return;
+}
 
 ///-----------------------------------------------------------------------------
 ///
@@ -87,12 +120,27 @@ template<typename T> void DBManager::deleteModel() {
     if (!connectDB<T>()) {
         return;
     }
-    QString query = T::getQuery() + " where id=" + QString::number(asId);
+    
+    MQuery<T> mQuery;
+    //QString query = T::getQuery() + " where id=" + QString::number(asId);
+    QString query = mQuery.select()->
+            where()->
+            field(T::Column::ID)->
+            equally()->
+            strquery(QString::number(asId))->prepare();
+    qDebug() << query;
     T model = getRecord<T>(query);
     if (!m_pModelWrapper->getSuccess()) {
         return;
     }
-    query = T::delQuery() + " where id=" + QString::number(asId);
+
+    query = mQuery.remove()->
+            where()->
+            field(T::Column::ID)->
+            equally()->
+            strquery(QString::number(asId))->
+            prepare();
+    //    query = T::delQuery() + " where id=" + QString::number(asId);
     delRecord<T>(model, query);
     return;
 }

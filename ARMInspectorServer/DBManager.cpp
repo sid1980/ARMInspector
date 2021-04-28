@@ -197,6 +197,36 @@ void DBManager::login() {
 
 ///-----------------------------------------------------------------------------
 ///
+///             Добавить модель
+///
+///-----------------------------------------------------------------------------
+
+void DBManager::addModel() {
+    //Получаем модель.
+    ModelWrapper::Model model = m_pModelWrapper->getEnumModel();
+    //Выбрать модель, данные которой необходимо запросить. 
+    switch (model) {
+        case ModelWrapper::Model::User:
+            addModel<User>();
+            break;
+        case ModelWrapper::Model::UserView:
+            addModel<UserView>();
+            break;
+        case ModelWrapper::Model::Inspection:
+            addModel<Inspection>();
+            break;
+        case ModelWrapper::Model::Nsi:
+            QJsonObject param;
+            JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
+            //ноиер НСИ
+            Nsi::num_ = param["numNSI"].toString();
+            addModel<Nsi>();
+            break;
+    }
+}
+
+///-----------------------------------------------------------------------------
+///
 ///             Удалить модель
 ///
 ///-----------------------------------------------------------------------------
@@ -388,6 +418,18 @@ void DBManager::updateUser() {
     //Создать модель данных User
     User user;
     JsonSerializer::parse(m_pModelWrapper->getData(), user);
+    MQuery<User> mQuery;
+    mQuery.setModel(&user);
+    QString myquery = mQuery.update()->set()->
+            field(User::Column::ID)->equally()->bind_prm(User::Column::ID)->
+            field(User::Column::FIO)->equally()->bind_prm(User::Column::FIO)->
+            field(User::Column::ID_INSPECTION)->equally()->bind_prm(User::Column::ID_INSPECTION)->
+            field(User::Column::NAME)->equally()->bind_prm(User::Column::NAME)->
+            field(User::Column::STATUS)->equally()->bind_prm(User::Column::STATUS)->
+            field(User::Column::ROLE)->equally()->bind_prm(User::Column::ROLE)->
+            field(User::Column::ACCESS)->equally()->bind_prm(User::Column::ACCESS)->
+            where()->field(User::Column::ID)->equally()->bind_prm(User::Column::ID)->prepare();
+    qDebug() << myquery;
     //Взять ранее созданное подключение к  базе данных.
     if (!connectDB<User>()) {
         return;
