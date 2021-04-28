@@ -23,6 +23,10 @@ using namespace std;
 
 class Nsi : public JsonSerializable, Model {
 public:
+     enum Column {
+        ID = 0,
+        NAME
+    };
     Nsi();
     Nsi(const QString& num);
     virtual ~Nsi();
@@ -38,6 +42,14 @@ public:
     ///Запись полей класса в JSON объкт. 
     void write(QJsonObject &jsonObj) const;
 
+    
+      ///Список названий полей базы
+     static array<QString, 2>  getFields() {
+        return array<QString, 2> {
+        "id",
+        "name_" +Nsi::num_
+    };
+    }
     ///Список названий колонок модели
 
     static const QJsonArray getColumnArray() {
@@ -62,7 +74,7 @@ public:
     ///название модели
 
     static const QString getModelName() {
-        return QString("Nsi_" + Nsi::num_);
+        return QString("nsi_" + Nsi::num_);
     }
     ///SQL запрос вывода данных
 
@@ -83,14 +95,8 @@ public:
 
 private:
 
-    enum Column {
-        ID = 0,
-        NAME
-    };
-    array<QString, 2> fld_ = {
-        "id",
-        "name_" +Nsi::num_
-    };
+   
+    
 
 
     qint64 id_;

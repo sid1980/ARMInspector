@@ -123,19 +123,20 @@ const qint64& User::getPosition() const {
 ///-----------------------------------------------------------------------------
 
 void User::read(const QJsonObject &jsonObj) {
-    
+
     //array<QString, 10> fld_name=User::getFieldArray();
-    
-    this->setId(jsonObj[fld_[Column::ID]].toInt());
-    this->setFio(jsonObj[fld_[Column::FIO]].toString());
-    this->setInspection(jsonObj[fld_[Column::ID_INSPECTION]].toInt());
-    this->setName(jsonObj[fld_[Column::NAME]].toString());
-    this->setPassword(jsonObj[fld_[Column::PASSWORD]].toString());
-    this->setStatus(jsonObj[fld_[Column::STATUS]].toInt());
-    this->setRole(jsonObj[fld_[Column::ROLE]].toInt());
-    this->setAccess(jsonObj[fld_[Column::ACCESS]].toInt());
-    this->setClaim(jsonObj[fld_[Column::CLAIM]].toInt());
-    this->setPosition(jsonObj[fld_[Column::POSITION]].toInt());
+    array<QString, 10> fld = User::getFields();
+
+    this->setId(jsonObj[fld[Column::ID]].toInt());
+    this->setFio(jsonObj[fld[Column::FIO]].toString());
+    this->setInspection(jsonObj[fld[Column::ID_INSPECTION]].toInt());
+    this->setName(jsonObj[fld[Column::NAME]].toString());
+    this->setPassword(jsonObj[fld[Column::PASSWORD]].toString());
+    this->setStatus(jsonObj[fld[Column::STATUS]].toInt());
+    this->setRole(jsonObj[fld[Column::ROLE]].toInt());
+    this->setAccess(jsonObj[fld[Column::ACCESS]].toInt());
+    this->setClaim(jsonObj[fld[Column::CLAIM]].toInt());
+    this->setPosition(jsonObj[fld[Column::POSITION]].toInt());
 };
 
 ///-----------------------------------------------------------------------------
@@ -146,18 +147,18 @@ void User::read(const QJsonObject &jsonObj) {
 ///-----------------------------------------------------------------------------
 
 void User::write(QJsonObject &jsonObj) const {
+    array<QString, 10> fld = User::getFields();
 
-    jsonObj[fld_[Column::ID]] = this->getId();
-    jsonObj[fld_[Column::FIO]] = this->getFio();
-    jsonObj[fld_[Column::ID_INSPECTION]] = this->getInspection();
-    jsonObj[fld_[Column::NAME]] = this->getName();
-    jsonObj[fld_[Column::PASSWORD]] = this->getPassword();
-    jsonObj[fld_[Column::STATUS]] = this->getStatus();
-    jsonObj[fld_[Column::ROLE]] = this->getRole();
-    jsonObj[fld_[Column::ACCESS]] = this->getAccess();
-    jsonObj[fld_[Column::CLAIM]] = this->getClaim();
-    jsonObj[fld_[Column::POSITION]] = this->getPosition();
-
+    jsonObj[fld[Column::ID]] = this->getId();
+    jsonObj[fld[Column::FIO]] = this->getFio();
+    jsonObj[fld[Column::ID_INSPECTION]] = this->getInspection();
+    jsonObj[fld[Column::NAME]] = this->getName();
+    jsonObj[fld[Column::PASSWORD]] = this->getPassword();
+    jsonObj[fld[Column::STATUS]] = this->getStatus();
+    jsonObj[fld[Column::ROLE]] = this->getRole();
+    jsonObj[fld[Column::ACCESS]] = this->getAccess();
+    jsonObj[fld[Column::CLAIM]] = this->getClaim();
+    jsonObj[fld[Column::POSITION]] = this->getPosition();
 };
 
 ///-----------------------------------------------------------------------------
@@ -241,5 +242,73 @@ void User::setData(const int& position, const QVariant& value) {
 
 };
 
+///-----------------------------------------------------------------------------
+///
+///         Привязать данны к запросу. 
+///
+///
+///-----------------------------------------------------------------------------
+
+void User::bindData(QSqlQuery* asSqlQuery) {
+    QList<int> list = getBindItemList();
+    array<QString, 10> fld = User::getFields();
+
+    for (int i = 0; i < list.size(); i++) {
+
+        switch (i) {
+            case Column::ID:
+                asSqlQuery->bindValue(":" + fld[Column::ID], this->getId());
+                break;
+            case Column::FIO:
+                asSqlQuery->bindValue(":" + fld[Column::FIO], this->getFio());
+                break;
+            case Column::ID_INSPECTION:
+                asSqlQuery->bindValue(":" + fld[Column::ID_INSPECTION], this->getInspection());
+                break;
+            case Column::NAME:
+                asSqlQuery->bindValue(":" + fld[Column::NAME], this->getName());
+                break;
+            case Column::PASSWORD:
+                asSqlQuery->bindValue(":" + fld[Column::PASSWORD], this->getPassword());
+                break;
+            case Column::STATUS:
+                asSqlQuery->bindValue(":" + fld[Column::STATUS], this->getStatus());
+                break;
+            case Column::ROLE:
+                asSqlQuery->bindValue(":" + fld[Column::ROLE], this->getRole());
+                break;
+            case Column::ACCESS:
+                asSqlQuery->bindValue(":" + fld[Column::ACCESS], this->getAccess());
+                break;
+            case Column::CLAIM:
+                asSqlQuery->bindValue(":" + fld[Column::CLAIM], this->getClaim());
+                break;
+            case Column::POSITION:
+                asSqlQuery->bindValue(":" + fld[Column::POSITION], this->getPosition());
+                break;
+        }
+
+    }
+}
+    ///-----------------------------------------------------------------------------
+    ///
+    ///         Привязать данны к запросу. 
+    ///
+    ///
+    ///-----------------------------------------------------------------------------
+
+    void User::addBindItem(const int& item) {
+        bindFld_.append(item);
+    }
+    ///-----------------------------------------------------------------------------
+    ///
+    ///         Привязать данны к запросу. 
+    ///
+    ///
+    ///-----------------------------------------------------------------------------
+
+    const QList<int>& User::getBindItemList() {
+        return bindFld_;
+    }
 
 

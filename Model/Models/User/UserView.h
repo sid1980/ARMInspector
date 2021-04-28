@@ -24,9 +24,18 @@
 #include <QVariant>
 #include <QJsonArray>
 #include "Model.h"
+#include <array>
+using namespace std;
 
 class UserView : public JsonSerializable, Model {
 public:
+
+    enum Column {
+        ID = 0,
+        FIO,
+        INSPECTION,
+        NAME
+    };
     ///конструктор
     UserView();
     ///деструктор
@@ -45,6 +54,16 @@ public:
     void read(const QJsonObject &jsonObj);
     ///Запись полей класса в JSON объкт. 
     void write(QJsonObject &jsonObj) const;
+
+    ///Список названий полей базы
+
+    static array<QString, 4> getFields() {
+        return array<QString, 4>{
+            "id",
+            "fio",
+            "inspection",
+            "name"};
+    }
 
     ///Список названий колонок модели
 
@@ -79,6 +98,10 @@ public:
     virtual void setData(const int&, const QVariant&);
 
 private:
+
+
+
+
     qint64 id_;
     QString fio_;
     QString inspection_;

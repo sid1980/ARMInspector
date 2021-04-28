@@ -22,9 +22,16 @@
 #include "JsonSerializable.h"
 #include <QVariant>
 #include <QJsonArray>
+#include <array>
+using namespace std;
 
 class Inspection : public JsonSerializable {
 public:
+     enum Column {
+        ID = 0,
+        NAME,
+        MRO
+    };
     ///Конструктор
     Inspection();
     ///деструктор
@@ -42,6 +49,17 @@ public:
     void read(const QJsonObject &jsonObj);
     ///Запись полей класса в JSON объкт. 
     void write(QJsonObject &jsonObj) const;
+
+    ///Список названий полей базы
+
+    static array<QString, 3> getFields() {
+        return  array<QString, 3>  {
+        "id",
+        "name",
+        "mro"
+    };
+    }
+
 
     ///Список названий колонок модели
 
@@ -77,6 +95,11 @@ public:
 
 
 private:
+private:
+
+   
+    
+   
     qint64 id_;
     QString name_;
     qint64 mro_;

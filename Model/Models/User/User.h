@@ -19,11 +19,24 @@
 #include <QJsonArray>
 #include "Model.h"
 #include <array>
+#include <QSqlQuery>
 using namespace std;
+
 class User : public JsonSerializable, Model {
-    
 public:
-    
+
+    enum Column {
+        ID = 0,
+        FIO,
+        ID_INSPECTION,
+        NAME,
+        PASSWORD,
+        STATUS,
+        ROLE,
+        ACCESS,
+        CLAIM,
+        POSITION
+    };
     ///Конструктор
     User();
     ///Деструктор
@@ -55,6 +68,7 @@ public:
     ///Запись полей класса в JSON объкт. 
     void write(QJsonObject &jsonObj) const;
 
+
     ///Список названий колонок модели
 
     static const QJsonArray getColumnArray() {
@@ -74,14 +88,26 @@ public:
     }
 
     ///Список названий полей базы
-     array<QString, 10>  getFields() {
-        return fld_;
+
+    static array<QString, 10> getFields() {
+        return array<QString, 10>{
+            "id",
+            "fio",
+            "id_inspection",
+            "name",
+            "password",
+            "status",
+            "role",
+            "access",
+            "claim",
+            "position"};
     }
 
 
     ///название модели
+
     static const QString getModelName() {
-        return QString("User");
+        return QString("user");
     }
     ///SQL запрос вывода данных
 
@@ -99,31 +125,13 @@ public:
     ///Установить  данные  модели.
     virtual void setData(const int&, const QVariant&);
 
+    void bindData(QSqlQuery* asSqlQuery);
+    void addBindItem(const int&);
+    const QList<int>& getBindItemList();
 private:
-    enum Column {
-            ID =0,
-            FIO,
-            ID_INSPECTION,
-            NAME,
-            PASSWORD,
-            STATUS,
-            ROLE,
-            ACCESS,
-            CLAIM,
-            POSITION
-    };     
-    array<QString, 10> fld_= {
-            "id",
-            "fio",
-            "id_inspection",
-            "name",
-            "password",
-            "status",
-            "role",
-            "access",
-            "claim",
-            "position"
-        };
+
+    QList<int> bindFld_;
+
     //Поля класса
     ///Идентификатор пользователя
     qint64 id_;

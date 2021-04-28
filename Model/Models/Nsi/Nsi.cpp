@@ -12,15 +12,14 @@
  */
 
 #include "Nsi/Nsi.h"
-QString Nsi::num_={""};
+QString Nsi::num_ = {""};
 
 Nsi::Nsi() {
 }
+
 Nsi::Nsi(const QString& num) {
-    Nsi::num_=num;
+    Nsi::num_ = num;
 }
-
-
 
 Nsi::~Nsi() {
 }
@@ -32,8 +31,6 @@ void Nsi::setId(const qint64& id) {
 void Nsi::setName(const QString& name) {
     name_ = name;
 };
-
-
 
 const qint64& Nsi::getId() const {
     return id_;
@@ -54,8 +51,9 @@ const QString& Nsi::getName() const {
 ///-----------------------------------------------------------------------------
 
 void Nsi::read(const QJsonObject &jsonObj) {
-    this->setId(jsonObj[fld_[Column::ID]].toInt());
-    this->setName(jsonObj[fld_[Column::NAME]].toString());
+    array<QString, 2> fld = Nsi::getFields();
+    this->setId(jsonObj[fld[Column::ID]].toInt());
+    this->setName(jsonObj[fld[Column::NAME]].toString());
 };
 
 ///-----------------------------------------------------------------------------
@@ -66,9 +64,9 @@ void Nsi::read(const QJsonObject &jsonObj) {
 ///-----------------------------------------------------------------------------
 
 void Nsi::write(QJsonObject &jsonObj) const {
-
-    jsonObj[fld_[Column::ID]] = this->getId();
-    jsonObj[fld_[Column::NAME]] = this->getName();
+    array<QString, 2> fld = Nsi::getFields();
+    jsonObj[fld[Column::ID]] = this->getId();
+    jsonObj[fld[Column::NAME]] = this->getName();
 
 };
 
