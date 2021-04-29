@@ -250,65 +250,110 @@ void User::setData(const int& position, const QVariant& value) {
 ///-----------------------------------------------------------------------------
 
 void User::bindData(QSqlQuery* asSqlQuery) {
-    QList<int> list = getBindItemList();
-    array<QString, 10> fld = User::getFields();
-
-    for (int i = 0; i < list.size(); i++) {
-
-        switch (i) {
-            case Column::ID:
-                asSqlQuery->bindValue(":" + fld[Column::ID], this->getId());
-                break;
-            case Column::FIO:
-                asSqlQuery->bindValue(":" + fld[Column::FIO], this->getFio());
-                break;
-            case Column::ID_INSPECTION:
-                asSqlQuery->bindValue(":" + fld[Column::ID_INSPECTION], this->getInspection());
-                break;
-            case Column::NAME:
-                asSqlQuery->bindValue(":" + fld[Column::NAME], this->getName());
-                break;
-            case Column::PASSWORD:
-                asSqlQuery->bindValue(":" + fld[Column::PASSWORD], this->getPassword());
-                break;
-            case Column::STATUS:
-                asSqlQuery->bindValue(":" + fld[Column::STATUS], this->getStatus());
-                break;
-            case Column::ROLE:
-                asSqlQuery->bindValue(":" + fld[Column::ROLE], this->getRole());
-                break;
-            case Column::ACCESS:
-                asSqlQuery->bindValue(":" + fld[Column::ACCESS], this->getAccess());
-                break;
-            case Column::CLAIM:
-                asSqlQuery->bindValue(":" + fld[Column::CLAIM], this->getClaim());
-                break;
-            case Column::POSITION:
-                asSqlQuery->bindValue(":" + fld[Column::POSITION], this->getPosition());
-                break;
+    qInfo() << "User::bindData";
+    QList<int> list = query_.getBindColumnList();
+    if (!list.isEmpty()) {
+        array<QString, USER_COLUMN> fld = User::getFields();
+        for (int i = 0; i < list.size(); i++) {
+            qInfo() << QString::number(list.at(i));
+            switch (list.at(i)) {
+                case Column::ID:
+                    asSqlQuery->bindValue(":" + fld[Column::ID], this->getId());
+                    break;
+                case Column::FIO:
+                    asSqlQuery->bindValue(":" + fld[Column::FIO], this->getFio());
+                    break;
+                case Column::ID_INSPECTION:
+                    asSqlQuery->bindValue(":" + fld[Column::ID_INSPECTION], this->getInspection());
+                    break;
+                case Column::NAME:
+                    asSqlQuery->bindValue(":" + fld[Column::NAME], this->getName());
+                    break;
+                case Column::PASSWORD:
+                    asSqlQuery->bindValue(":" + fld[Column::PASSWORD], this->getPassword());
+                    break;
+                case Column::STATUS:
+                    asSqlQuery->bindValue(":" + fld[Column::STATUS], this->getStatus());
+                    break;
+                case Column::ROLE:
+                    asSqlQuery->bindValue(":" + fld[Column::ROLE], this->getRole());
+                    break;
+                case Column::ACCESS:
+                    asSqlQuery->bindValue(":" + fld[Column::ACCESS], this->getAccess());
+                    break;
+                case Column::CLAIM:
+                    asSqlQuery->bindValue(":" + fld[Column::CLAIM], this->getClaim());
+                    break;
+                case Column::POSITION:
+                    asSqlQuery->bindValue(":" + fld[Column::POSITION], this->getPosition());
+                    break;
+            }
         }
-
     }
 }
-    ///-----------------------------------------------------------------------------
-    ///
-    ///         Привязать данны к запросу. 
-    ///
-    ///
-    ///-----------------------------------------------------------------------------
 
-    void User::addBindItem(const int& item) {
-        bindFld_.append(item);
-    }
-    ///-----------------------------------------------------------------------------
-    ///
-    ///         Привязать данны к запросу. 
-    ///
-    ///
-    ///-----------------------------------------------------------------------------
+///-----------------------------------------------------------------------------
+///
+///         Изменить данные пользователя. 
+///
+///
+///-----------------------------------------------------------------------------
 
-    const QList<int>& User::getBindItemList() {
-        return bindFld_;
-    }
+const QString& User::update() {
+    qInfo() << "User::update()";
+    return query_.update()->set()->
+            field(Column::ID)->equally()->bind(Column::ID)->
+            field(Column::FIO)->equally()->bind(Column::FIO)->
+            field(Column::ID_INSPECTION)->equally()->bind(Column::ID_INSPECTION)->
+            field(Column::NAME)->equally()->bind(Column::NAME)->
+            field(Column::STATUS)->equally()->bind(Column::STATUS)->
+            field(Column::ROLE)->equally()->bind(Column::ROLE)->
+            field(Column::ACCESS)->equally()->bind(Column::ACCESS)->
+            where()->field(Column::ID)->equally()->bind(Column::ID)->
+            prepare();
+
+}
+
+///-----------------------------------------------------------------------------
+///
+///         Изменить пароль пользователя . 
+///
+///
+///-----------------------------------------------------------------------------
+
+const QString& User::changePassword() {
+    qInfo() << "User::changePassword()";
+    return query_.update()->set()->
+            field(User::Column::PASSWORD)->equally()->bind(User::Column::PASSWORD)->
+            where()->field(User::Column::ID)->equally()->bind(User::Column::ID)->
+            prepare();
+
+}
+
+
+///-----------------------------------------------------------------------------
+///
+///         Выбрать данные. 
+///
+///
+///-----------------------------------------------------------------------------
+
+const QString& User::selectUser() {
+    qInfo() << "User::select()";
+    return query_.select()->wher()->where()->field(User::Column::ID)->equally()->bind(User::Column::ID)->
+            prepare();
+
+}
+
+///-----------------------------------------------------------------------------
+///
+///         Указатель на генератор sql запросов . 
+///
+///
+///-----------------------------------------------------------------------------
+
+const MQuery<User>& User::getQuery() {
+    return query_;
+}
 
 

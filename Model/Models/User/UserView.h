@@ -25,6 +25,8 @@
 #include <QJsonArray>
 #include "Model.h"
 #include <array>
+#include <MQuery.h>
+
 using namespace std;
 
 class UserView : public JsonSerializable, Model {
@@ -96,9 +98,10 @@ public:
     virtual const QVariant getData(const int&) const;
     ///Установить  данные  модели.
     virtual void setData(const int&, const QVariant&);
+    const MQuery<User>& getQuery();
 
 private:
-
+   MQuery<User> query_;
 
 
 

@@ -18,9 +18,9 @@
 #include <QVariant>
 #include <QJsonArray>
 #include "Model.h"
+#include <MQuery.h>
 
-class Mro: public JsonSerializable, Model
- {
+class Mro : public JsonSerializable, Model {
 public:
     Mro();
     virtual ~Mro();
@@ -35,8 +35,8 @@ public:
     void read(const QJsonObject &jsonObj);
     ///Запись полей класса в JSON объкт. 
     void write(QJsonObject &jsonObj) const;
-    
-        ///Список названий колонок модели
+
+    ///Список названий колонок модели
 
     static const QJsonArray getColumnArray() {
         const QJsonArray jsonArray = {
@@ -48,6 +48,7 @@ public:
     }
 
     ///Список названий полей базы
+
     static const QJsonArray getFieldArray() {
         const QJsonArray jsonArray = {
             "id",
@@ -59,6 +60,7 @@ public:
 
 
     ///название модели
+
     static const QString getModelName() {
         return QString("Mro");
     }
@@ -78,10 +80,12 @@ public:
     ///Установить  данные  модели.
     virtual void setData(const int&, const QVariant&);
 
+    const MQuery<User>& getQuery();
 
-    
+
 private:
-//Поля класса
+    MQuery<Mro> query_;
+    //Поля класса
     ///Идентификатор пользователя
     qint64 id_;
     ///Название МРО 

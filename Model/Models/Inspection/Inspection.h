@@ -23,11 +23,14 @@
 #include <QVariant>
 #include <QJsonArray>
 #include <array>
+#include <MQuery.h>
+
 using namespace std;
 
 class Inspection : public JsonSerializable {
 public:
-     enum Column {
+
+    enum Column {
         ID = 0,
         NAME,
         MRO
@@ -53,11 +56,10 @@ public:
     ///Список названий полей базы
 
     static array<QString, 3> getFields() {
-        return  array<QString, 3>  {
-        "id",
-        "name",
-        "mro"
-    };
+        return array<QString, 3>{
+            "id",
+            "name",
+            "mro"};
     }
 
 
@@ -92,14 +94,12 @@ public:
     virtual const QVariant getData(const int&) const;
     ///Установить  данные  модели.
     virtual void setData(const int&, const QVariant&);
+    const MQuery<User>& getQuery();
 
 
 private:
-private:
 
-   
-    
-   
+    MQuery<Inspection> query_;
     qint64 id_;
     QString name_;
     qint64 mro_;

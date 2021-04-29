@@ -26,13 +26,21 @@ public:
     MQuery<T>* set();
     MQuery<T>* field(const int&);
     MQuery<T>* equally();
-    MQuery<T>* bind_prm(const int&);
-    QString prepare();
-     T* getModel();
-    void  setModel( T*);
+    MQuery<T>* bind(const int&);
+    MQuery<T>* bindprm(const QString&);
+    const QString& prepare();
+    void clear();
+    const QList<int>& getBindColumnList();
+    static const QString& selectAll();
+    static const QString& selectById(const int&);
+    static const QString& removeById(const int&);
 private:
     /// Список объектов класса T. 
+    QString queryStr_;
     QList<QString> query_;
+    QList<int> bind_;
+    QList<int> bindprm_;
+    QList<QString> where_;
     T* model_;
 };
 #include "MQuery_IMPL.h"

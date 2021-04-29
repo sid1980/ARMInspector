@@ -18,8 +18,10 @@
 #include <QVariant>
 #include <QJsonArray>
 #include "Model.h"
+#include <MQuery.h>
 
-class RptColumn : public JsonSerializable, Model  {
+
+class RptColumn : public JsonSerializable, Model {
 public:
     RptColumn();
     virtual ~RptColumn();
@@ -36,8 +38,8 @@ public:
     void read(const QJsonObject &jsonObj);
     ///Запись полей класса в JSON объкт. 
     void write(QJsonObject &jsonObj) const;
-    
-        ///Список названий колонок модели
+
+    ///Список названий колонок модели
 
     static const QJsonArray getColumnArray() {
         const QJsonArray jsonArray = {
@@ -50,6 +52,7 @@ public:
     }
 
     ///Список названий полей базы
+
     static const QJsonArray getFieldArray() {
         const QJsonArray jsonArray = {
             "id",
@@ -62,6 +65,7 @@ public:
 
 
     ///название модели
+
     static const QString getModelName() {
         return QString("RptColumn");
     }
@@ -82,9 +86,10 @@ public:
     virtual void setData(const int&, const QVariant&);
 
 
-    
+
 private:
-//Поля класса
+    MQuery<RptColumn> query_;
+    //Поля класса
     ///Идентификатор пользователя
     qint64 id_;
     ///Статья КоАП

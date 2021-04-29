@@ -19,21 +19,12 @@
 
 ///-----------------------------------------------------------------------------
 ///
-///             Установить  модель.
+///             Получить список привязанных к запросу полей.
 ///
 ///-----------------------------------------------------------------------------
 
-template <class T> void MQuery<T>::setModel( T* model) {
-    model_ = model;
-}
-///-----------------------------------------------------------------------------
-///
-///             Получить модель.
-///
-///-----------------------------------------------------------------------------
-
-template <class T>  T* MQuery<T>::getModel() {
-    return model_;
+template <class T> const QList<int>& MQuery<T>::getBindColumnList() {
+    return bind_;
 }
 ///-----------------------------------------------------------------------------
 ///
@@ -42,7 +33,7 @@ template <class T>  T* MQuery<T>::getModel() {
 ///-----------------------------------------------------------------------------
 
 template <class T> MQuery<T>* MQuery<T>::select() {
-    query_.clear();
+    clear();
     QString asSelect = "SELECT * FROM " + T::getModelName();
     query_.append(asSelect);
     return this;
@@ -56,7 +47,7 @@ template <class T> MQuery<T>* MQuery<T>::select() {
 ///-----------------------------------------------------------------------------
 
 template <class T> MQuery<T>* MQuery<T>::insert() {
-    query_.clear();
+    clear();
     QString asInsert = "INSERT INTO " + T::getModelName();
     query_.append(asInsert);
     return this;
@@ -68,7 +59,7 @@ template <class T> MQuery<T>* MQuery<T>::insert() {
 ///-----------------------------------------------------------------------------
 
 template <class T> MQuery<T>* MQuery<T>::update() {
-    query_.clear();
+    clear();
     QString asUpdate = "UPDATE " + T::getModelName();
     query_.append(asUpdate);
     return this;
@@ -91,7 +82,7 @@ template <class T> MQuery<T>* MQuery<T>::strquery(const QString& asQuery) {
 ///-----------------------------------------------------------------------------
 
 template <class T> MQuery<T>* MQuery<T>::remove() {
-    query_.clear();
+    clear();
     QString asDelete = "Delete   from " + T::getModelName();
     query_.append(asDelete);
     return this;
@@ -127,30 +118,41 @@ template <class T> MQuery<T>* MQuery<T>::set() {
 template <class T> MQuery<T>* MQuery<T>::where() {
     QString asWhere = " where ";
     query_.append(asWhere);
+    where_.append(asWhere);
     return this;
 }
 
 ///-----------------------------------------------------------------------------
 ///
-///             Поле.
+///             Привязать поле модели.
 ///
 ///-----------------------------------------------------------------------------
 
-template <class T> MQuery<T>* MQuery<T>::bind_prm(const int& column) {
-
+template <class T> MQuery<T>* MQuery<T>::bind(const int& column) {
     query_.append(":" + T::getFields()[column]);
+    bind_.append(column);
     return this;
 }
 
 ///-----------------------------------------------------------------------------
 ///
-///             Параметр.
+///             Поле модели.
 ///
 ///-----------------------------------------------------------------------------
 
 template <class T> MQuery<T>* MQuery<T>::field(const int& column) {
 
-    query_.append(" "+T::getFields()[column]);
+    if (bind_.isEmpty()) {
+        query_.append(" " + T::getFields()[column]);
+    } else {
+        if (where_.isEmpty()) {
+            query_.append(", " + T::getFields()[column]);
+        } else {
+            query_.append(" " + T::getFields()[column]);
+
+        }
+    }
+
     return this;
 }
 
@@ -161,12 +163,60 @@ template <class T> MQuery<T>* MQuery<T>::field(const int& column) {
 ///
 ///-----------------------------------------------------------------------------
 
-template <class T> QString MQuery<T>::prepare() {
-    QString query = "";
+template <class T> const QString& MQuery<T>::prepare() {
+    queryStr_ = "";
     for (int i = 0; i < query_.size(); i++) {
-        query += query_.at(i);
+        queryStr_ += query_.at(i);
     };
-    return query;
+    return queryStr_;
+}
+
+///-----------------------------------------------------------------------------
+///
+///             Очистить списки.
+///
+///-----------------------------------------------------------------------------
+
+template <class T> void MQuery<T>::clear() {
+    query_.clear();
+    bind_.clear();
+    bindprm_.clear();
+    where_.clear();
+
+}
+
+
+///-----------------------------------------------------------------------------
+///
+///             Выбрать все записи.
+///
+///-----------------------------------------------------------------------------
+
+template <class T> const QString& MQuery<T>::selectAll() {
+    return this->select()->prepare();
+
+}
+///-----------------------------------------------------------------------------
+///
+///             Выбрать  запись по ID.
+///
+///-----------------------------------------------------------------------------
+
+template <class T> const QString& MQuery<T>::selectById(const int& id) {
+    return this->select()->where()->field(T::Column::ID)->
+            equally()->strquery(QString::number(id))->prepare();
+
+}
+///-----------------------------------------------------------------------------
+///
+///             Удалить  запись по ID.
+///
+///-----------------------------------------------------------------------------
+
+template <class T> const QString& MQuery<T>::removeById(const int& id) {
+    return this->remove()->where()->field(T::Column::ID)->
+            equally()->strquery(QString::number(asId))->prepare();
+
 }
 
 

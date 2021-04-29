@@ -19,11 +19,14 @@
 #include <QJsonArray>
 #include "Model.h"
 #include <array>
+#include <MQuery.h>
+
 using namespace std;
 
 class Nsi : public JsonSerializable, Model {
 public:
-     enum Column {
+
+    enum Column {
         ID = 0,
         NAME
     };
@@ -42,13 +45,13 @@ public:
     ///Запись полей класса в JSON объкт. 
     void write(QJsonObject &jsonObj) const;
 
-    
-      ///Список названий полей базы
-     static array<QString, 2>  getFields() {
-        return array<QString, 2> {
-        "id",
-        "name_" +Nsi::num_
-    };
+
+    ///Список названий полей базы
+
+    static array<QString, 2> getFields() {
+        return array<QString, 2>{
+            "id",
+            "name_" + Nsi::num_};
     }
     ///Список названий колонок модели
 
@@ -92,11 +95,11 @@ public:
     ///Установить  данные  модели.
     virtual void setData(const int&, const QVariant&);
 
+    const MQuery<User>& getQuery();
 
 private:
 
-   
-    
+    MQuery<Nsi> query_;
 
 
     qint64 id_;

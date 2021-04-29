@@ -20,6 +20,9 @@
 #include "Model.h"
 #include <array>
 #include <QSqlQuery>
+#include <MQuery.h>
+
+#define USER_COLUMN 10
 using namespace std;
 
 class User : public JsonSerializable, Model {
@@ -89,8 +92,8 @@ public:
 
     ///Список названий полей базы
 
-    static array<QString, 10> getFields() {
-        return array<QString, 10>{
+    static array<QString, USER_COLUMN> getFields() {
+        return array<QString, USER_COLUMN>{
             "id",
             "fio",
             "id_inspection",
@@ -126,11 +129,14 @@ public:
     virtual void setData(const int&, const QVariant&);
 
     void bindData(QSqlQuery* asSqlQuery);
-    void addBindItem(const int&);
-    const QList<int>& getBindItemList();
-private:
+    const QString& update();
+    const QString& changePassword();
+    const QString& select();
+    const MQuery<User>& getQuery();
 
-    QList<int> bindFld_;
+
+private:
+    MQuery<User> query_;
 
     //Поля класса
     ///Идентификатор пользователя
