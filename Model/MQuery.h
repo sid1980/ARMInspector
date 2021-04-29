@@ -32,7 +32,7 @@ public:
     void clear();
     const QList<int>& getBindColumnList();
     static const QString& selectAll();
-    static const QString& selectById(const int&);
+    static QString selectById(const int&);
     static const QString& removeById(const int&);
 private:
     /// Список объектов класса T. 

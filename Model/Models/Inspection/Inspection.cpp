@@ -139,13 +139,3 @@ void Inspection::setData(const int& position, const QVariant& value) {
 
 };
 
-///-----------------------------------------------------------------------------
-///
-///         Указатель на генератор sql запросов . 
-///
-///
-///-----------------------------------------------------------------------------
-
-    const MQuery<Inspection>& Inspection::getQuery(){
-        return query_;
-    }

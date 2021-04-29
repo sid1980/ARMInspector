@@ -193,19 +193,19 @@ template <class T> void MQuery<T>::clear() {
 ///-----------------------------------------------------------------------------
 
 template <class T> const QString& MQuery<T>::selectAll() {
-    return this->select()->prepare();
+    return "SELECT * FROM " + T::getModelName();
 
 }
+
 ///-----------------------------------------------------------------------------
 ///
 ///             Выбрать  запись по ID.
 ///
 ///-----------------------------------------------------------------------------
 
-template <class T> const QString& MQuery<T>::selectById(const int& id) {
-    return this->select()->where()->field(T::Column::ID)->
-            equally()->strquery(QString::number(id))->prepare();
-
+template <class T>  QString MQuery<T>::selectById(const int& id) {
+    
+        return "SELECT * FROM " + T::getModelName() + " where id="+QString::number(id);
 }
 ///-----------------------------------------------------------------------------
 ///
@@ -214,8 +214,8 @@ template <class T> const QString& MQuery<T>::selectById(const int& id) {
 ///-----------------------------------------------------------------------------
 
 template <class T> const QString& MQuery<T>::removeById(const int& id) {
-    return this->remove()->where()->field(T::Column::ID)->
-            equally()->strquery(QString::number(asId))->prepare();
+    
+    return "DELETE FROM " + T::getModelName()+ " where id="+QString::number(id);
 
 }
 

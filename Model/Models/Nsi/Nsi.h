@@ -95,7 +95,6 @@ public:
     ///Установить  данные  модели.
     virtual void setData(const int&, const QVariant&);
 
-    const MQuery<User>& getQuery();
 
 private:
 

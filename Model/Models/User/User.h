@@ -132,7 +132,6 @@ public:
     const QString& update();
     const QString& changePassword();
     const QString& select();
-    const MQuery<User>& getQuery();
 
 
 private:
