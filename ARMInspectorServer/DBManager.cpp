@@ -125,7 +125,7 @@ void DBManager::login() {
     };
     if (!asLogin.isEmpty()&&!asPassword.isEmpty()) {
         //Взять ранее созданное подключение к  базе данных.
-        if (!connectDB<User>(user)) {
+        if (!connectDB<User>()) {
             qDebug() << "DB not connected";
             return;
         }
@@ -195,35 +195,6 @@ void DBManager::login() {
     }
 }
 
-///-----------------------------------------------------------------------------
-///
-///             Добавить модель
-///
-///-----------------------------------------------------------------------------
-
-void DBManager::addModel() {
-    //Получаем модель.
-    ModelWrapper::Model model = m_pModelWrapper->getEnumModel();
-    //Выбрать модель, данные которой необходимо запросить. 
-    switch (model) {
-        case ModelWrapper::Model::User:
-            addModel<User>();
-            break;
-        case ModelWrapper::Model::UserView:
-            addModel<UserView>();
-            break;
-        case ModelWrapper::Model::Inspection:
-            addModel<Inspection>();
-            break;
-        case ModelWrapper::Model::Nsi:
-            QJsonObject param;
-            JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
-            //ноиер НСИ
-            Nsi::num_ = param["numNSI"].toString();
-            addModel<Nsi>();
-            break;
-    }
-}
 
 ///-----------------------------------------------------------------------------
 ///
@@ -369,7 +340,7 @@ void DBManager::changePassword() {
     User user;
     JsonSerializer::parse(m_pModelWrapper->getData(), user);
     //Взять ранее созданное подключение к  базе данных.
-    if (!connectDB<User>(user)) {
+    if (!connectDB<User>()) {
         return;
     }
 
@@ -417,7 +388,7 @@ void DBManager::updateUser() {
     JsonSerializer::parse(m_pModelWrapper->getData(), user);
     //qDebug() << myquery;
     //Взять ранее созданное подключение к  базе данных.
-    if (!connectDB<User>(user)) {
+    if (!connectDB<User>()) {
         return;
     }
     //База данных открыта. Можно проводить авторизацию пользователя. 
@@ -462,7 +433,7 @@ void DBManager::addUser() {
     User user;
     JsonSerializer::parse(m_pModelWrapper->getData(), user);
     //Взять ранее созданное подключение к  базе данных.
-    if (!connectDB<User>(user)) {
+    if (!connectDB<User>()) {
         return;
     }
 

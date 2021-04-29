@@ -51,9 +51,6 @@ public:
     void getListModels();
     template<typename T> void getListModels();
 
-    /// Добавить  модель.
-    void addModel();
-    template<typename T> void addModel();
 
     /// Удалить  модель.
     void deleteModel();
@@ -63,13 +60,13 @@ public:
     void getModel();
     template<typename T> void getModel();
     ///Получить  запись из базы данных.
-    template<typename T> T getRecord(const T& model, const QString& queryStr);
+    template<typename T> T getRecord(const QString& queryStr);
     ///Получить  записи из базы данных.
-    template<typename T> ItemContainer<T> getAllRecordS(const T&);
+    template<typename T> ItemContainer<T> getAllRecordS();
     ///удалить запись
     template<typename T> void delRecord(const T&, const QString&);
     ///Проверить  подключение к базе данных.
-    template<typename T> bool connectDB(const T&);
+    template<typename T> bool connectDB();
     /// Отключить клиента от сервера
     /// @param apClientSocket Указатель на сокет клиент-серверного соединения.
     void removeDatabase();
