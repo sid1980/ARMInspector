@@ -125,7 +125,7 @@ void DBManager::login() {
     };
     if (!asLogin.isEmpty()&&!asPassword.isEmpty()) {
         //Взять ранее созданное подключение к  базе данных.
-        if (!connectDB<User>()) {
+        if (!connectDB<User>(user)) {
             qDebug() << "DB not connected";
             return;
         }
@@ -369,34 +369,31 @@ void DBManager::changePassword() {
     User user;
     JsonSerializer::parse(m_pModelWrapper->getData(), user);
     //Взять ранее созданное подключение к  базе данных.
-    if (!connectDB<User>()) {
+    if (!connectDB<User>(user)) {
         return;
     }
 
     //База данных открыта. Можно проводить авторизацию пользователя. 
-    QSqlQuery queryAdd(m_Db);
-    //qDebug() << user.getName();
-    //QString query;
-    //Получить хеш пароля.
+    QSqlQuery query(m_Db);
     QString pasword_hash = QString(QCryptographicHash::hash((user.getPassword().toStdString().c_str()), QCryptographicHash::Md5).toHex());
-
-    queryAdd.prepare("UPDATE  user set password=:password where id=:id");
-    queryAdd.bindValue(":id", user.getId());
-    queryAdd.bindValue(":password", pasword_hash);
-
-    if (queryAdd.exec()) {
+    user.setPassword(pasword_hash);
+    query.prepare(user.changePassword());
+    user.bindData(&query);
+    if (query.exec()) {
         setResult(user, Message::PASSWORD_CHANGE_SUCCESS);
         qDebug() << user.getName();
         qDebug() << user.getId();
         qDebug() << "update user password  succes: ";
     } else {
         setResult(user, Message::PASSWORD_CHANGE_FAILURE);
-        qDebug() << "update user password  failed: " << queryAdd.lastError();
+        qDebug() << "update user password  failed: " << query.lastError();
         qDebug() << user.getName();
     }
 
     return;
 }
+
+
 ///-----------------------------------------------------------------------------
 ///
 ///                     Редактировать пользователя 
@@ -418,49 +415,31 @@ void DBManager::updateUser() {
     //Создать модель данных User
     User user;
     JsonSerializer::parse(m_pModelWrapper->getData(), user);
-    MQuery<User> mQuery;
-    mQuery.setModel(&user);
-    QString myquery = mQuery.update()->set()->
-            field(User::Column::ID)->equally()->bind_prm(User::Column::ID)->
-            field(User::Column::FIO)->equally()->bind_prm(User::Column::FIO)->
-            field(User::Column::ID_INSPECTION)->equally()->bind_prm(User::Column::ID_INSPECTION)->
-            field(User::Column::NAME)->equally()->bind_prm(User::Column::NAME)->
-            field(User::Column::STATUS)->equally()->bind_prm(User::Column::STATUS)->
-            field(User::Column::ROLE)->equally()->bind_prm(User::Column::ROLE)->
-            field(User::Column::ACCESS)->equally()->bind_prm(User::Column::ACCESS)->
-            where()->field(User::Column::ID)->equally()->bind_prm(User::Column::ID)->prepare();
-    qDebug() << myquery;
+    //qDebug() << myquery;
     //Взять ранее созданное подключение к  базе данных.
-    if (!connectDB<User>()) {
+    if (!connectDB<User>(user)) {
         return;
     }
     //База данных открыта. Можно проводить авторизацию пользователя. 
-    QSqlQuery queryAdd(m_Db);
+    QSqlQuery query(m_Db);
     //qDebug() << user.getName();
-    //QString query;
-    queryAdd.prepare("UPDATE  user set fio=:fio,id_inspection=:id_inspection,name=:name,"
-            "status=:status,role=:role,access=:access where id=:id");
-    queryAdd.bindValue(":id", user.getId());
-    queryAdd.bindValue(":fio", user.getFio());
-    queryAdd.bindValue(":id_inspection", user.getInspection());
-    queryAdd.bindValue(":name", user.getName());
-    queryAdd.bindValue(":status", user.getStatus());
-    queryAdd.bindValue(":role", user.getRole());
-    queryAdd.bindValue(":access", user.getAccess());
+    query.prepare(user.update());
+    user.bindData(&query);
 
-    if (queryAdd.exec()) {
+    if (query.exec()) {
         setResult(user, Message::USER_EDIT_SUCCESS);
         qDebug() << user.getName();
         qDebug() << user.getId();
         qDebug() << "update user  succes: ";
     } else {
         setResult(user, Message::USERR_EDIT_FAILURE);
-        qDebug() << "update person failed: " << queryAdd.lastError();
+        qDebug() << "update person failed: " << query.lastError();
         qDebug() << user.getName();
     }
-
     return;
 }
+
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Добавить нового пользователя
@@ -483,7 +462,7 @@ void DBManager::addUser() {
     User user;
     JsonSerializer::parse(m_pModelWrapper->getData(), user);
     //Взять ранее созданное подключение к  базе данных.
-    if (!connectDB<User>()) {
+    if (!connectDB<User>(user)) {
         return;
     }
 

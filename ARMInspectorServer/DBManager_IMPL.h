@@ -22,55 +22,8 @@
 #include "ServerMessage.h"
 
 
-///-----------------------------------------------------------------------------
-///
-///             Получить список моделей.
-///
-///-----------------------------------------------------------------------------
-
-/// Выполнить Sql запрос для объекта класса Т. T - шаблон модели для которй 
-/// выполняется запрос. Результат работы запроса упаковывается в секцию данных
-/// командной обёртки m_pModellWrapper.
-
-template<typename T> void DBManager::getListModels() {
-    //Блокировать ресурсы SQL от использования их  другими потоками. 
-    QMutexLocker lock(&m_Mutex);
-    //Проверить , открыта ли  база данных. 
-    if (!connectDB<T>()) {
-        return;
-    }
-    getAllRecordS<T>();
-    return;
-
-}
 
 
-///-----------------------------------------------------------------------------
-///
-///             Получить модель.
-///
-///-----------------------------------------------------------------------------
-
-template<typename T> void DBManager::getModel() {
-    //Блокировать ресурсы SQL от использования их  другими потоками. 
-    QMutexLocker lock(&m_Mutex);
-    //Загружаем параметры команды.
-    QJsonObject param;
-    JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
-    //ID модели.
-    qint64 asId = param["ID"].toInt();
-    //Выполнить SQL запрос.
-    if (!connectDB<T>()) {
-        return;
-    }
-    //Проверить  и выполнить  SQL запрос.
-    //MQuery<T> mquery;
-    //mquery.insert();
-    QString query = T::getQuery() + " where id=" + QString::number(asId);
-    //QString query = mquery.select().prepare() + " where id=" + QString::number(asId);
-    getRecord<T>(query);
-    return;
-}
 
 
 ///-----------------------------------------------------------------------------
@@ -87,14 +40,15 @@ template<typename T> void DBManager::addModel() {
     JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
     //ID модели.
     qint64 asId = param["ID"].toInt();
-    if (!connectDB<T>()) {
+    T model;
+    if (!connectDB<T>(model)) {
         return;
     }
 
     //MQuery<T> mQuery;
     //QString query = mQuery.insert().prepare() + " where id=" + QString::number(asId);
     QString query = T::getQuery() + " where id=" + QString::number(asId);
-    T model = getRecord<T>(query);
+    model = getRecord<T>(model,query);
     if (!m_pModelWrapper->getSuccess()) {
         return;
     }
@@ -117,31 +71,18 @@ template<typename T> void DBManager::deleteModel() {
     JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
     //ID модели.
     qint64 asId = param["ID"].toInt();
-    if (!connectDB<T>()) {
+    T model;
+    if (!connectDB<T>(model)) {
         return;
     }
-    
-    MQuery<T> mQuery;
     //QString query = T::getQuery() + " where id=" + QString::number(asId);
-    QString query = mQuery.select()->
-            where()->
-            field(T::Column::ID)->
-            equally()->
-            strquery(QString::number(asId))->prepare();
-    qDebug() << query;
-    T model = getRecord<T>(query);
+    //qDebug() << query;
+    T model = getRecord<T>(model,MQuery<T>::selectById(asId));
     if (!m_pModelWrapper->getSuccess()) {
         return;
     }
-
-    query = mQuery.remove()->
-            where()->
-            field(T::Column::ID)->
-            equally()->
-            strquery(QString::number(asId))->
-            prepare();
-    //    query = T::delQuery() + " where id=" + QString::number(asId);
-    delRecord<T>(model, query);
+///    query = T::delQuery() + " where id=" + QString::number(asId);
+    delRecord<T>(model, MQuery<T>::removeById(asId));
     return;
 }
 
@@ -151,8 +92,7 @@ template<typename T> void DBManager::deleteModel() {
 ///
 ///-----------------------------------------------------------------------------
 
-template<typename T> bool DBManager::connectDB() {
-    T model;
+template<typename T> bool DBManager::connectDB(const T& model) {
     //Задать  функцию для установки результата выполнения команды сервера
     //и собщения о результате выполнения команды.
     auto setResult = [this](T model, Message msg) {
@@ -177,6 +117,56 @@ template<typename T> bool DBManager::connectDB() {
     }
     return m_pModelWrapper->getSuccess();
 }
+///-----------------------------------------------------------------------------
+///
+///             Удалить запись из базы.
+///
+///-----------------------------------------------------------------------------
+
+template<typename T> void DBManager::delRecord(const T& model, const QString& queryStr) {
+    //Задать  функцию для установки результата выполнения команды сервера
+    //и собщения о результате выполнения команды.
+    auto setResult = [this](T model, Message msg) {
+        //Подготовить данные.
+        QString json = JsonSerializer::serialize(model);
+        m_pModelWrapper->setData(json);
+        //Установить сообщение и результат выполнения команды.
+        ServerMessage::Result result = ServerMessage::outPut(msg);
+        m_pModelWrapper->setMessage(result.str);
+        m_pModelWrapper->setSuccess(result.success);
+    };
+    //Проверить  и выполнить  SQL запрос.
+    QSqlQuery query(m_Db);
+    if (!query.exec(queryStr)) {
+        setResult(model, Message::MODEL_DEL_FAILURE);
+        return;
+    }
+    setResult(model, Message::MODEL_DEL_SUCCESS);
+    return;
+
+}
+
+
+///-----------------------------------------------------------------------------
+///
+///             Получить модель.
+///
+///-----------------------------------------------------------------------------
+
+template<typename T> void DBManager::getModel() {
+    //Блокировать ресурсы SQL от использования их  другими потоками. 
+    QMutexLocker lock(&m_Mutex);
+     //Загружаем параметры команды.
+    QJsonObject param;
+    JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
+    //ID модели.
+    qint64 asId = param["ID"].toInt();
+    T model;
+    //QString query = MQuery<T>::selectAll() + " where id=" + QString::number(asId);
+    getRecord<T>(model,MQuery<T>::selectById(asId));
+    return;
+}
+
 
 ///-----------------------------------------------------------------------------
 ///
@@ -184,8 +174,12 @@ template<typename T> bool DBManager::connectDB() {
 ///
 ///-----------------------------------------------------------------------------
 
-template<typename T> T DBManager::getRecord(const QString& queryStr) {
-    T model;
+template<typename T> T DBManager::getRecord(const T& model, const QString& queryStr) {
+   
+    //Выполнить SQL запрос.
+    if (!connectDB<T>(model)) {
+        return;
+    }
     QJsonObject recordObject;
     //Задать  функцию для установки результата выполнения команды сервера
     //и собщения о результате выполнения команды.
@@ -224,11 +218,33 @@ template<typename T> T DBManager::getRecord(const QString& queryStr) {
 
 ///-----------------------------------------------------------------------------
 ///
+///             Получить список моделей.
+///
+///-----------------------------------------------------------------------------
+
+/// Выполнить Sql запрос для объекта класса Т. T - шаблон модели для которй 
+/// выполняется запрос. Результат работы запроса упаковывается в секцию данных
+/// командной обёртки m_pModellWrapper.
+
+template<typename T> void DBManager::getListModels() {
+    //Блокировать ресурсы SQL от использования их  другими потоками. 
+    QMutexLocker lock(&m_Mutex);
+    T model;
+    getAllRecordS<T>(model);
+    return;
+}
+
+///-----------------------------------------------------------------------------
+///
 ///             Получить все записи из базы.
 ///
 ///-----------------------------------------------------------------------------
 
-template<typename T> ItemContainer<T> DBManager::getAllRecordS() {
+template<typename T> ItemContainer<T> DBManager::getAllRecordS(const T& model) {
+    //Проверить , открыта ли  база данных. 
+    if (!connectDB<T>(model)) {
+        return;
+    }
     //Контейнер, в который записываются  объекты сериализаци-модели.
     ItemContainer<T> container;
     //Задать  функцию для установки результата выполнения команды сервера
@@ -247,7 +263,7 @@ template<typename T> ItemContainer<T> DBManager::getAllRecordS() {
     QSqlQuery query(m_Db);
     ///Выполнить SQL запрос
     //qDebug()<<"Выполнить SQL запрос:  " << T::getQuery();
-    if (!query.exec(T::getQuery())) {
+    if (!query.exec(MQuery<T>::selectAll())) {
         setResult(container, Message::SQL_ERROR);
         return container;
     }
@@ -255,7 +271,6 @@ template<typename T> ItemContainer<T> DBManager::getAllRecordS() {
     while (query.next()) {
         QJsonObject recordObject;
         ///Экземпляр объекта класса T, который будет  сериализоваться.
-        T model;
         for (int x = 0; x < query.record().count(); x++) {
             recordObject.insert(query.record().fieldName(x), QJsonValue::fromVariant(query.value(x)));
         }
@@ -267,35 +282,6 @@ template<typename T> ItemContainer<T> DBManager::getAllRecordS() {
     }
     setResult(container, Message::SQL_SUCCESS);
     return container;
-
-}
-
-///-----------------------------------------------------------------------------
-///
-///             Удалить запись из базы.
-///
-///-----------------------------------------------------------------------------
-
-template<typename T> void DBManager::delRecord(const T& model, const QString& queryStr) {
-    //Задать  функцию для установки результата выполнения команды сервера
-    //и собщения о результате выполнения команды.
-    auto setResult = [this](T model, Message msg) {
-        //Подготовить данные.
-        QString json = JsonSerializer::serialize(model);
-        m_pModelWrapper->setData(json);
-        //Установить сообщение и результат выполнения команды.
-        ServerMessage::Result result = ServerMessage::outPut(msg);
-        m_pModelWrapper->setMessage(result.str);
-        m_pModelWrapper->setSuccess(result.success);
-    };
-    //Проверить  и выполнить  SQL запрос.
-    QSqlQuery query(m_Db);
-    if (!query.exec(queryStr)) {
-        setResult(model, Message::MODEL_DEL_FAILURE);
-        return;
-    }
-    setResult(model, Message::MODEL_DEL_SUCCESS);
-    return;
 
 }
 
