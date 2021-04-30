@@ -411,16 +411,20 @@ void DBManager::updateUser() {
 ///
 ///-----------------------------------------------------------------------------
 
-bool DBManager::isUserName(User user) {
+bool DBManager::isUserName(const QString& name) {
     //Задать  функцию для установки результата выполнения команды сервера
     //и собщения о результате выполнения команды.
+    User user;
+    user.setName(name);
     auto setResult = [this](User user, Message msg) {
         //Подготовить данные.
         QString json = JsonSerializer::serialize(user);
         m_pModelWrapper->setData(json);
         //Установить сообщение и результат выполнения команды.
         ServerMessage::Result result = ServerMessage::outPut(msg);
-        m_pModelWrapper->setMessage(result.str+ QString("<a style='color:red'> ") + user.getName() + QString("</a>"));
+        m_pModelWrapper->setMessage(result.str + QString("<br><a style='color:red'> ") +
+                user.getName() +
+                QString("</a> <br> Необходимо выбрать другое имя."));
         m_pModelWrapper->setSuccess(result.success);
     };
     QSqlQuery query(m_Db);
@@ -442,6 +446,7 @@ bool DBManager::isUserName(User user) {
     }
     ///Считать запись базы данных  в объект класса T.  
     user.read(recordObject);
+    qInfo() << user.getName();
     setResult(user, Message::USER_NAME_IS);
     return true;
 }
@@ -471,7 +476,7 @@ void DBManager::addUser() {
     if (!connectDB<User>()) {
         return;
     }
-    if (isUserName(user)) {
+    if (isUserName(user.getName())) {
         return;
     }
 

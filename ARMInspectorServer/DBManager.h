@@ -50,7 +50,7 @@ public:
     ///Добавить  пользователя.
     void addUser();
     ///Проверить имя  пользователя.
-    bool isUserName(User);
+    bool isUserName(const QString&);
     ///Редактировать   пользователя.
     void updateUser();
     ///Изменить пароль    пользователя.
