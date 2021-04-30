@@ -41,7 +41,6 @@ template<typename T> void DBManager::getListModels() {
     }
     getAllRecordS<T>();
     return;
-
 }
 
 
@@ -59,18 +58,10 @@ template<typename T> void DBManager::getModel() {
     JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
     //ID модели.
     qint64 asId = param["ID"].toInt();
-    //Выполнить SQL запрос.
     if (!connectDB<T>()) {
         return;
     }
-    //Проверить  и выполнить  SQL запрос.
-    //MQuery<T> mquery;
-    //mquery.insert();
-    T model;
-    qDebug() << MQuery<T>::selectById(asId);
-    QString query = T::getQuery() + " where id=" + QString::number(asId);
-    //QString query = mquery.select().prepare() + " where id=" + QString::number(asId);
-    getRecord<T>(query);
+    getRecord<T>(MQuery<T>::selectById(asId));
     return;
 }
 
@@ -93,28 +84,12 @@ template<typename T> void DBManager::deleteModel() {
     if (!connectDB<T>()) {
         return;
     }
-    
-    MQuery<T> mQuery;
-    //QString query = T::getQuery() + " where id=" + QString::number(asId);
-    QString query = mQuery.select()->
-            where()->
-            field(T::Column::ID)->
-            equally()->
-            strquery(QString::number(asId))->prepare();
-    qDebug() << query;
-    T model = getRecord<T>(query);
+    T model = getRecord<T>(MQuery<T>::selectById(asId));
     if (!m_pModelWrapper->getSuccess()) {
         return;
     }
-
-    query = mQuery.remove()->
-            where()->
-            field(T::Column::ID)->
-            equally()->
-            strquery(QString::number(asId))->
-            prepare();
     //    query = T::delQuery() + " where id=" + QString::number(asId);
-    delRecord<T>(model, query);
+    delRecord<T>(model,MQuery<T>::removeById(asId));
     return;
 }
 
@@ -240,8 +215,9 @@ template<typename T> ItemContainer<T> DBManager::getAllRecordS() {
     }
     setResult(container, Message::SQL_SUCCESS);
     return container;
-
 }
+
+
 
 ///-----------------------------------------------------------------------------
 ///

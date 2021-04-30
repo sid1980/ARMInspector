@@ -20,6 +20,12 @@
 #include "ServerMessage.h"
 #include "ItemContainer.h"
 #include <array>
+#include "User/User.h"
+#include "Mro/Mro.h"
+#include "User/UserView.h"
+#include "Inspection/Inspection.h"
+#include "Nsi/Nsi.h"
+
 using namespace std;
 class DBManager : public QObject {
     Q_OBJECT
@@ -43,6 +49,8 @@ public:
     void login();
     ///Добавить  пользователя.
     void addUser();
+    ///Проверить имя  пользователя.
+    bool isUserName(User);
     ///Редактировать   пользователя.
     void updateUser();
     ///Изменить пароль    пользователя.

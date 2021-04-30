@@ -5,11 +5,6 @@
  ****************************************************************************/
 
 #include "DBManager.h"
-#include "User/User.h"
-#include "Mro/Mro.h"
-#include "User/UserView.h"
-#include "Inspection/Inspection.h"
-#include "Nsi/Nsi.h"
 #include <QSqlError>
 
 
@@ -410,6 +405,46 @@ void DBManager::updateUser() {
     return;
 }
 
+///-----------------------------------------------------------------------------
+///
+///         Проверить имя пользователя
+///
+///-----------------------------------------------------------------------------
+
+bool DBManager::isUserName(User user) {
+    //Задать  функцию для установки результата выполнения команды сервера
+    //и собщения о результате выполнения команды.
+    auto setResult = [this](User user, Message msg) {
+        //Подготовить данные.
+        QString json = JsonSerializer::serialize(user);
+        m_pModelWrapper->setData(json);
+        //Установить сообщение и результат выполнения команды.
+        ServerMessage::Result result = ServerMessage::outPut(msg);
+        m_pModelWrapper->setMessage(result.str+ QString("<a style='color:red'> ") + user.getName() + QString("</a>"));
+        m_pModelWrapper->setSuccess(result.success);
+    };
+    QSqlQuery query(m_Db);
+    query.prepare(user.selectByName());
+    user.bindData(&query);
+    if (!query.exec()) {
+        setResult(user, Message::USER_ADD_FAILURE);
+        return false;
+    }
+    if (!query.next()) {
+        setResult(user, Message::USER_NAME_NO);
+        return false;
+    }
+    QJsonObject recordObject;
+    ///Экземпляр объекта класса T, который будет  сериализоваться.
+    for (int x = 0; x < query.record().count(); x++) {
+        recordObject.insert(query.record().fieldName(x), QJsonValue::fromVariant(query.value(x)));
+        qDebug() << "DBManager::isUserName(User user)";
+    }
+    ///Считать запись базы данных  в объект класса T.  
+    user.read(recordObject);
+    setResult(user, Message::USER_NAME_IS);
+    return true;
+}
 
 ///-----------------------------------------------------------------------------
 ///
@@ -436,33 +471,42 @@ void DBManager::addUser() {
     if (!connectDB<User>()) {
         return;
     }
+    if (isUserName(user)) {
+        return;
+    }
 
-    //База данных открыта. Можно проводить авторизацию пользователя. 
-    QSqlQuery queryAdd(m_Db);
-    queryAdd.prepare("INSERT INTO user (fio,id_inspection,name,password,status,role,access)"
-            " VALUES (:fio,:id_inspection,:name,:password,:status,:role,:access)");
-    queryAdd.bindValue(":fio", user.getFio());
-    queryAdd.bindValue(":id_inspection", user.getInspection());
-    queryAdd.bindValue(":name", user.getName());
-    //Получить хеш пароля.
     QString pasword_hash = QString(QCryptographicHash::hash((user.getPassword().toStdString().c_str()), QCryptographicHash::Md5).toHex());
-    queryAdd.bindValue(":password", pasword_hash);
-    queryAdd.bindValue(":status", user.getStatus());
-    queryAdd.bindValue(":role", user.getRole());
-    queryAdd.bindValue(":access", user.getAccess());
+    user.setPassword(pasword_hash);
+    qInfo() << user.insert();
+    //База данных открыта. Можно проводить авторизацию пользователя. 
 
-    if (queryAdd.exec()) {
-        queryAdd.prepare("SELECT * FROM user WHERE ID = (SELECT max(ID) FROM user)");
-        if (!queryAdd.exec()) {
+    QSqlQuery query(m_Db);
+    query.prepare(user.insert());
+    user.bindData(&query);
+
+    //queryAdd.prepare("INSERT INTO user (fio,id_inspection,name,password,status,role,access)"
+    //        " VALUES (:fio,:id_inspection,:name,:password,:status,:role,:access)");
+    //queryAdd.bindValue(":fio", user.getFio());
+    //queryAdd.bindValue(":id_inspection", user.getInspection());
+    //queryAdd.bindValue(":name", user.getName());
+    //Получить хеш пароля.
+    //queryAdd.bindValue(":password", pasword_hash);
+    //queryAdd.bindValue(":status", user.getStatus());
+    //queryAdd.bindValue(":role", user.getRole());
+    //queryAdd.bindValue(":access", user.getAccess());
+
+    if (query.exec()) {
+        query.prepare("SELECT * FROM user WHERE ID = (SELECT max(ID) FROM user)");
+        if (!query.exec()) {
             setResult(user, Message::USER_ADD_FAILURE);
             return;
         }
         //Выборка данных.
-        while (queryAdd.next()) {
+        while (query.next()) {
             QJsonObject recordObject;
             ///Экземпляр объекта класса T, который будет  сериализоваться.
-            for (int x = 0; x < queryAdd.record().count(); x++) {
-                recordObject.insert(queryAdd.record().fieldName(x), QJsonValue::fromVariant(queryAdd.value(x)));
+            for (int x = 0; x < query.record().count(); x++) {
+                recordObject.insert(query.record().fieldName(x), QJsonValue::fromVariant(query.value(x)));
             }
             ///Считать запись базы данных  в объект класса T.  
             user.read(recordObject);
@@ -473,7 +517,7 @@ void DBManager::addUser() {
         qDebug() << "add user  succes: ";
     } else {
         setResult(user, Message::USER_ADD_FAILURE);
-        qDebug() << "add person failed: " << queryAdd.lastError();
+        qDebug() << "add person failed: " << query.lastError();
         qDebug() << user.getName();
     }
 

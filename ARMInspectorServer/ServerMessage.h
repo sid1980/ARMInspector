@@ -25,6 +25,8 @@ enum Message {
     USER_PASSWORD_EMPTY,
     USER_ADD_SUCCESS,
     USER_ADD_FAILURE,
+    USER_NAME_IS,
+    USER_NAME_NO,
     USER_EDIT_SUCCESS,
     USERR_EDIT_FAILURE,
     PASSWORD_CHANGE_SUCCESS,
@@ -73,6 +75,8 @@ namespace ServerMessage {
     const QHash<const Message, Result> message = {
         {Message::USER_LOGIN_SUCCESS,{"Успешная авторизация пользователя ", true, ModelWrapper::Command::NOP}},
         {Message::USER_LOGIN_FAILURE,{"Введён неправильный пароль для пользователя  ", false, ModelWrapper::Command::NOP}},
+        {Message::USER_NAME_IS,{"В базе уже есть пльзователь с именем : ", false, ModelWrapper::Command::NOP}},
+        {Message::USER_NAME_NO,{"Пользователь может быть добавлен в базу данных ", true, ModelWrapper::Command::NOP}},
         {Message::USER_NAME_EMPTY,{"Поле для ввода имени пользователя не может быть пустым. ", false, ModelWrapper::Command::NOP}},
         {Message::USER_PASSWORD_EMPTY,{"Поле для ввода пароля не может быть пустым. Пользователь: ", false, ModelWrapper::Command::NOP}},
         {Message::USER_IS_NOT_FOUND,{"В базе данных не найден  пользователь с  именем ", false, ModelWrapper::Command::NOP}},
