@@ -339,8 +339,8 @@ void WorkerClient::process() {
         //*******************************************************************************************************************************************
         //                                  Ошибка выполнения команды на сервере.
         //*******************************************************************************************************************************************
-
-        QMessageBoxEx::information(0, wrapper.getHead(), wrapper.getMessage());
+        QMessageBoxEx::setCustomTextForButton(QMessageBox::Yes, "Да");
+        QMessageBoxEx::critical(Q_NULLPTR, wrapper.getHead(), wrapper.getMessage());
     }
 }
 

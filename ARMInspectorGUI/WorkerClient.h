@@ -31,6 +31,7 @@
 #include "User/dialog.h"
 #include "Report/reportFrm.h"
 #include "Nsi/nsiFrm.h"
+#include "QMessageBoxEx.h"
 
 class WorkerClient : public QObject {
     Q_OBJECT
