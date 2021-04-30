@@ -330,7 +330,38 @@ const QString& User::changePassword() {
 
 }
 
+///-----------------------------------------------------------------------------
+///
+///         Добавить пользователя . 
+///
+///
+///-----------------------------------------------------------------------------
 
+const QString& User::insert() {
+    qInfo() << "User::insert()";
+    return query_.insert()->
+            field(Column::FIO)->
+            field(Column::ID_INSPECTION)->
+            field(Column::NAME)->
+            field(Column::STATUS)->
+            field(Column::ROLE)->
+            field(Column::ACCESS)->prepare();
+}
+
+
+///-----------------------------------------------------------------------------
+///
+///         Выбрать  пользователя по имени. 
+///
+///
+///-----------------------------------------------------------------------------
+
+const QString& User::selectByName() {
+    qInfo() << "User::selectByName()";
+    return query_.select()->
+            where()->field(User::Column::NAME)->equally()->bind(User::Column::NAME)->
+            prepare();
+}
 
 
 

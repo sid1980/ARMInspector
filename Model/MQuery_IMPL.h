@@ -49,6 +49,7 @@ template <class T> MQuery<T>* MQuery<T>::select() {
 template <class T> MQuery<T>* MQuery<T>::insert() {
     clear();
     QString asInsert = "INSERT INTO " + T::getModelName();
+    insert_.append(asInsert);
     query_.append(asInsert);
     return this;
 }
@@ -141,18 +142,20 @@ template <class T> MQuery<T>* MQuery<T>::bind(const int& column) {
 ///-----------------------------------------------------------------------------
 
 template <class T> MQuery<T>* MQuery<T>::field(const int& column) {
-
-    if (bind_.isEmpty()) {
-        query_.append(" " + T::getFields()[column]);
-    } else {
-        if (where_.isEmpty()) {
-            query_.append(", " + T::getFields()[column]);
-        } else {
+    field_.append(T::getFields()[column]);
+    if (insert_.isEmpty()) {
+        if (bind_.isEmpty()) {
             query_.append(" " + T::getFields()[column]);
-
+        } else {
+            if (where_.isEmpty()) {
+                query_.append(", " + T::getFields()[column]);
+            } else {
+                query_.append(" " + T::getFields()[column]);
+            }
         }
+    } else {
+        bind_.append(column);
     }
-
     return this;
 }
 
@@ -165,9 +168,31 @@ template <class T> MQuery<T>* MQuery<T>::field(const int& column) {
 
 template <class T> const QString& MQuery<T>::prepare() {
     queryStr_ = "";
-    for (int i = 0; i < query_.size(); i++) {
-        queryStr_ += query_.at(i);
-    };
+    if (insert_.isEmpty()) {//
+        for (int i = 0; i < query_.size(); i++) {
+            queryStr_ += query_.at(i);
+        };
+    } else {//Это  INSERT
+        for (int i = 0; i < insert_.size(); i++) {
+            queryStr_ += insert_.at(i);
+        };
+        queryStr_ += " (";
+        for (int i = 0; i < field_.size(); i++) {
+            queryStr_ += field_.at(i);
+            if (i < field_.size() - 1) {
+                queryStr_ += ",";
+            }
+        };
+        queryStr_ += ") ";
+        queryStr_ += " VALUES (";
+        for (int i = 0; i < field_.size(); i++) {
+            queryStr_ += ":" + field_.at(i);
+            if (i < field_.size() - 1) {
+                queryStr_ += ",";
+            }
+        };
+        queryStr_ += ") ";
+    }
     return queryStr_;
 }
 
@@ -180,9 +205,9 @@ template <class T> const QString& MQuery<T>::prepare() {
 template <class T> void MQuery<T>::clear() {
     query_.clear();
     bind_.clear();
-    bindprm_.clear();
     where_.clear();
-
+    insert_.clear();
+    field_.clear();
 }
 
 
@@ -192,7 +217,7 @@ template <class T> void MQuery<T>::clear() {
 ///
 ///-----------------------------------------------------------------------------
 
-template <class T> const QString& MQuery<T>::selectAll() {
+template <class T> QString MQuery<T>::selectAll() {
     return "SELECT * FROM " + T::getModelName();
 
 }
@@ -203,9 +228,9 @@ template <class T> const QString& MQuery<T>::selectAll() {
 ///
 ///-----------------------------------------------------------------------------
 
-template <class T>  QString MQuery<T>::selectById(const int& id) {
-    
-        return "SELECT * FROM " + T::getModelName() + " where id="+QString::number(id);
+template <class T> QString MQuery<T>::selectById(const int& id) {
+
+    return "SELECT * FROM " + T::getModelName() + " where id=" + QString::number(id);
 }
 ///-----------------------------------------------------------------------------
 ///
@@ -213,9 +238,9 @@ template <class T>  QString MQuery<T>::selectById(const int& id) {
 ///
 ///-----------------------------------------------------------------------------
 
-template <class T> const QString& MQuery<T>::removeById(const int& id) {
-    
-    return "DELETE FROM " + T::getModelName()+ " where id="+QString::number(id);
+template <class T> QString MQuery<T>::removeById(const int& id) {
+
+    return "DELETE FROM " + T::getModelName() + " where id=" + QString::number(id);
 
 }
 

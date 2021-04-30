@@ -130,8 +130,10 @@ public:
 
     void bindData(QSqlQuery* asSqlQuery);
     const QString& update();
+    const QString& insert();
     const QString& changePassword();
     const QString& select();
+    const QString& selectByName();
 
 
 private:
