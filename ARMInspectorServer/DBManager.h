@@ -64,6 +64,9 @@ public:
     void deleteModel();
     ///удалить модель из списка
     template<typename T> void deleteModel();
+    ///добавить модель
+    void addModel();
+    template<typename T> void addModel();
     /// Получить  модель.
     void getModel();
     template<typename T> void getModel();

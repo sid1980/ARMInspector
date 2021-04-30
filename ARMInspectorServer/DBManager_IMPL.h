@@ -89,7 +89,7 @@ template<typename T> void DBManager::deleteModel() {
         return;
     }
     //    query = T::delQuery() + " where id=" + QString::number(asId);
-    delRecord<T>(model,MQuery<T>::removeById(asId));
+    delRecord<T>(model, MQuery<T>::removeById(asId));
     return;
 }
 
@@ -246,6 +246,61 @@ template<typename T> void DBManager::delRecord(const T& model, const QString& qu
     setResult(model, Message::MODEL_DEL_SUCCESS);
     return;
 
+}
+
+///-----------------------------------------------------------------------------
+///
+///             Добавить модель.
+///
+///-----------------------------------------------------------------------------
+
+template<typename T> void DBManager::addModel() {
+    //Задать  функцию для установки результата выполнения команды сервера
+    //и собщения о результате выполнения команды.
+    auto setResult = [this](T model, Message msg) {
+        //Подготовить данные.
+        QString json = JsonSerializer::serialize(model);
+        m_pModelWrapper->setData(json);
+        //Установить сообщение и результат выполнения команды.
+        ServerMessage::Result result = ServerMessage::outPut(msg);
+        m_pModelWrapper->setMessage(result.str);
+        m_pModelWrapper->setSuccess(result.success);
+    };
+    //Создать модель данных User
+    T model;
+    JsonSerializer::parse(m_pModelWrapper->getData(), model);
+    //Взять ранее созданное подключение к  базе данных.
+    if (!connectDB<T>()) {
+        return;
+    }
+
+
+    QSqlQuery query(m_Db);
+    query.prepare(model.insert());
+    model.bindData(&query);
+
+    if (query.exec()) {
+        query.prepare(MQuery<T>::selectMaxID());
+        if (!query.exec()) {
+            setResult(model, Message::USER_ADD_FAILURE);
+            return;
+        }
+        //Выборка данных.
+        while (query.next()) {
+            QJsonObject recordObject;
+            ///Экземпляр объекта класса T, который будет  сериализоваться.
+            for (int x = 0; x < query.record().count(); x++) {
+                recordObject.insert(query.record().fieldName(x), QJsonValue::fromVariant(query.value(x)));
+            }
+            ///Считать запись базы данных  в объект класса T.  
+            model.read(recordObject);
+        }
+        setResult(model, Message::USER_ADD_SUCCESS);
+        qDebug() << "add model  succes: ";
+    } else {
+        setResult(model, Message::USER_ADD_FAILURE);
+    }
+    return;
 }
 
 

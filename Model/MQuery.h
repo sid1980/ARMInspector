@@ -32,6 +32,7 @@ public:
     void clear();
     const QList<int>& getBindColumnList();
     static QString selectAll();
+    static QString selectMaxID();
     static QString selectById(const int&);
     static QString removeById(const int&);
 private:

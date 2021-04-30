@@ -28,7 +28,7 @@ using namespace std;
 class User : public JsonSerializable, Model {
 public:
 
-    enum Column {
+    enum class Column {
         ID = 0,
         FIO,
         ID_INSPECTION,
