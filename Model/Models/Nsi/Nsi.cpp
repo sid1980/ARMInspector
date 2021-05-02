@@ -52,8 +52,8 @@ const QString& Nsi::getName() const {
 
 void Nsi::read(const QJsonObject &jsonObj) {
     array<QString, 2> fld = Nsi::getFields();
-    this->setId(jsonObj[fld[Column::ID]].toInt());
-    this->setName(jsonObj[fld[Column::NAME]].toString());
+    this->setId(jsonObj[fld[Nsi::Column::ID]].toInt());
+    this->setName(jsonObj[fld[Nsi::Column::NAME]].toString());
 };
 
 ///-----------------------------------------------------------------------------
@@ -65,8 +65,8 @@ void Nsi::read(const QJsonObject &jsonObj) {
 
 void Nsi::write(QJsonObject &jsonObj) const {
     array<QString, 2> fld = Nsi::getFields();
-    jsonObj[fld[Column::ID]] = this->getId();
-    jsonObj[fld[Column::NAME]] = this->getName();
+    jsonObj[fld[Nsi::Column::ID]] = this->getId();
+    jsonObj[fld[Nsi::Column::NAME]] = this->getName();
 
 };
 
@@ -81,9 +81,9 @@ void Nsi::write(QJsonObject &jsonObj) const {
 const QVariant Nsi::getData(const int& position) const {
 
     switch (position) {
-        case Column::ID:
+        case Nsi::Column::ID:
             return this->getId();
-        case Column::NAME:
+        case Nsi::Column::NAME:
             return this->getName();
         default:
             return 0;
@@ -100,10 +100,10 @@ const QVariant Nsi::getData(const int& position) const {
 
 void Nsi::setData(const int& position, const QVariant& value) {
     switch (position) {
-        case Column::ID:
+        case Nsi::Column::ID:
             this->setId(value.toInt());
             break;
-        case Column::NAME:
+        case Nsi::Column::NAME:
             this->setName(value.toString());
             break;
         default:

@@ -26,7 +26,7 @@ using namespace std;
 class Nsi : public JsonSerializable, Model {
 public:
 
-    enum Column {
+    enum  Column {
         ID = 0,
         NAME
     };
