@@ -20,13 +20,15 @@
 #include "Model.h"
 #include <array>
 #include <MQuery.h>
+#include <QSqlQuery>
+#define NSI_COLUMN 2
 
 using namespace std;
 
 class Nsi : public JsonSerializable, Model {
 public:
 
-    enum  Column {
+    enum Column {
         ID = 0,
         NAME
     };
@@ -94,6 +96,9 @@ public:
     virtual const QVariant getData(const int&) const;
     ///Установить  данные  модели.
     virtual void setData(const int&, const QVariant&);
+    void bindData(QSqlQuery* asSqlQuery);
+    const QString& update();
+    const QString& insert();
 
 
 private:

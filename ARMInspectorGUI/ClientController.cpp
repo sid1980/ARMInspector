@@ -200,6 +200,8 @@ void ClientController::getUser(const qint64& asId) {
 void ClientController::deleteUser(const qint64& asId) {
     deleteModel(asId, ModelWrapper::Model::User);
 }
+
+
 ///Добавить нового пользователя.
 
 void ClientController::addUser(const User &user) {
@@ -247,7 +249,35 @@ void ClientController::deleteModel(const qint64& asId, ModelWrapper::Model model
     //Переслать его на сервер.
     m_pCommandController->requestServer(query);
 
-}///Получить  модель.
+}
+
+
+///-----------------------------------------------------------------------------
+///
+///             Добавить модель
+///
+///-----------------------------------------------------------------------------
+
+void ClientController::addModel(ModelWrapper::Model model) {
+    //Получаем модель.
+//    ModelWrapper::Model model = m_pModelWrapper->getEnumModel();
+    //Выбрать модель, данные которой необходимо запросить. 
+    switch (model) {
+        case ModelWrapper::Model::User:
+            //addModel<User>();
+            break;
+        case ModelWrapper::Model::Nsi:
+            QJsonObject param;
+//            JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
+            //ноиер НСИ
+            Nsi::num_ = param["numNSI"].toString();
+            //addModel<Nsi>();
+            break;
+    }
+}
+
+
+///Получить  модель.
 
 void ClientController::getModel(const qint64& asId, ModelWrapper::Model model) {
     //Создать командную обёртку.
@@ -274,6 +304,8 @@ void ClientController::getModel(const qint64& asId, ModelWrapper::Model model) {
     m_pCommandController->requestServer(query);
 
 }
+
+
 ///Получить список моделей.
 
 void ClientController::getListModels(ModelWrapper::Model model) {

@@ -112,3 +112,63 @@ void Nsi::setData(const int& position, const QVariant& value) {
 
 };
 
+///-----------------------------------------------------------------------------
+///
+///
+///         Привязать данные к запросу. 
+///
+///
+///-----------------------------------------------------------------------------
+
+void Nsi::bindData(QSqlQuery* asSqlQuery) {
+    qInfo() << "Nsi::bindData";
+    QList<int> list = query_.getBindColumnList();
+    if (!list.isEmpty()) {
+        array<QString, NSI_COLUMN> fld = Nsi::getFields();
+        for (int i = 0; i < list.size(); i++) {
+            qInfo() << QString::number(list.at(i));
+            switch (list.at(i)) {
+                case Nsi::Column::ID:
+                    asSqlQuery->bindValue(":" + fld[Nsi::Column::ID], this->getId());
+                    break;
+                case Nsi::Column::NAME:
+                    asSqlQuery->bindValue(":" + fld[Nsi::Column::NAME], this->getName());
+                    break;
+            }
+        }
+    }
+
+}
+
+
+
+///-----------------------------------------------------------------------------
+///
+///         Добавить запись в справочник . 
+///
+///
+///-----------------------------------------------------------------------------
+
+const QString& Nsi::insert() {
+    qInfo() << "User::insert()";
+    return query_.insert()->field(Nsi::Column::NAME)->prepare();
+}
+
+
+
+
+///-----------------------------------------------------------------------------
+///
+///
+///         Изменить данные записи NSI. 
+///
+///
+///-----------------------------------------------------------------------------
+
+const QString& Nsi::update() {
+    qInfo() << "User::update()";
+    return query_.update()->set()->
+            field(Nsi::Column::ID)->equally()->bind(Nsi::Column::ID)->
+            field(Nsi::Column::NAME)->equally()->bind(Nsi::Column::NAME)->prepare();
+
+}

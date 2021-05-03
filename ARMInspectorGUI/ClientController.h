@@ -39,13 +39,15 @@ public:
     ///установить номер справочника
     void setNsiNum(const QString& nsinum);
     ///получить номер справочника
-    const QString&  getNsiNum();
+    const QString& getNsiNum();
     ///получить флаг  авторизации клиента
     bool getLogged();
     ///Получить модель
     void getModel(const qint64&, ModelWrapper::Model model);
     ///Удалить модель
     void deleteModel(const qint64&, ModelWrapper::Model model);
+    ///Добавить модель
+   void addModel(ModelWrapper::Model model); 
     ///Получить пользователя сессии
     const User& getSessionUser();
     ///Полчить список МРО
@@ -84,7 +86,7 @@ public slots:
     /// @param asPassword Пароль пользователя.
     void login(const QString &asLogin, const QString & asPassword);
     ///Установить пользователя сессии
-    void  setSessionUser(const User& );
+    void setSessionUser(const User&);
     /// Получить список моделей.
     /// @param asQuery SQL запрос.
     /// @param asModel Модель данных.

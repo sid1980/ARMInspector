@@ -25,6 +25,7 @@
 #define USER_COLUMN 10
 using namespace std;
 
+
 class User : public JsonSerializable, Model {
 public:
 
