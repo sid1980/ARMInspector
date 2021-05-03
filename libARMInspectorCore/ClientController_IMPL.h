@@ -25,14 +25,17 @@
 /// выполняется запрос. Результат работы запроса упаковывается в секцию данных
 /// командной обёртки m_pModellWrapper.
 
-template<typename T> void ClientController::getListModels() {
+template<typename T> void ClientController::addModel(T& model) {
     //Блокировать ресурсы SQL от использования их  другими потоками. 
     //Проверить , открыта ли  база данных. 
-    if (!connectDB<T>()) {
-        return;
-    }
-    getAllRecordS<T>();
-    return;
+    //if (!connectDB<T>()) {
+    //    return;
+   // }
+    //getAllRecordS<T>();
+    //return;
+        // Сигнально-слотовое соединение для полуяения  сведений о   пользователе из  базы данных.
+        connect(m_pWorkerClient, SIGNAL(setModel(const T&)), SLOT(setModel<T>(const T&)));
+
 }
 #endif /* CLIENTCONTROLLER_IMPL_H */
 

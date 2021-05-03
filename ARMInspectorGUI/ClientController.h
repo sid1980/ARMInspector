@@ -48,6 +48,7 @@ public:
     void deleteModel(const qint64&, ModelWrapper::Model model);
     ///Добавить модель
    void addModel(ModelWrapper::Model model); 
+   template<typename T> void addModel(T& model);
     ///Получить пользователя сессии
     const User& getSessionUser();
     ///Полчить список МРО
@@ -115,5 +116,6 @@ private:
 
 };
 
+#include "ClientController_IMPL.h"
 
 #endif // CLIENTCONTROLLER_H
