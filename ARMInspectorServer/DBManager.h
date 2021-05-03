@@ -64,6 +64,10 @@ public:
     void deleteModel();
     ///удалить модель из списка
     template<typename T> void deleteModel();
+    
+    /// Редактировать  модель.
+    void updateModel();
+    template<typename T> void updateModel();
     ///добавить модель
     void addModel();
     template<typename T> void addModel();

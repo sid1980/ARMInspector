@@ -236,15 +236,41 @@ void DBManager::addModel() {
         case ModelWrapper::Model::User:
             addModel<User>();
             break;
-        //case ModelWrapper::Model::Nsi:
-        //    QJsonObject param;
-        //    JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
+        case ModelWrapper::Model::Nsi:
+            QJsonObject param;
+            JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
             //ноиер НСИ
-        //    Nsi::num_ = param["numNSI"].toString();
-        //    addModel<Nsi>();
-        //    break;
+            Nsi::num_ = param["numNSI"].toString();
+            addModel<Nsi>();
+            break;
     }
 }
+
+
+///-----------------------------------------------------------------------------
+///
+///             Редактировать модель
+///
+///-----------------------------------------------------------------------------
+
+void DBManager::updateModel() {
+    //Получаем модель.
+    ModelWrapper::Model model = m_pModelWrapper->getEnumModel();
+    //Выбрать модель, данные которой необходимо запросить. 
+    switch (model) {
+        case ModelWrapper::Model::User:
+            updateModel<User>();
+            break;
+        case ModelWrapper::Model::Nsi:
+            QJsonObject param;
+            JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
+            //ноиер НСИ
+            Nsi::num_ = param["numNSI"].toString();
+            updateModel<Nsi>();
+            break;
+    }
+}
+
 
 ///-----------------------------------------------------------------------------
 ///
@@ -526,7 +552,8 @@ void DBManager::addUser() {
     //queryAdd.bindValue(":access", user.getAccess());
 
     if (query.exec()) {
-        query.prepare("SELECT * FROM user WHERE ID = (SELECT max(ID) FROM user)");
+        //query.prepare("SELECT * FROM user WHERE ID = (SELECT max(ID) FROM user)");
+        query.prepare(MQuery<User>::selectMaxID());
         if (!query.exec()) {
             setResult(user, Message::USER_ADD_FAILURE);
             return;

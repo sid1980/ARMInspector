@@ -66,6 +66,48 @@ template<typename T> void DBManager::getModel() {
 }
 
 
+///-----------------------------------------------------------------------------
+///
+///                     Редактировать модель 
+///
+///-----------------------------------------------------------------------------
+
+template<typename T> void DBManager::updateModel() {
+    //Задать  функцию для установки результата выполнения команды сервера
+    //и собщения о результате выполнения команды.
+    auto setResult = [this](T model, Message msg) {
+        //Подготовить данные.
+        QString json = JsonSerializer::serialize(model);
+        m_pModelWrapper->setData(json);
+        //Установить сообщение и результат выполнения команды.
+        ServerMessage::Result result = ServerMessage::outPut(msg);
+        m_pModelWrapper->setMessage(result.str);
+        m_pModelWrapper->setSuccess(result.success);
+    };
+    //Создать модель данных User
+    T  model;
+    JsonSerializer::parse(m_pModelWrapper->getData(), model);
+    //qDebug() << myquery;
+    //Взять ранее созданное подключение к  базе данных.
+    if (!connectDB<T>()) {
+        return;
+    }
+    //База данных открыта. Можно проводить авторизацию пользователя. 
+    QSqlQuery query(m_Db);
+    //qDebug() << user.getName();
+    query.prepare(model.update());
+    model.bindData(&query);
+
+    if (query.exec()) {
+        setResult(model, Message::MODEL_EDIT_SUCCESS);
+        qDebug() << "update model  succes: ";
+    } else {
+        setResult(model, Message::MODEL_EDIT_FAILURE);
+        //qDebug() << "update person failed: " << query.lastError();
+    }
+    return;
+}
+
 
 ///-----------------------------------------------------------------------------
 ///
