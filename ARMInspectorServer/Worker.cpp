@@ -91,6 +91,12 @@ void Worker::process() {
                     pDBManager->addUser();
                 }
                     break;
+                case ModelWrapper::Command::ADD_NEW_MODEL:
+                {
+                    //Добавление нового пользователя .
+                    pDBManager->addModel();
+                }
+                    break;
                 case ModelWrapper::Command::EDIT_USER:
                 {
                     //Добавление нового пользователя .

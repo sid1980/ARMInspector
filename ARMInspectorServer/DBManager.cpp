@@ -218,7 +218,6 @@ void DBManager::deleteModel() {
             Nsi::num_ = param["numNSI"].toString();
             deleteModel<Nsi>();
             break;
-
     }
 }
 
