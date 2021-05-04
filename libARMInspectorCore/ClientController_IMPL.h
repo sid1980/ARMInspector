@@ -25,16 +25,21 @@
 /// выполняется запрос. Результат работы запроса упаковывается в секцию данных
 /// командной обёртки m_pModellWrapper.
 
-template<typename T> void ClientController::addModel(T& model) {
-    //Блокировать ресурсы SQL от использования их  другими потоками. 
-    //Проверить , открыта ли  база данных. 
-    //if (!connectDB<T>()) {
-    //    return;
-   // }
-    //getAllRecordS<T>();
-    //return;
-        // Сигнально-слотовое соединение для полуяения  сведений о   пользователе из  базы данных.
-        connect(m_pWorkerClient, SIGNAL(setModel(const T&)), SLOT(setModel<T>(const T&)));
+template<typename T> void ClientController::addModel(const T& model) {
+    //QMessageBox::information(0, "Добавление нового пользовтеля", QString(user.getFio()));
+    //Создать командную обёртку.
+    ModelWrapper wrapper(ModelWrapper::Command::ADD_NEW_MODEL);
+    wrapper.setEnumModel(T::model_);
+    //Установить идентификатор сессии.
+    wrapper.setSessionID(m_aSessionID);
+    //Установить модель.    
+    //Сериализовать модель User.Передать данные о пользователе.
+    QString userAsString = JsonSerializer::serialize(model);
+    wrapper.setData(userAsString);
+    //Упаковать  весь запрос в строку
+    QString query = JsonSerializer::serialize(wrapper);
+    //Переслать его на сервер.
+    m_pCommandController->requestServer(query);
 
 }
 #endif /* CLIENTCONTROLLER_IMPL_H */

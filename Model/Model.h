@@ -20,7 +20,7 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-class Model {
+class Model  {
 public:
     virtual ~Model(){};
     virtual  const QVariant getData(const int& ) const = 0;

@@ -61,6 +61,12 @@ void ClientController::init(ServerClient *apServerClient) {
     ///список МРО получен от сервера 
     connect(m_pWorkerClient, SIGNAL(listMroReady(const QList<Mro>&)), this,
             SIGNAL(listMroReady(const QList<Mro>&)));
+
+    //connect(m_pWorkerClient, &WorkerClient::addUser, this, &ClientController::addModel<User>);
+    //connect(m_pWorkerClient, SIGNAL(addUser(const User&)), SLOT(addModel<User>(const User&)));
+
+
+
     ///список НСИ получен от сервера 
     connect(m_pWorkerClient, SIGNAL(listNsiReady(const QList<Nsi>&)), this,
             SIGNAL(listNsiReady(const QList<Nsi>&)));
@@ -206,7 +212,6 @@ void ClientController::deleteUser(const qint64& asId) {
 
 void ClientController::addUser(const User &user) {
     //QMessageBox::information(0, "Добавление нового пользовтеля", QString(user.getFio()));
-
     //Создать командную обёртку.
     ModelWrapper wrapper(ModelWrapper::Command::ADD_NEW_USER);
     //Установить идентификатор сессии.
@@ -252,29 +257,6 @@ void ClientController::deleteModel(const qint64& asId, ModelWrapper::Model model
 }
 
 
-///-----------------------------------------------------------------------------
-///
-///             Добавить модель
-///
-///-----------------------------------------------------------------------------
-
-void ClientController::addModel(ModelWrapper::Model model) {
-    //Получаем модель.
-//    ModelWrapper::Model model = m_pModelWrapper->getEnumModel();
-    //Выбрать модель, данные которой необходимо запросить. 
-    switch (model) {
-        case ModelWrapper::Model::User:
-            //addModel<User>();
-            break;
-        case ModelWrapper::Model::Nsi:
-            QJsonObject param;
-//            JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
-            //ноиер НСИ
-            Nsi::num_ = param["numNSI"].toString();
-            //addModel<Nsi>();
-            break;
-    }
-}
 
 
 ///Получить  модель.

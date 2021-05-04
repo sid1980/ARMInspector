@@ -47,17 +47,18 @@ public:
     ///Удалить модель
     void deleteModel(const qint64&, ModelWrapper::Model model);
     ///Добавить модель
-   void addModel(ModelWrapper::Model model); 
-   template<typename T> void addModel(T& model);
+    //void addModel(ModelWrapper::Model model); 
     ///Получить пользователя сессии
     const User& getSessionUser();
     ///Полчить список МРО
     void getListMRO();
     ///Полчить список МРО
     void getListNSI(const QString& asNumNsi);
+    template<typename T> void addModel(const T&);
 
 
 signals:
+    //template<typename T> void setModel(const T&);
     void ready();
     ///Cписок МРО подготовлен  
     void listMroReady(const QList<Mro>&);

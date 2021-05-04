@@ -19,9 +19,15 @@
 #include <QJsonArray>
 #include "Model.h"
 #include <MQuery.h>
+#include "ModelWrapper.h"
+#include <array>
+#define MRO_COLUMN 3
+using namespace std;
 
 class Mro : public JsonSerializable, Model {
 public:
+    static ModelWrapper::Model model_;
+
     Mro();
     virtual ~Mro();
     void setId(const qint64& id);
@@ -49,13 +55,11 @@ public:
 
     ///Список названий полей базы
 
-    static const QJsonArray getFieldArray() {
-        const QJsonArray jsonArray = {
+    static array<QString, MRO_COLUMN> getFields() {
+        return array<QString, MRO_COLUMN>{
             "id",
             "name",
-            "id_inspection",
-        };
-        return jsonArray;
+            "id_inspection",};
     }
 
 
@@ -63,6 +67,10 @@ public:
 
     static const QString getModelName() {
         return QString("Mro");
+    }
+
+    static const ModelWrapper::Model getModelEnum() {
+        return ModelWrapper::Model::Mro;
     }
     ///SQL запрос вывода данных
 

@@ -12,6 +12,9 @@
  */
 
 #include "Nsi/Nsi.h"
+
+ModelWrapper::Model Nsi::model_={ModelWrapper::Model::Nsi};
+
 QString Nsi::num_ = {""};
 
 Nsi::Nsi() {

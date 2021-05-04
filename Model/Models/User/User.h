@@ -21,14 +21,13 @@
 #include <array>
 #include <QSqlQuery>
 #include <MQuery.h>
-
+#include "ModelWrapper.h"
 #define USER_COLUMN 10
 using namespace std;
 
-
 class User : public JsonSerializable, Model {
 public:
-
+    static ModelWrapper::Model model_;
     enum Column {
         ID = 0,
         FIO,
@@ -113,6 +112,7 @@ public:
     static const QString getModelName() {
         return QString("user");
     }
+
     ///SQL запрос вывода данных
 
     static const QString getQuery() {

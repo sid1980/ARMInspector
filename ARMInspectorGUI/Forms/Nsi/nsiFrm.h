@@ -23,7 +23,6 @@
 #include "User/UserView.h"
 #include "User/pwdFrm.h"
 #include "ModelList.h"
-#include "ModelList.h"
 #include "DialogDestroyer.h"
 
 #include <QSortFilterProxyModel>

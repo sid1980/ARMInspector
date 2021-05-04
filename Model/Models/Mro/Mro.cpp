@@ -13,6 +13,8 @@
 
 #include "Mro/Mro.h" 
 
+ModelWrapper::Model  Mro::model_={ModelWrapper::Model::Mro};
+
 Mro::Mro() : id_(0), name_(""), inspection_(0) {
 }
 

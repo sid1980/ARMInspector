@@ -26,12 +26,13 @@
 #include "Model.h"
 #include <array>
 #include <MQuery.h>
+#include "ModelWrapper.h"
 
 using namespace std;
 
 class UserView : public JsonSerializable, Model {
 public:
-
+    static ModelWrapper::Model model_;
     enum Column {
         ID = 0,
         FIO,

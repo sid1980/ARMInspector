@@ -18,11 +18,16 @@
 #include <QVariant>
 #include <QJsonArray>
 #include "Model.h"
+#include "ModelWrapper.h"
 #include <MQuery.h>
+#include <array>
+#define RPT_COLUMN 4
 
+using namespace std;
 
 class RptColumn : public JsonSerializable, Model {
 public:
+    static ModelWrapper::Model model_;
     RptColumn();
     virtual ~RptColumn();
     void setId(const qint64& id);
@@ -51,19 +56,18 @@ public:
         return jsonArray;
     }
 
+
+    
+    
     ///Список названий полей базы
 
-    static const QJsonArray getFieldArray() {
-        const QJsonArray jsonArray = {
+    static array<QString, RPT_COLUMN> getFields() {
+        return array<QString, RPT_COLUMN>{
             "id",
             "article",
-            "person",
-            "col"
-        };
-        return jsonArray;
+            "offense_subject",
+            "col"};
     }
-
-
     ///название модели
 
     static const QString getModelName() {

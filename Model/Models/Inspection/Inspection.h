@@ -20,15 +20,18 @@
 #define INSPECTION_H
 #include <QtCore/QJsonObject>
 #include "JsonSerializable.h"
+#include "Model.h"
 #include <QVariant>
 #include <QJsonArray>
 #include <array>
 #include <MQuery.h>
-
+#include "ModelWrapper.h"
+#define INSPECTION_COLUMN 3
 using namespace std;
 
-class Inspection : public JsonSerializable {
+class Inspection : public JsonSerializable, Model {
 public:
+    static ModelWrapper::Model model_;
 
     enum Column {
         ID = 0,
@@ -55,8 +58,8 @@ public:
 
     ///Список названий полей базы
 
-    static array<QString, 3> getFields() {
-        return array<QString, 3>{
+    static array<QString, INSPECTION_COLUMN> getFields() {
+        return array<QString, INSPECTION_COLUMN>{
             "id",
             "name",
             "mro"};
@@ -76,6 +79,9 @@ public:
         return QString("Inspection");
     }
 
+    static const ModelWrapper::Model getModelEnum() {
+        return ModelWrapper::Model::Inspection;
+    }
     ///SQL запрос вывода данных
 
     static const QString getQuery() {

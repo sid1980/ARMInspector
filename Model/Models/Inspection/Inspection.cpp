@@ -19,6 +19,9 @@
  */
 
 #include "Inspection/Inspection.h"
+
+ModelWrapper::Model Inspection::model_={ModelWrapper::Model::Inspection};
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Конструктор.

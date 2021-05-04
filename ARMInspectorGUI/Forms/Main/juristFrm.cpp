@@ -45,6 +45,12 @@ juristFrm::juristFrm() {
     menu->addAction(action);
     QMenu * menu2 = m_pMenuBar->addMenu("&Справочники");
     // Справочники
+    action = new QAction("&Список инспекций", this);
+    connect(action, &QAction::triggered, this, &juristFrm::OnInspection);
+    menu2->addAction(action);
+    action = new QAction("&Список МРО", this);
+    connect(action, &QAction::triggered, this, &juristFrm::OnMro);
+    menu2->addAction(action);
     action = new QAction("&Статьи КоАП", this);
     connect(action, &QAction::triggered, this, &juristFrm::OnArticle);
     menu2->addAction(action);
@@ -140,6 +146,26 @@ void juristFrm::OnExit() {
 }
 
 
+///-----------------------------------------------------------------------------
+///
+///         Список РЭГИ.
+///          
+///-----------------------------------------------------------------------------
+
+void juristFrm::OnInspection() {
+    QMessageBox::information(this, "АРМ Юриста", "OnInspection()");
+
+}
+///-----------------------------------------------------------------------------
+///
+///         Список МРО.
+///          
+///-----------------------------------------------------------------------------
+
+void juristFrm::OnMro() {
+    QMessageBox::information(this, "АРМ Юриста", "OnMro()");
+
+}
 ///-----------------------------------------------------------------------------
 ///
 ///         Справочник статей КоАП.

@@ -21,12 +21,15 @@
 #include <array>
 #include <MQuery.h>
 #include <QSqlQuery>
+#include "ModelWrapper.h"
+
 #define NSI_COLUMN 2
 
 using namespace std;
 
 class Nsi : public JsonSerializable, Model {
 public:
+    static ModelWrapper::Model model_;
 
     enum Column {
         ID = 0,
@@ -41,6 +44,7 @@ public:
     const QString& getName()const;
     static QString num_;
 
+
     ///Функции сериализации объекта класса
     ///Считывание JSON объкта в поля класса
     void read(const QJsonObject &jsonObj);
@@ -48,29 +52,22 @@ public:
     void write(QJsonObject &jsonObj) const;
 
 
+
     ///Список названий полей базы
 
-    static array<QString, 2> getFields() {
-        return array<QString, 2>{
+    static array<QString, NSI_COLUMN> getFields() {
+        return array<QString, NSI_COLUMN>{
             "id",
             "name_" + Nsi::num_};
     }
+
+
     ///Список названий колонок модели
 
     static const QJsonArray getColumnArray() {
         const QJsonArray jsonArray = {
             "№",
             "Название "
-        };
-        return jsonArray;
-    }
-
-    ///Список названий полей базы
-
-    static const QJsonArray getFieldArray() {
-        const QJsonArray jsonArray = {
-            "id",
-            "name"
         };
         return jsonArray;
     }

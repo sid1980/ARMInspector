@@ -40,6 +40,8 @@ public:
     void OnGenerateReport();
     void OnExit();
     void OnGenerateReprt2();
+    void OnInspection();
+    void OnMro();
     void OnArticle();
     void OnSubject();
     //void closeEvent(QCloseEvent *event);

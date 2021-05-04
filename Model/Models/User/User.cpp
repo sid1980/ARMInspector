@@ -12,6 +12,8 @@
  */
 
 #include "User/User.h"
+
+ModelWrapper::Model User::model_={ModelWrapper::Model::User};
 ///-----------------------------------------------------------------------------
 ///
 ///         Конструктор.

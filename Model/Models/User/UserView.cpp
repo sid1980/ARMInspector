@@ -18,6 +18,8 @@
  */
 
 #include "User/UserView.h"
+ModelWrapper::Model UserView::model_={ModelWrapper::Model::UserView};
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Стандартный конструктор.
