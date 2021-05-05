@@ -85,7 +85,7 @@ template<typename T> void DBManager::updateModel() {
         m_pModelWrapper->setSuccess(result.success);
     };
     //Создать модель данных User
-    T  model;
+    T model;
     JsonSerializer::parse(m_pModelWrapper->getData(), model);
     //qDebug() << myquery;
     //Взять ранее созданное подключение к  базе данных.
@@ -297,6 +297,7 @@ template<typename T> void DBManager::delRecord(const T& model, const QString& qu
 ///-----------------------------------------------------------------------------
 
 template<typename T> void DBManager::addModel() {
+    qInfo() << "___________________________DBManager::addModel()___________________________________________________";
     //Задать  функцию для установки результата выполнения команды сервера
     //и собщения о результате выполнения команды.
     auto setResult = [this](T model, Message msg) {

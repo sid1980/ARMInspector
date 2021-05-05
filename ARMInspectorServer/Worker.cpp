@@ -94,6 +94,8 @@ void Worker::process() {
                 case ModelWrapper::Command::ADD_NEW_MODEL:
                 {
                     //Добавление нового пользователя .
+                    qInfo() << "___________________________ModelWrapper::Command::ADD_NEW_MODEL___________________________________________________";
+
                     pDBManager->addModel();
                 }
                     break;
