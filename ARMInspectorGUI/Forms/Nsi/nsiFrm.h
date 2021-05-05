@@ -26,6 +26,7 @@
 #include "DialogDestroyer.h"
 
 #include <QSortFilterProxyModel>
+#include "Functor.h"
 
 class nsiFrm : public QDialog {
     Q_OBJECT
@@ -47,9 +48,15 @@ private slots:
     void on_pushButton_editNsi_clicked();
     ///обработчик кнопки удаления  записи НСИ
     void on_pushButton_deleteNsi_clicked();
-    
+
 signals:
     void ready();
+    ///Запросить данные у сервера
+    void runServerCmd(const QString&);
+    ///сигнализировать  о  необходимости  ожидания ответа от сервера 
+    ///с результатом предыдущей операции
+    void waitServer();
+
 private:
     Ui::nsiFrm *widget_;
     ///ссылка на окно ввода/редактирования записи НСИ

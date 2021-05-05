@@ -166,6 +166,7 @@ void juristFrm::OnMro() {
     QMessageBox::information(this, "АРМ Юриста", "OnMro()");
 
 }
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Справочник статей КоАП.
@@ -180,7 +181,12 @@ void juristFrm::OnArticle() {
     connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)),
             frm, SLOT(setModel(const QList<Nsi>&)));
     connect(frm, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
-    m_pClientController->getListNSI("7");
+    QJsonObject param;
+    Nsi::num_ = "71";
+    param.insert("numNSI", Nsi::num_);
+    emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
+
+    m_pClientController->getListNSI("71");
     frm->setWindowTitle("Статьи КоАП");
     emit waitServer();
     frm->setSizeTbl(353, 570);

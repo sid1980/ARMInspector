@@ -14,9 +14,9 @@
 #ifndef USER_H
 #define USER_H
 #include <QtCore/QJsonObject>
-#include "JsonSerializable.h"
 #include <QVariant>
 #include <QJsonArray>
+#include "JsonSerializable.h"
 #include "Model.h"
 #include <array>
 #include <QSqlQuery>
@@ -28,6 +28,7 @@ using namespace std;
 class User : public JsonSerializable, Model {
 public:
     static ModelWrapper::Model model_;
+
     enum Column {
         ID = 0,
         FIO,

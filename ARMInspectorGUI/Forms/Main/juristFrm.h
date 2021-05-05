@@ -48,6 +48,9 @@ public:
 signals:
     ///Ждать ответ сервера
     void waitServer();
+    ///Запросить данные у сервера
+    void runServerCmd(const QString&);
+
 private slots:
     void onTableClicked(const QModelIndex &);
     void setlistMro(const QList<Mro>&);

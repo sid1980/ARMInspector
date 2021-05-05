@@ -110,8 +110,10 @@ void nsiFrm::on_pushButton_addNsi_clicked() {
         //QMessageBox::information(this, "Добавление записи НСИ", "QDialog::Accepted");
         Nsi* nsi = new Nsi();
         //QMessageBox::information(this, "Добавление новой записи НСИ", Nsi::num_);
-        //nsi->setName(frm->getUI()->lineEditName->text());
-        //user->setFio(usrFrm_->getWidget()->lineEditFio->text());
+        nsi->setName(frm.getUI()->lineEditName->text());
+        emit runServerCmd(Functor<Nsi>::produce(ModelWrapper::ADD_NEW_MODEL, *nsi));
+        emit waitServer();
+        delete nsi;
     }
 }
 ///-----------------------------------------------------------------------------

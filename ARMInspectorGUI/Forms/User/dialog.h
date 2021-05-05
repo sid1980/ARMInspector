@@ -37,6 +37,8 @@
 #include "User/UserView.h"
 #include "pwdFrm.h"
 #include <QSortFilterProxyModel>
+#include "Functor.h"
+
 
 namespace Ui {
     class Dialog;
@@ -77,6 +79,8 @@ signals:
     ///Сигнализировать о завершении процесса обработки сообщения от сервера.
     void ready();
 
+    ///Запросить данные у сервера
+    void runServerCmd(const QString&);
     ///заменить пароль пользователя
     void setPwd(const User&);
     ///пользователе подготовлены и необходимо их передать на сервер
@@ -114,6 +118,7 @@ private:
     UserView *userview_;
     ///модель сортировеки 
     QSortFilterProxyModel *proxyModel_;
+    QString queryWrapper_;
 };
 
 #endif // DIALOG_H

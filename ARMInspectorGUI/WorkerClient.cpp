@@ -27,6 +27,7 @@
 #include "QMessageBoxEx.h"
 #include <QTableView>
 #include "User/dialog.h"
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Конструктор.
@@ -35,18 +36,10 @@
 
 WorkerClient::WorkerClient(QObject *apParent) : QObject(apParent) {
     dialog_ = new Dialog();
-    ///сигнализировать о завершении обработки информации
+    ///сигнализировать о завершении обработки информации runServerCmd
     connect(dialog_, SIGNAL(ready()), this, SIGNAL(ready()));
     ///добавить пользователя
-    connect(dialog_, SIGNAL(addUser(const User&)), this, SIGNAL(addUser(const User&)));
-    ///редактировать пользователя
-    connect(dialog_, SIGNAL(updateUser(const User&)), this, SIGNAL(updateUser(const User&)));
-    ///поменять пароль
-    connect(dialog_, SIGNAL(setPwd(const User&)), this, SIGNAL(setPwd(const User&)));
-    ///запросить данные о пользователе
-    connect(dialog_, SIGNAL(getUserData(const qint64&)), this, SIGNAL(getUserData(const qint64&)));
-    ///удалить пользователя
-    connect(dialog_, SIGNAL(deleteUser(const qint64&)), this, SIGNAL(deleteUser(const qint64&)));
+    connect(dialog_, SIGNAL(runServerCmd(const QString&)), this, SIGNAL(runServerCmd(const QString&)));
     ///получить список инспекций
     connect(dialog_, SIGNAL(getInspections()), this, SIGNAL(getInspections()));
     ///список инспекции получен от сервера 
@@ -64,6 +57,7 @@ WorkerClient::WorkerClient(QObject *apParent) : QObject(apParent) {
 
 WorkerClient::~WorkerClient() {
     //Освободить  ресурсы
+
     delete dialog_;
 }
 ///-----------------------------------------------------------------------------
@@ -74,6 +68,7 @@ WorkerClient::~WorkerClient() {
 ///-----------------------------------------------------------------------------
 
 void WorkerClient::setModelWrapperString(const QString& asWrapperString) {
+
     m_aModelWrapperString = asWrapperString;
 }
 
@@ -85,6 +80,7 @@ void WorkerClient::setModelWrapperString(const QString& asWrapperString) {
 ///-----------------------------------------------------------------------------
 
 const QString& WorkerClient::getModelWrapperString() const {
+
     return m_aModelWrapperString;
 }
 
@@ -281,7 +277,7 @@ void WorkerClient::process() {
                 ///-----------------------------------------------------------------------------
             case ModelWrapper::Command::DEL_MODEL:
             {
-                //Сервер вернул результат команды "GET_MODEL"     
+                //Сервер вернул результат команды "DEL_MODEL"     
                 ModelWrapper::Model model = wrapper.getEnumModel();
                 switch (model) {
                     case ModelWrapper::Model::User:

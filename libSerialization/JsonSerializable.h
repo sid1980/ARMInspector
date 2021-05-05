@@ -6,6 +6,7 @@
 
 #ifndef JSONSERIALIZABLE_H
 #define JSONSERIALIZABLE_H
+#include "JsonSerializer.h"
 
 
 class JsonSerializable {

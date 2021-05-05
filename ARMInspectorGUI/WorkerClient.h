@@ -50,6 +50,7 @@ public:
 
 
 signals:
+    void runServerCmd(const QString&);
     ///Установить идентификатор клиента
     void setID(int asID);
     ///Установить сессионого пользователя
@@ -60,12 +61,6 @@ signals:
     void ready();
     ///Передать список инспекций
     void passListInspections(const QList<Inspection>& inspections);
-    ///Передать данные о пользователе
-    void addUser(const User&);
-    ///заменить пароль пользователя
-    void setPwd(const User&);
-    ///Редактировать данные о пользователе
-    void updateUser(const User&);
     ///Получить  данные о пользователе
     void getUserData(const qint64&);
     ///Удалить  данные о пользователе

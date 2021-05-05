@@ -197,8 +197,8 @@ void Dialog::showBox() {
 
     emit getInspections();
     this->show();
-
 }
+
 ///-----------------------------------------------------------------------------
 ///
 ///         обработчик кнопки добавления пользователя
@@ -209,8 +209,6 @@ void Dialog::showBox() {
 ///Данные считываются из формы данных пользователя,
 ///добавляются в Модель отображения данных на экране и
 ///и в Модель передачи данных на сервер.
-///Для передачи данных на сервер диалог пользуется
-///сигналом фввUser.
 
 void Dialog::on_pushButton_addUser_clicked() {
     this->getUI()->tableView->model()->sort(-1);
@@ -242,13 +240,13 @@ void Dialog::on_pushButton_addUser_clicked() {
         //QMessageBox::information(this, "Добавление нового пользовтеля",
         //        QString::number(user->getInspection()));
         //proxyModel_->setSourceModel(listusers_);
-
-        emit addUser(*user);
+        //createAddUserQuery(*user);
+        emit runServerCmd(Functor<User>::produce(ModelWrapper::ADD_NEW_USER, *user));
+        //emit addUser(*user);
         emit waitServer();
         delete user;
     }
 }
-
 
 ///-----------------------------------------------------------------------------
 ///
@@ -262,7 +260,9 @@ void Dialog::on_pushButton_editUser_clicked() {
     if (rowidx >= 0) {
         UserView userV = listusers_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
         auto id = userV.getId();
-        emit getUserData(id);
+        QJsonObject param;
+        param.insert("ID", id);
+        emit runServerCmd(Functor<User>::producePrm(ModelWrapper::GET_MODEL, param));
         emit waitServer();
         usrEdtFrm_->getWidget()->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Сохранить"));
         usrEdtFrm_->getWidget()->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Отменить"));
@@ -287,8 +287,8 @@ void Dialog::on_pushButton_editUser_clicked() {
                     user->setRole(i);
                 }
             }
-
-            emit updateUser(*user);
+            //emit updateUser(*user);
+            emit runServerCmd(Functor<User>::produce(ModelWrapper::EDIT_USER, *user));
             emit waitServer();
             delete user;
 
@@ -314,7 +314,10 @@ void Dialog::on_pushButton_deleteUser_clicked() {
                 QMessageBox::Yes | QMessageBox::No);
         if (reply == QMessageBox::Yes) {
             qDebug() << "Yes was clicked";
-            emit deleteUser(id);
+            QJsonObject param;
+            param.insert("ID", id);
+            //emit deleteUser(id);
+            emit runServerCmd(Functor<User>::producePrm(ModelWrapper::DEL_MODEL, param));
             emit waitServer();
             listusers_->delModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
         } else {
@@ -322,6 +325,7 @@ void Dialog::on_pushButton_deleteUser_clicked() {
         }
     }
 }
+
 
 ///-----------------------------------------------------------------------------
 ///
@@ -354,7 +358,8 @@ void Dialog::on_pushButton_changePassword_clicked() {
             user->setFio(userV.getFio());
             user->setName(userV.getName());
             user->setPassword(pwdFrm_->getWidget()->lineEditPwd->text());
-            emit setPwd(*user);
+            emit runServerCmd(Functor<User>::produce(ModelWrapper::CHANGE_PASSWORD, *user));
+            //emit setPwd(*user);
             emit waitServer();
             delete user;
         }

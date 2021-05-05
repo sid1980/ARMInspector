@@ -6,6 +6,8 @@
 #include "CommandController.h"
 #include "ServerClient.h"
 #include "ModelWrapper.h"
+#include "JsonSerializer.h"
+#include "ItemContainer.h"
 #include "WorkerClient.h"
 #include "User/User.h"
 #include "Mro/Mro.h"
@@ -44,10 +46,6 @@ public:
     bool getLogged();
     ///Получить модель
     void getModel(const qint64&, ModelWrapper::Model model);
-    ///Удалить модель
-    void deleteModel(const qint64&, ModelWrapper::Model model);
-    ///Добавить модель
-    //void addModel(ModelWrapper::Model model); 
     ///Получить пользователя сессии
     const User& getSessionUser();
     ///Полчить список МРО
@@ -75,32 +73,21 @@ private slots:
     void setSessionID(int asID);
     ///Полчить список инспекций
     void getListInspections();
-    ///заменить пароль пользователя
-    void setPwd(const User&);
     ///Установить сигнал готовности формы 
     void formReady();
 
 
 
 public slots:
+    void runServerCmd(const QString &asQuery);
     /// Выполнить запрос к  серверу на авторизацию пользователя.
     /// @param asLogin  Имя пользователя. 
-    /// @param asPassword Пароль пользователя.
-    void login(const QString &asLogin, const QString & asPassword);
     ///Установить пользователя сессии
     void setSessionUser(const User&);
     /// Получить список моделей.
     /// @param asQuery SQL запрос.
     /// @param asModel Модель данных.
     void getListModels(ModelWrapper::Model model);
-    ///добавить в базу нового пользователя
-    void addUser(const User&);
-    ///отредактировать данные о  пользователе
-    void updateUser(const User&);
-    ///получить   пользователя
-    void getUser(const qint64&);
-    ///Удалить пользователя
-    void deleteUser(const qint64&);
     ///Ждать завершения предыдущей операции или сигнала старта.
     void waitReady();
 
@@ -117,6 +104,5 @@ private:
 
 };
 
-#include "ClientController_IMPL.h"
 
 #endif // CLIENTCONTROLLER_H

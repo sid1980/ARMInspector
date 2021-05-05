@@ -25,6 +25,8 @@
 
 #include "ui_myForm.h"
 #include "ClientController.h"
+#include "ModelWrapper.h"
+#include "Functor.h"
 #include <QCloseEvent>
 
 class myForm : public QDialog {

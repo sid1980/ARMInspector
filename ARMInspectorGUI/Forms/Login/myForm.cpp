@@ -61,6 +61,7 @@ void myForm::closeEvent(QCloseEvent* ev) {
 void myForm::exit_app() {
     qApp->quit();
 }
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Запуск АРМ Инспектора.
@@ -68,8 +69,12 @@ void myForm::exit_app() {
 ///-----------------------------------------------------------------------------
 
 void myForm::start_ARM() {
-    m_pClientController->login(this->widget->nameEdit->text(), this->widget->passEdit->text());
+    QJsonObject param;
+    param.insert("name", this->widget->nameEdit->text());
+    param.insert("password", this->widget->passEdit->text());
+    m_pClientController->runServerCmd(Functor<User>::producePrm(ModelWrapper::Command::LOGIN,param));
 }
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Инициализация ссылки на контроллер клиента.

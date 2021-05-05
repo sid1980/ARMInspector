@@ -55,8 +55,8 @@ Ui::mroFrm* mroFrm::getUI() {
 void mroFrm::setModel(const QList<Mro>& mro) {
     listmro_->setListModel(mro);
     proxyModel_->setSourceModel(listmro_);
-    this->getUI()->tableView->setSortingEnabled(true); // enable sortingEnabled
-    this->getUI()->tableView->setModel(proxyModel_);
+    this->getUI()->tableView_Mro->setSortingEnabled(true); // enable sortingEnabled
+    this->getUI()->tableView_Mro->setModel(proxyModel_);
     emit ready();
     //this->getUI()->tableView->setSpan(0,1,2,2);
 }
