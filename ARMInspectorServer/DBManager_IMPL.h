@@ -236,8 +236,8 @@ template<typename T> ItemContainer<T> DBManager::getAllRecordS() {
     //Проверить  и выполнить  SQL запрос.
     QSqlQuery query(m_Db);
     ///Выполнить SQL запрос
-    //qDebug()<<"Выполнить SQL запрос:  " << T::getQuery();
-    if (!query.exec(T::getQuery())) {
+    qDebug()<<"Выполнить SQL запрос:  " << MQuery<T>::selectAll();
+    if (!query.exec(MQuery<T>::selectAll())) {
         setResult(container, Message::SQL_ERROR);
         return container;
     }
@@ -297,19 +297,20 @@ template<typename T> void DBManager::delRecord(const T& model, const QString& qu
 ///-----------------------------------------------------------------------------
 
 template<typename T> void DBManager::addModel() {
-    qInfo() << "___________________________DBManager::addModel()___________________________________________________";
     //Задать  функцию для установки результата выполнения команды сервера
     //и собщения о результате выполнения команды.
-    auto setResult = [this](T model, Message msg) {
+    auto setResult = [this](T model, Message msg,QString attach) {
         //Подготовить данные.
         QString json = JsonSerializer::serialize(model);
         m_pModelWrapper->setData(json);
         //Установить сообщение и результат выполнения команды.
         ServerMessage::Result result = ServerMessage::outPut(msg);
-        m_pModelWrapper->setMessage(result.str);
+        m_pModelWrapper->setMessage(QString(result.str).arg(attach));
         m_pModelWrapper->setSuccess(result.success);
     };
-    //Создать модель данных User
+    //дополнение к сообщению
+     QString attach="<br><a style='color:red'>";
+    //Создать модель данных 
     T model;
     JsonSerializer::parse(m_pModelWrapper->getData(), model);
     //Взять ранее созданное подключение к  базе данных.
@@ -319,13 +320,14 @@ template<typename T> void DBManager::addModel() {
 
 
     QSqlQuery query(m_Db);
+    attach +=model.insert() +"</a>";
     query.prepare(model.insert());
     model.bindData(&query);
 
     if (query.exec()) {
         query.prepare(MQuery<T>::selectMaxID());
         if (!query.exec()) {
-            setResult(model, Message::USER_ADD_FAILURE);
+            setResult(model, Message::MODEL_ADD_FAILURE,attach);
             return;
         }
         //Выборка данных.
@@ -338,10 +340,10 @@ template<typename T> void DBManager::addModel() {
             ///Считать запись базы данных  в объект класса T.  
             model.read(recordObject);
         }
-        setResult(model, Message::USER_ADD_SUCCESS);
+        setResult(model, Message::MODEL_ADD_SUCCESS,attach);
         qDebug() << "add model  succes: ";
     } else {
-        setResult(model, Message::USER_ADD_FAILURE);
+        setResult(model, Message::MODEL_ADD_FAILURE,attach);
     }
     return;
 }

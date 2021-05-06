@@ -221,6 +221,7 @@ void DBManager::deleteModel() {
     }
 }
 
+
 ///-----------------------------------------------------------------------------
 ///
 ///             Добавить модель
@@ -240,6 +241,7 @@ void DBManager::addModel() {
             JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
             //ноиер НСИ
             Nsi::num_ = param["numNSI"].toString();
+            m_pModelWrapper->setData(param["data"].toString());
             addModel<Nsi>();
             break;
     }
@@ -448,7 +450,7 @@ void DBManager::updateUser() {
         qDebug() << user.getId();
         qDebug() << "update user  succes: ";
     } else {
-        setResult(user, Message::USERR_EDIT_FAILURE);
+        setResult(user, Message::USER_EDIT_FAILURE);
         qDebug() << "update person failed: " << query.lastError();
         qDebug() << user.getName();
     }
