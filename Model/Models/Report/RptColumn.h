@@ -50,15 +50,11 @@ public:
         const QJsonArray jsonArray = {
             "Идентификатор",
             "Статья",
-            "Тип нарушиля",
+            "Тип нарушителя",
             "№ колонки отчёта",
         };
         return jsonArray;
     }
-
-
-    
-    
     ///Список названий полей базы
 
     static array<QString, RPT_COLUMN> getFields() {
@@ -71,17 +67,7 @@ public:
     ///название модели
 
     static const QString getModelName() {
-        return QString("RptColumn");
-    }
-    ///SQL запрос вывода данных
-
-    static const QString getQuery() {
-        return QString("Select *  from rpt_column ");
-    }
-    ///SQL запрос удаления экземпляра модели в  базе данных
-
-    static const QString delQuery() {
-        return QString("Delete   from rpt_column ");
+        return ModelWrapper::map()[model_];
     }
     ///Интерфейс модели.
     ///Получить  данные  о мрдели.

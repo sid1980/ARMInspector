@@ -111,14 +111,9 @@ public:
     ///название модели
 
     static const QString getModelName() {
-        return QString("user");
+        return ModelWrapper::map()[model_];
     }
 
-    ///SQL запрос вывода данных
-
-    static const QString getQuery() {
-        return QString("Select *  from user ");
-    }
     ///SQL запрос удаления экземпляра модели в  базе данных
 
     static const QString delQuery() {

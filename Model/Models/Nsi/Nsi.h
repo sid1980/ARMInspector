@@ -75,19 +75,15 @@ public:
 
     ///название модели
 
+    //static const QString getModelName() {
+    //    return QString("nsi_" + Nsi::num_);
+    // }
+
     static const QString getModelName() {
-        return QString("nsi_" + Nsi::num_);
+        return ModelWrapper::map()[model_] + Nsi::num_;
     }
-    ///SQL запрос вывода данных
 
-    static const QString getQuery() {
-        return QString("Select id, name_" + Nsi::num_ + "    from nsi_" + Nsi::num_);
-    }
-    ///SQL запрос удаления экземпляра модели в  базе данных
-
-    static const QString delQuery() {
-        return QString("Delete   from nsi_" + Nsi::num_);
-    }
+    
     ///Интерфейс модели.
     ///Получить  данные  о модели.
     virtual const QVariant getData(const int&) const;

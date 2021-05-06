@@ -66,22 +66,9 @@ public:
     ///название модели
 
     static const QString getModelName() {
-        return QString("Mro");
+        return ModelWrapper::map()[model_];
     }
 
-    static const ModelWrapper::Model getModelEnum() {
-        return ModelWrapper::Model::Mro;
-    }
-    ///SQL запрос вывода данных
-
-    static const QString getQuery() {
-        return QString("Select *  from mro ");
-    }
-    ///SQL запрос удаления экземпляра модели в  базе данных
-
-    static const QString delQuery() {
-        return QString("Delete   from mro ");
-    }
     ///Интерфейс модели.
     ///Получить  данные  о мрдели.
     virtual const QVariant getData(const int&) const;

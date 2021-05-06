@@ -50,8 +50,8 @@ public:
         UserView,
         Inspection
     };
-    
-    
+
+
 
 
     ///Список команд   c названием. Название используется в качестве  шапки 
@@ -72,10 +72,25 @@ public:
     };
 
 
+    //Названия моделей
+
+    static QHash<Model, QString> map() {
+        QHash<Model, QString> ListModel = {
+            {Model::User, "user"},
+            {Model::UserView, "v_user"},
+            {Model::Mro, "mro"},
+            {Model::Inspection, "inspection"},
+            {Model::Nsi, "nsi_"}
+        };
+        return ListModel;
+    }
+
+
+
     ///Конструктор.
     explicit ModelWrapper();
     ///Конструктор.
-    /// @param cmd Команда, котрую необходимо выполнить или обработать
+    /// @param cmd Команда, котрую необходимо выполнить
     explicit ModelWrapper(const Command& cmd);
     /// Деструктор.
     virtual ~ModelWrapper();

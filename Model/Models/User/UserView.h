@@ -33,6 +33,7 @@ using namespace std;
 class UserView : public JsonSerializable, Model {
 public:
     static ModelWrapper::Model model_;
+
     enum Column {
         ID = 0,
         FIO,
@@ -78,16 +79,11 @@ public:
     ///название модели
 
     static const QString getModelName() {
-        return QString("UserView");
+        return ModelWrapper::map()[model_];
     }
 
     ///SQL запрос вывода данных
 
-    static const QString getQuery() {
-        return QString("Select u.id,fio,name_i,name  from user as u "
-                "INNER JOIN inspection as i"
-                "  ON u.id_inspection=i.id");
-    }
 
     ///SQL запрос удаления экземпляра модели в  базе данных
 
@@ -101,7 +97,7 @@ public:
     virtual void setData(const int&, const QVariant&);
 
 private:
-   MQuery<UserView> query_;
+    MQuery<UserView> query_;
 
 
 

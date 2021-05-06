@@ -76,23 +76,10 @@ public:
     ///название модели
 
     static const QString getModelName() {
-        return QString("Inspection");
+        return ModelWrapper::map()[model_];
     }
 
-    static const ModelWrapper::Model getModelEnum() {
-        return ModelWrapper::Model::Inspection;
-    }
-    ///SQL запрос вывода данных
-
-    static const QString getQuery() {
-        return QString("Select *  from inspection ");
-    }
-
-    ///SQL запрос удаления экземпляра модели в  базе данных
-
-    static const QString delQuery() {
-        return QString("Delete   from inspection ");
-    }
+ 
 
 
     ///Интерфейс модели.

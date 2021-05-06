@@ -183,14 +183,6 @@ void ClientController::getListModels(ModelWrapper::Model model) {
     QString query = JsonSerializer::json_encode(params);
     //Положить параметры в раздел данных.
     wrapper.setData(query);
-
-
-    //params.insert("query", asQuery);
-    //params.insert("model", model);
-    //Конвертировать параметры в строку.
-    //QString query = JsonSerializer::json_encode(params);
-    //Положить параметры в раздел данных.
-    //wrapper.setData("");
     //Упаковать  весь запрос в строку
     query = JsonSerializer::serialize(wrapper);
     //Переслать его на сервер.

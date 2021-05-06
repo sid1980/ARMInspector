@@ -12,6 +12,8 @@
  */
 
 #include "nsiFrm.h"
+#include "JsonSerializer.h"
+#include "JsonSerializable.h"
 
 ///-----------------------------------------------------------------------------
 ///
@@ -111,7 +113,11 @@ void nsiFrm::on_pushButton_addNsi_clicked() {
         Nsi* nsi = new Nsi();
         //QMessageBox::information(this, "Добавление новой записи НСИ", Nsi::num_);
         nsi->setName(frm.getUI()->lineEditName->text());
-        emit runServerCmd(Functor<Nsi>::produce(ModelWrapper::ADD_NEW_MODEL, *nsi));
+        QString nsiAsString = JsonSerializer::serialize(nsi);
+        QJsonObject param;
+        param.insert("numNSI", Nsi::num_);
+        param.insert("data", nsiAsString);
+        emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::ADD_NEW_MODEL, param));
         emit waitServer();
         delete nsi;
     }
