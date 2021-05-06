@@ -326,6 +326,7 @@ template<typename T> void DBManager::addModel() {
 
     if (query.exec()) {
         query.prepare(MQuery<T>::selectMaxID());
+        attach += MQuery<T>::selectMaxID();
         if (!query.exec()) {
             setResult(model, Message::MODEL_ADD_FAILURE,attach);
             return;

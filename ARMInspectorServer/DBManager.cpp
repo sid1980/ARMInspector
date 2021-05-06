@@ -239,7 +239,7 @@ void DBManager::addModel() {
         case ModelWrapper::Model::Nsi:
             QJsonObject param;
             JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
-            //ноиер НСИ
+            //номер НСИ
             Nsi::num_ = param["numNSI"].toString();
             m_pModelWrapper->setData(param["data"].toString());
             addModel<Nsi>();
