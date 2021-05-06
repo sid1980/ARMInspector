@@ -50,7 +50,11 @@ public:
 
 
 signals:
+    ///выполнить команду на сервере
     void runServerCmd(const QString&);
+    ///получен ответ сервера
+    void responseServer(const QString&);
+
     ///Установить идентификатор клиента
     void setID(int asID);
     ///Установить сессионого пользователя

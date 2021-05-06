@@ -110,16 +110,17 @@ void nsiFrm::on_pushButton_addNsi_clicked() {
     frm.getUI()->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Отменить"));
     if (frm.exec() == QDialog::Accepted) {
         //QMessageBox::information(this, "Добавление записи НСИ", "QDialog::Accepted");
-        Nsi* nsi = new Nsi();
+        nsi_ = new Nsi(Nsi::num_);
         //QMessageBox::information(this, "Добавление новой записи НСИ", Nsi::num_);
-        nsi->setName(frm.getUI()->lineEditName->text());
-        QString nsiAsString = JsonSerializer::serialize(nsi);
+        nsi_->setName(frm.getUI()->lineEditName->text());
+        QString nsiAsString = JsonSerializer::serialize(*nsi_);
         QJsonObject param;
         param.insert("numNSI", Nsi::num_);
         param.insert("data", nsiAsString);
         emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::ADD_NEW_MODEL, param));
         emit waitServer();
-        delete nsi;
+        //showNewRecordData(*nsi);
+        delete nsi_;
     }
 }
 ///-----------------------------------------------------------------------------
@@ -161,4 +162,19 @@ void nsiFrm::on_pushButton_deleteNsi_clicked() {
 void nsiFrm::closeEvent(QCloseEvent *event) {
     event->accept();
     QDialog::closeEvent(event);
+}
+
+///-----------------------------------------------------------------------------
+///
+///         показать данные новой записи
+///          
+///-----------------------------------------------------------------------------
+
+void nsiFrm::showData(const QString& asNsi) {
+    Nsi nsi;
+    JsonSerializer::parse(asNsi, nsi);
+    listnsi_->addModel(nsi);
+    this->getUI()->tableView->selectRow(listnsi_->rowCount() - 1);
+    this->getUI()->tableView->scrollToBottom();
+    emit ready();
 }

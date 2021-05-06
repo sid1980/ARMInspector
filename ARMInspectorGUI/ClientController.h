@@ -62,6 +62,8 @@ signals:
     void listMroReady(const QList<Mro>&);
     ///Cписок НСИ подготовлен  
     void listNsiReady(const QList<Nsi>&);
+   ///получен ответ сервера
+    void responseServer(const QString&);
 
 private slots:
 

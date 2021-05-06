@@ -39,6 +39,9 @@ public:
     void closeEvent(QCloseEvent *event);
     ///Установить размер таблицы
     void setSizeTbl(const int& width, const int& height);
+public  slots:
+    void showData(const QString& );
+    
 private slots:
     ///определить модель вывода данных
     void setModel(const QList<Nsi>& nsi);

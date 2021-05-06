@@ -181,10 +181,11 @@ void juristFrm::OnArticle() {
     connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)),
             frm, SLOT(setModel(const QList<Nsi>&)));
     connect(frm, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
+    connect(m_pClientController, SIGNAL(responseServer(const QString&)), frm, SLOT(showData(const QString&)));
     connect(frm, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
     connect(this, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
     QJsonObject param;
-    Nsi::num_ = "71";
+    Nsi::num_ = "7";
     param.insert("numNSI", Nsi::num_);
     emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
     frm->setWindowTitle("Статьи КоАП");
@@ -206,16 +207,24 @@ void juristFrm::OnArticle() {
 ///-----------------------------------------------------------------------------
 
 void juristFrm::OnSubject() {
-    //QMessageBox::information(this, "АРМ Юриста", "Статьи КоАП");
+        //QMessageBox::information(this, "АРМ Юриста", "Статьи КоАП");
+    //nsiFrm frm;
+    ///получить список записей справочника НСИ
     nsiFrm* frm = new nsiFrm();
-    ///получить список  записей справочника НСИ
-    connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)), frm, SLOT(setModel(const QList<Nsi>&)));
+    connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)),
+            frm, SLOT(setModel(const QList<Nsi>&)));
     connect(frm, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
-    //connect(frm, SIGNAL(finished()), m_pClientController, SIGNAL(ready()));
-    m_pClientController->getListNSI("5");
+    connect(m_pClientController, SIGNAL(responseServer(const QString&)), frm, SLOT(showData(const QString&)));
+    connect(frm, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
+    connect(this, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
+    QJsonObject param;
+    Nsi::num_ = "5";
+    param.insert("numNSI", Nsi::num_);
+    emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
     frm->setWindowTitle("Субъекты АП");
     emit waitServer();
     frm->setSizeTbl(353, 200);
+    //frm->setAttribute(Qt::WA_DeleteOnClose);
     frm->exec();
 }
 

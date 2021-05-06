@@ -12,6 +12,7 @@
  */
 
 #include "Nsi/Nsi.h"
+#include <QMessageBox>
 
 ModelWrapper::Model Nsi::model_={ModelWrapper::Model::Nsi};
 
@@ -139,8 +140,8 @@ void Nsi::bindData(QSqlQuery* asSqlQuery) {
                     break;
             }
         }
+    //QMessageBox::information(0, "Information Box", this->getName());
     }
-
 }
 
 

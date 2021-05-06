@@ -272,6 +272,31 @@ void WorkerClient::process() {
                 break;
                 ///-----------------------------------------------------------------------------
                 ///
+                ///                         ADD_MODEL
+                ///          
+                ///-----------------------------------------------------------------------------
+            case ModelWrapper::Command::ADD_NEW_MODEL:
+            {
+                //Сервер вернул результат команды "ADD_NEW_MODEL"     
+                switch (model) {
+                    case ModelWrapper::Model::Nsi:
+                    {
+                        //Nsi nsi;
+                        //JsonSerializer::parse(wrapper.getData(), nsi);
+                        //emit dialog_->showUserData(user);
+                        //QMessageBox::information(0, "Получение данных о пользователе",
+                        //        "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> ");
+                        //emit ready();
+                        responseServer(wrapper.getData());
+
+                    }
+                        break;
+
+                }
+            }
+                break;
+                ///-----------------------------------------------------------------------------
+                ///
                 ///                         DEL_MODEL
                 ///          
                 ///-----------------------------------------------------------------------------

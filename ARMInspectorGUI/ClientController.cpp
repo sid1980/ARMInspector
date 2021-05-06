@@ -47,6 +47,8 @@ void ClientController::init(ServerClient *apServerClient) {
     connect(m_pWorkerClient, SIGNAL(getInspections()), SLOT(getListInspections()));
     // Сигнально-слотовое соединение для добавления нового пользователя в базу данных.
     connect(m_pWorkerClient, SIGNAL(runServerCmd(const QString&)), SLOT(runServerCmd(const QString&)));
+    // Сигнально-слотовое соединение для добавления нового пользователя в базу данных.
+    connect(m_pWorkerClient, SIGNAL(responseServer(const QString&)), SIGNAL(responseServer(const QString&)));
     ///пользователь прошёл аутентификацию
     ///необходимо установить данные сессионного пользователя
     connect(m_pWorkerClient, SIGNAL(setSessionUser(const User&)), SLOT(setSessionUser(const User&)));
