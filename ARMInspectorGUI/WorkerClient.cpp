@@ -251,7 +251,8 @@ void WorkerClient::process() {
                         //QMessageBox::information(0, "Получение данных о пользователе",
                         //        "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> ");
                         //dialog_->fillUserEditFrm(user);
-                        emit ready();
+                        emit userReady(user);
+                        //emit ready();
 
                     }
                         break;

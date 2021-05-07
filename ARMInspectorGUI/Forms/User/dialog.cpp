@@ -94,6 +94,8 @@ void Dialog::initClient(ClientController *clientController) {
     connect(this, SIGNAL(ready()), m_pClientController, SLOT(formReady()));
     ///выполнить команду на сервере
     connect(this, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
+    //Данные пользователя
+    connect(m_pClientController, SIGNAL(userReady(const User&)), this, SLOT(fillUserEditFrm(const User&)));
     //установить модель TableView после получения списка моделей (в данном случае пользователей)
     connect(m_pClientController, SIGNAL(listUserReady(const QList<UserView>&)), this, SLOT(setModel(const QList<UserView>&)));
     //установить модель TableView после получения списка моделей (в данном случае пользователей)
@@ -179,6 +181,7 @@ void Dialog::fillUserEditFrm(const User& user) {
             allButtons[i - 1]->setChecked(true);
         }
     }
+    emit ready();
 }
 
 

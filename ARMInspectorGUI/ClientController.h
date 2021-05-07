@@ -60,6 +60,8 @@ signals:
     void listUserReady(const QList<UserView>&);
     ///Cписок инспекций подготовлен  
     void listInspectionsReady(const QList<Inspection>&);
+    ///Данные пользователя  
+    void userReady(const User&);
 
 private slots:
 

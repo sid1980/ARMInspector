@@ -59,8 +59,6 @@ public:
     ///Инициализация ссылки на контроллер клинта
     void initClient(ClientController *clientController);
 
-    ///заполнить форму редактирования пользователя
-    void fillUserEditFrm(const User& user);
     ///вывести на экран  окно списка пользователей
     void showBox();
 private slots:
@@ -81,6 +79,8 @@ public slots:
     void setModel(const QList<UserView>& nsi);
     //Показать новую добавленную запись в списке пользователей
     void showNewUserData(const QString&);
+    //Данные пользователя
+    void fillUserEditFrm(const User& user);
 signals:
     ///Сигнализировать о завершении процесса обработки сообщения от сервера.
     void ready();

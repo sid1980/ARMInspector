@@ -75,6 +75,8 @@ signals:
     void listNsiReady(const QList<Nsi>&);
     ///Cписок пользователей подготовлен  
     void listUserReady(const QList<UserView>&);
+    ///Данные пользователя   
+    void userReady(const User&);
     ///Cписок МРО подготовлен  
     void listMroReady(const QList<Mro>&);
     ///Сигнал завершения работы.

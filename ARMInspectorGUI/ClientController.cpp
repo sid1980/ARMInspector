@@ -51,6 +51,8 @@ void ClientController::init(ServerClient *apServerClient) {
     ///необходимо установить данные сессионного пользователя
     connect(m_pWorkerClient, SIGNAL(setSessionUser(const User&)), SLOT(setSessionUser(const User&)));
     ///список МРО получен от сервера 
+    connect(m_pWorkerClient, SIGNAL(userReady(const User&)), this, SIGNAL(userReady(const User&)));
+    ///список МРО получен от сервера 
     connect(m_pWorkerClient, SIGNAL(listMroReady(const QList<Mro>&)), this,
             SIGNAL(listMroReady(const QList<Mro>&)));
     ///список инспекций  получен от сервера 
