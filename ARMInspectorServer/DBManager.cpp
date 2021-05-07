@@ -215,7 +215,7 @@ void DBManager::deleteModel() {
             QJsonObject param;
             JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
             //ноиер НСИ
-            Nsi::num_ = param["numNSI"].toString();
+            Nsi::num_ = param[NSI_NUM].toString();
             deleteModel<Nsi>();
             break;
     }
@@ -240,7 +240,7 @@ void DBManager::addModel() {
             QJsonObject param;
             JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
             //номер НСИ
-            Nsi::num_ = param["numNSI"].toString();
+            Nsi::num_ = param[NSI_NUM].toString();
             m_pModelWrapper->setData(param["data"].toString());
             addModel<Nsi>();
             break;
@@ -266,7 +266,7 @@ void DBManager::updateModel() {
             QJsonObject param;
             JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
             //ноиер НСИ
-            Nsi::num_ = param["numNSI"].toString();
+            Nsi::num_ = param[NSI_NUM].toString();
             updateModel<Nsi>();
             break;
     }
@@ -297,7 +297,7 @@ void DBManager::getModel() {
             QJsonObject param;
             JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
             //ноиер НСИ
-            Nsi::num_ = param["numNSI"].toString();
+            Nsi::num_ = param[NSI_NUM].toString();
             getModel<Nsi>();
             break;
 
@@ -330,7 +330,7 @@ void DBManager::getListModels() {
             QJsonObject param;
             JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
             //ноиер НСИ
-            Nsi::num_ = param["numNSI"].toString();
+            Nsi::num_ = param[NSI_NUM].toString();
             //qDebug()<<"num_" << Nsi::num_;
             getListModels<Nsi>();
             break;
