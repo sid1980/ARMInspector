@@ -27,8 +27,8 @@ QDialog(parent), widget_(new Ui::nsiFrm) {
     nsiEditFrm_ = new nsiEditForm(this);
     listnsi_ = new ModelList<Nsi>();
     proxyModel_ = new QSortFilterProxyModel(listnsi_);
-
 }
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Деструктор.
@@ -104,6 +104,7 @@ void nsiFrm::setSizeTbl(const int& width, const int& height) {
 
 void nsiFrm::on_pushButton_addNsi_clicked() {
     //QMessageBox::information(this, "АРМ Юриста", "on_pushButton_addNsi_clicked");
+    this->getUI()->tableView->model()->sort(-1);
     nsiEditForm frm;
     frm.setWindowTitle("Добавление новой статьи КоАП");
     frm.getUI()->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Добавить"));
@@ -118,7 +119,7 @@ void nsiFrm::on_pushButton_addNsi_clicked() {
         param.insert("numNSI", Nsi::num_);
         param.insert("data", nsiAsString);
         emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::ADD_NEW_MODEL, param));
-        emit waitServer();
+        emit waitReady();
         //showNewRecordData(*nsi);
         delete nsi_;
     }

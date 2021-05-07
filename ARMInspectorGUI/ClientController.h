@@ -11,7 +11,8 @@
 #include "WorkerClient.h"
 #include "User/User.h"
 #include "Mro/Mro.h"
-
+#include "Nsi/Nsi.h"
+class WorkerClient;
 class ClientController : public QObject {
 
     Q_OBJECT
@@ -38,21 +39,12 @@ public:
     void init(ServerClient *apServerClient);
     ///установить флаг  авторизации клиента
     void setLogged(bool asLogged);
-    ///установить номер справочника
-    void setNsiNum(const QString& nsinum);
     ///получить номер справочника
     const QString& getNsiNum();
     ///получить флаг  авторизации клиента
     bool getLogged();
-    ///Получить модель
-    void getModel(const qint64&, ModelWrapper::Model model);
     ///Получить пользователя сессии
     const User& getSessionUser();
-    ///Полчить список МРО
-    void getListMRO();
-    ///Полчить список МРО
-    void getListNSI(const QString& asNumNsi);
-    template<typename T> void addModel(const T&);
 
 
 signals:
@@ -62,8 +54,12 @@ signals:
     void listMroReady(const QList<Mro>&);
     ///Cписок НСИ подготовлен  
     void listNsiReady(const QList<Nsi>&);
-   ///получен ответ сервера
+    ///получен ответ сервера
     void responseServer(const QString&);
+    ///Cписок пользователей подготовлен  
+    void listUserReady(const QList<UserView>&);
+    ///Cписок инспекций подготовлен  
+    void listInspectionsReady(const QList<Inspection>&);
 
 private slots:
 
@@ -73,8 +69,6 @@ private slots:
     void processRequestServer(QString asJson);
     ///Установить идентификатор сессии
     void setSessionID(int asID);
-    ///Полчить список инспекций
-    void getListInspections();
     ///Установить сигнал готовности формы 
     void formReady();
 
@@ -86,10 +80,6 @@ public slots:
     /// @param asLogin  Имя пользователя. 
     ///Установить пользователя сессии
     void setSessionUser(const User&);
-    /// Получить список моделей.
-    /// @param asQuery SQL запрос.
-    /// @param asModel Модель данных.
-    void getListModels(ModelWrapper::Model model);
     ///Ждать завершения предыдущей операции или сигнала старта.
     void waitReady();
 
@@ -100,8 +90,6 @@ private:
     QString m_aModelWrapperString;
     ///Пользователь, открывший сессию
     User m_aSessionUser;
-    ///
-    QString m_aNsiNum;
 
 
 };

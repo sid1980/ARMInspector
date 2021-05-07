@@ -43,8 +43,6 @@ void ClientController::init(ServerClient *apServerClient) {
     connect(m_pWorkerClient, SIGNAL(setID(int)), SLOT(setSessionID(int)));
     // Сигнально-слотовое соединение установки идентификатора сессии.
     connect(m_pWorkerClient, SIGNAL(ready()), SLOT(formReady()));
-    // Сигнально-слотовое соединение получения списка организаций.
-    connect(m_pWorkerClient, SIGNAL(getInspections()), SLOT(getListInspections()));
     // Сигнально-слотовое соединение для добавления нового пользователя в базу данных.
     connect(m_pWorkerClient, SIGNAL(runServerCmd(const QString&)), SLOT(runServerCmd(const QString&)));
     // Сигнально-слотовое соединение для добавления нового пользователя в базу данных.
@@ -55,6 +53,13 @@ void ClientController::init(ServerClient *apServerClient) {
     ///список МРО получен от сервера 
     connect(m_pWorkerClient, SIGNAL(listMroReady(const QList<Mro>&)), this,
             SIGNAL(listMroReady(const QList<Mro>&)));
+    ///список инспекций  получен от сервера 
+    connect(m_pWorkerClient, SIGNAL(listInspectionsReady(const QList<Inspection>&)), this,
+            SIGNAL(listInspectionsReady(const QList<Inspection>&)));
+
+    ///список пользователей получен от сервера 
+    connect(m_pWorkerClient, SIGNAL(listUserReady(const QList<UserView>&)), this,
+            SIGNAL(listUserReady(const QList<UserView>&)));
 
     //connect(m_pWorkerClient, &WorkerClient::addUser, this, &ClientController::addModel<User>);
     //connect(m_pWorkerClient, SIGNAL(addUser(const User&)), SLOT(addModel<User>(const User&)));
@@ -66,7 +71,7 @@ void ClientController::init(ServerClient *apServerClient) {
             SIGNAL(listNsiReady(const QList<Nsi>&)));
 
     // Сигнально-слотовое соединение  ожидания ответа от сервера.
-    connect(m_pWorkerClient, SIGNAL(waitServer()), SLOT(waitReady()));
+    connect(m_pWorkerClient, SIGNAL(waitReady()), SLOT(waitReady()));
 }
 ///Установить идентификатор сессии
 
@@ -81,40 +86,11 @@ void ClientController::formReady() {
     m_aLogged = true;
     emit ready();
 }
-///установить номер справочника
-
-void ClientController::setNsiNum(const QString& nsinum) {
-    m_aNsiNum = nsinum;
-};
-
-///получить номер справочника
-
-const QString& ClientController::getNsiNum() {
-    return m_aNsiNum;
-};
 
 
 
-///Полчить список инспекций
-
-void ClientController::getListInspections() {
-    this->getListModels(ModelWrapper::Model::Inspection);
-};
-
-///Полчить список МРО
-
-void ClientController::getListMRO() {
-    this->getListModels(ModelWrapper::Model::Mro);
-};
 
 
-///Полчить список записей справочника NSI
-
-void ClientController::getListNSI(const QString& asNumNsi) {
-    Nsi::num_ = asNumNsi;
-    this->setNsiNum(asNumNsi);
-    this->getListModels(ModelWrapper::Model::Nsi);
-};
 
 ///Ждать сигнала готовности данных.
 
@@ -138,59 +114,9 @@ void ClientController::runServerCmd(const QString &asQuery) {
     //Переслпть его на сервер.
     m_pCommandController->requestServer(query);
 }
-///Получить  модель.
-
-void ClientController::getModel(const qint64& asId, ModelWrapper::Model model) {
-    //Создать командную обёртку.
-    ModelWrapper wrapper(ModelWrapper::Command::GET_MODEL);
-    //Установить идентификатор сессии.
-    wrapper.setSessionID(m_aSessionID);
-    //Установить модель.    
-    wrapper.setEnumModel(model);
-    //Задать параметры команды.
-    QJsonObject params;
-    params.insert("ID", asId);
-    if (ModelWrapper::Model::Nsi == model) {
-        params.insert("numNSI", m_aNsiNum);
-    }
-
-    //params.insert("model", model);
-    //Конвертировать параметры в строку.
-    QString query = JsonSerializer::json_encode(params);
-    //Положить параметры в раздел данных.
-    wrapper.setData(query);
-    //Упаковать  весь запрос в строку
-    query = JsonSerializer::serialize(wrapper);
-    //Переслать его на сервер.
-    m_pCommandController->requestServer(query);
-
-}
 
 
-///Получить список моделей.
 
-void ClientController::getListModels(ModelWrapper::Model model) {
-    //Создать командную обёртку.
-    ModelWrapper wrapper(ModelWrapper::Command::GET_LIST_MODELS);
-    //Установить идентификатор сессии.
-    wrapper.setSessionID(m_aSessionID);
-    //Установить модель.    
-    wrapper.setEnumModel(model);
-    //Задать параметры команды.
-    QJsonObject params;
-    if (ModelWrapper::Model::Nsi == model) {
-        params.insert("numNSI", m_aNsiNum);
-    }
-    //Конвертировать параметры в строку.
-    QString query = JsonSerializer::json_encode(params);
-    //Положить параметры в раздел данных.
-    wrapper.setData(query);
-    //Упаковать  весь запрос в строку
-    query = JsonSerializer::serialize(wrapper);
-    //Переслать его на сервер.
-    m_pCommandController->requestServer(query);
-
-}
 
 
 /// Обработать ответ сервера.

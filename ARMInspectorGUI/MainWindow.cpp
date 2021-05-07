@@ -15,12 +15,12 @@
 #include "Report/reportFrm.h"
 #include <QStandardItemModel>
 #include <QScrollBar>
+#include "Functor.h"
 
 MainWindow::MainWindow() {
     widget.setupUi(this);
     connect(this->widget.actionListUsers, SIGNAL(triggered()), this, SLOT(ListUsers()));
     connect(this->widget.actionExit, SIGNAL(triggered()), this, SLOT(OnExit()));
-
 }
 
 MainWindow::~MainWindow() {
@@ -36,8 +36,16 @@ MainWindow::~MainWindow() {
 
 void MainWindow::ListUsers() {
     //QMessageBox::information(0, "АРМ Администратора", "Список пользователей");
-    m_pClientController->getListModels(ModelWrapper::Model::UserView);
-
+    //m_pClientController->getListModels(ModelWrapper::Model::UserView);
+    Dialog* frm = new Dialog();
+    frm->initClient(this->m_pClientController);
+    QJsonObject param;
+    emit runServerCmd(Functor<UserView>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
+    emit waitReady();
+    emit runServerCmd(Functor<Inspection>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
+    emit waitReady();
+    frm->showBox();
+    //delete frm;
 }
 
 ///-----------------------------------------------------------------------------
@@ -69,6 +77,10 @@ void MainWindow::OnExit() {
 
 void MainWindow::initClient(ClientController * clientController) {
     m_pClientController = clientController;
+    connect(this, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
+    // Сигнально-слотовое соединение  ожидания ответа от сервера.
+    connect(this, SIGNAL(waitReady()), m_pClientController, SLOT(waitReady()));
+
 
 };
 

@@ -24,6 +24,9 @@
 #include "ModelWrapper.h"
 
 #define NSI_COLUMN 2
+#define NSI_ARTICLE "7"
+#define NSI_SUBJECT "5"
+#define NSI_NUM    "numNSI"
 
 using namespace std;
 
@@ -83,7 +86,7 @@ public:
         return ModelWrapper::map()[model_] + Nsi::num_;
     }
 
-    
+
     ///Интерфейс модели.
     ///Получить  данные  о модели.
     virtual const QVariant getData(const int&) const;

@@ -101,7 +101,7 @@ QMenuBar * juristFrm::getMenuBar() {
 
 ///-----------------------------------------------------------------------------
 ///
-///         Формирование отчёта.Приложение 1.
+///         Меню.Формирование отчёта.Приложение 1.
 ///          
 ///-----------------------------------------------------------------------------
 
@@ -114,7 +114,7 @@ void juristFrm::OnGenerateReport() {
 }
 ///-----------------------------------------------------------------------------
 ///
-///         Формирование отчёта.Приложение 2.
+///         Меню.Формирование отчёта.Приложение 2.
 ///          
 ///-----------------------------------------------------------------------------
 
@@ -125,7 +125,7 @@ void juristFrm::OnGenerateReprt2() {
 
 ///-----------------------------------------------------------------------------
 ///
-///         Выход из приложения.
+///         Меню.Выход из приложения.
 ///          
 ///-----------------------------------------------------------------------------
 
@@ -148,7 +148,7 @@ void juristFrm::OnExit() {
 
 ///-----------------------------------------------------------------------------
 ///
-///         Список РЭГИ.
+///         Меню.Список РЭГИ.
 ///          
 ///-----------------------------------------------------------------------------
 
@@ -158,7 +158,7 @@ void juristFrm::OnInspection() {
 }
 ///-----------------------------------------------------------------------------
 ///
-///         Список МРО.
+///         Меню.Список МРО.
 ///          
 ///-----------------------------------------------------------------------------
 
@@ -169,11 +169,43 @@ void juristFrm::OnMro() {
 
 ///-----------------------------------------------------------------------------
 ///
-///         Справочник статей КоАП.
+///         Меню.Справочник статей КоАП.
 ///          
 ///-----------------------------------------------------------------------------
 
 void juristFrm::OnArticle() {
+    //QMessageBox::information(this, "АРМ Юриста", "Статьи КоАП");
+    //nsiFrm frm;
+    ///получить список записей справочника НСИ
+    nsiFrm* frm = new nsiFrm();
+    connect(frm, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
+    connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)), frm, SLOT(setModel(const QList<Nsi>&)));
+    connect(m_pClientController, SIGNAL(responseServer(const QString&)), frm, SLOT(showData(const QString&)));
+    connect(frm, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
+    connect(this, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
+    QJsonObject param;
+    Nsi::num_ = NSI_ARTICLE;
+    param.insert(NSI_NUM, Nsi::num_);
+    emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
+    emit waitReady();
+    frm->setWindowTitle("Статьи КоАП");
+    frm->setSizeTbl(353, 570);
+    frm->exec();
+    //frm->setAttribute(Qt::WA_DeleteOnClose);
+    //(new DialogDestroyer())->DelayedDestruction(frm);
+    //delete frm;
+    //frm->deleteLater();
+    delete frm;
+}
+
+
+///-----------------------------------------------------------------------------
+///
+///         Справочник субъектов АП.
+///          
+///-----------------------------------------------------------------------------
+
+void juristFrm::OnSubject() {
     //QMessageBox::information(this, "АРМ Юриста", "Статьи КоАП");
     //nsiFrm frm;
     ///получить список записей справочника НСИ
@@ -185,44 +217,11 @@ void juristFrm::OnArticle() {
     connect(frm, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
     connect(this, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
     QJsonObject param;
-    Nsi::num_ = "7";
-    param.insert("numNSI", Nsi::num_);
-    emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
-    frm->setWindowTitle("Статьи КоАП");
-    emit waitServer();
-    frm->setSizeTbl(353, 570);
-    //frm->setAttribute(Qt::WA_DeleteOnClose);
-    frm->exec();
-    //(new DialogDestroyer())->DelayedDestruction(frm);
-    //delete frm;
-    //frm->deleteLater();
-    //delete frm;
-}
-
-
-///-----------------------------------------------------------------------------
-///
-///         Справочник субъектов АП.
-///          
-///-----------------------------------------------------------------------------
-
-void juristFrm::OnSubject() {
-        //QMessageBox::information(this, "АРМ Юриста", "Статьи КоАП");
-    //nsiFrm frm;
-    ///получить список записей справочника НСИ
-    nsiFrm* frm = new nsiFrm();
-    connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)),
-            frm, SLOT(setModel(const QList<Nsi>&)));
-    connect(frm, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
-    connect(m_pClientController, SIGNAL(responseServer(const QString&)), frm, SLOT(showData(const QString&)));
-    connect(frm, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
-    connect(this, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
-    QJsonObject param;
-    Nsi::num_ = "5";
-    param.insert("numNSI", Nsi::num_);
+    Nsi::num_ = NSI_SUBJECT;
+    param.insert(NSI_NUM, Nsi::num_);
     emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
     frm->setWindowTitle("Субъекты АП");
-    emit waitServer();
+    emit waitReady();
     frm->setSizeTbl(353, 200);
     //frm->setAttribute(Qt::WA_DeleteOnClose);
     frm->exec();
@@ -391,7 +390,7 @@ void juristFrm::initClient(ClientController *clientController) {
     connect(m_pClientController, SIGNAL(listMroReady(const QList<Mro>&)),
             this, SLOT(setlistMro(const QList<Mro>&)));
     // Сигнально - слотовое соединение ожидания ответа от сервера.
-    connect(this, SIGNAL(waitServer()), m_pClientController, SLOT(waitReady()));
+    connect(this, SIGNAL(waitReady()), m_pClientController, SLOT(waitReady()));
 
 };
 ///-----------------------------------------------------------------------------

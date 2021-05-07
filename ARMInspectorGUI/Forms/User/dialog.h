@@ -29,6 +29,7 @@
 #include "QMessageBoxEx.h"
 
 #include "ui_dialog.h"
+#include "ClientController.h"
 #include "Inspection/Inspection.h"
 #include "User/User.h"
 #include "userForm.h"
@@ -39,6 +40,7 @@
 #include <QSortFilterProxyModel>
 #include "Functor.h"
 
+class ClientController;
 
 namespace Ui {
     class Dialog;
@@ -54,8 +56,9 @@ public:
     ~Dialog();
     ///Получить ссылку на виджет
     Ui::dialog* getUI();
-    ///определить модель вывода данных
-    void setModel(const QList<UserView>& users);
+    ///Инициализация ссылки на контроллер клинта
+    void initClient(ClientController *clientController);
+
     ///заполнить форму редактирования пользователя
     void fillUserEditFrm(const User& user);
     ///вывести на экран  окно списка пользователей
@@ -69,12 +72,15 @@ private slots:
     void on_pushButton_deleteUser_clicked();
     ///обработчик кнопки удаления  пользователя
     void on_pushButton_changePassword_clicked();
+    //установить список инспекций
+    void setListInspections(const QList<Inspection>&);
 public slots:
-    //void listInspection(const QList<Inspection>& inspections);
-    ///показать данные о новом пользователе в  окне списка пользователей
-    void showNewUserData(const User&);
     ///показать отредактированные данные о  пользователе в  окне списка пользователей
     void showEditUserData(const User&);
+    ///определить модель вывода данных
+    void setModel(const QList<UserView>& nsi);
+    //Показать новую добавленную запись в списке пользователей
+    void showNewUserData(const QString&);
 signals:
     ///Сигнализировать о завершении процесса обработки сообщения от сервера.
     void ready();
@@ -94,14 +100,8 @@ signals:
     ///сигнализировать  о  необходимости удалить на сервере данные о
     ///пользователе
     void deleteUser(const qint64&);
-    ///Запросить список инспекций
-    void getInspections();
-    ///сигнализировать  о  необходимости  ожидания ответа от сервера 
-    ///с результатом предыдущей операции
-    void waitServer();
-public slots:
-    ///Инициализировать список инспекций
-    void setListInspections(const QList<Inspection>&);
+    ///ждать ответ  сервера 
+    void waitReady();
 
 private:
     ///ссылка на виджет основного окна
@@ -119,6 +119,8 @@ private:
     ///модель сортировеки 
     QSortFilterProxyModel *proxyModel_;
     QString queryWrapper_;
+    ///указатель контроллера клиента.
+    ClientController *m_pClientController{nullptr};
 };
 
 #endif // DIALOG_H

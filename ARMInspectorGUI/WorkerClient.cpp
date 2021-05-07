@@ -35,18 +35,6 @@
 ///-----------------------------------------------------------------------------
 
 WorkerClient::WorkerClient(QObject *apParent) : QObject(apParent) {
-    dialog_ = new Dialog();
-    ///сигнализировать о завершении обработки информации runServerCmd
-    connect(dialog_, SIGNAL(ready()), this, SIGNAL(ready()));
-    ///добавить пользователя
-    connect(dialog_, SIGNAL(runServerCmd(const QString&)), this, SIGNAL(runServerCmd(const QString&)));
-    ///получить список инспекций
-    connect(dialog_, SIGNAL(getInspections()), this, SIGNAL(getInspections()));
-    ///список инспекции получен от сервера 
-    connect(this, SIGNAL(listInspectionsReady(const QList<Inspection>&)), dialog_,
-            SLOT(setListInspections(const QList<Inspection>&)));
-    ///ждать готовности сервера
-    connect(dialog_, SIGNAL(waitServer()), this, SIGNAL(waitServer()));
 }
 
 ///-----------------------------------------------------------------------------
@@ -58,7 +46,6 @@ WorkerClient::WorkerClient(QObject *apParent) : QObject(apParent) {
 WorkerClient::~WorkerClient() {
     //Освободить  ресурсы
 
-    delete dialog_;
 }
 ///-----------------------------------------------------------------------------
 ///
@@ -155,10 +142,11 @@ void WorkerClient::process() {
                         //QMessageBox::information(0, "Information Box", "This is information text");
                         ItemContainer<UserView> userContainer;
                         JsonSerializer::parse(wrapper.getData(), userContainer);
-
-                        dialog_->setModel(userContainer.getItemsList());
+                        QList<UserView> users = userContainer.getItemsList();
+                        emit listUserReady(users);
+                        //dialog_->setModel(userContainer.getItemsList());
                         //dialog_->getUI()->tableView->setModel(new ModelList<UserView>(userContainer.getItemsList()));
-                        dialog_->showBox();
+                        //dialog_->showBox();
 
                     }
                         break;
@@ -194,12 +182,13 @@ void WorkerClient::process() {
                 //Процесс обработки возвращённого реультата.  
                 //connect(this, SIGNAL(readyUserData(const User&)),
                 //        dialog_, SLOT(showUserData(const User&)));
-                User user;
-                JsonSerializer::parse(wrapper.getData(), user);
+                //User user;
+                //JsonSerializer::parse(wrapper.getData(), user);
 
-                dialog_->showNewUserData(user);
+                //dialog_->showNewUserData(user);
+                emit responseServer(wrapper.getData());
                 //emit readyUserData(user);
-                emit ready();
+                //emit ready();
 
             }
                 break;
@@ -218,7 +207,7 @@ void WorkerClient::process() {
                 //emit readyUserData(user);
                 QMessageBox::information(0, "Редактирование пользовтеля",
                         "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно отредактирован");
-                dialog_->showEditUserData(user);
+                //dialog_->showEditUserData(user);
                 emit ready();
 
             }
@@ -261,7 +250,7 @@ void WorkerClient::process() {
                         //emit dialog_->showUserData(user);
                         //QMessageBox::information(0, "Получение данных о пользователе",
                         //        "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> ");
-                        dialog_->fillUserEditFrm(user);
+                        //dialog_->fillUserEditFrm(user);
                         emit ready();
 
                     }
@@ -287,7 +276,7 @@ void WorkerClient::process() {
                         //QMessageBox::information(0, "Получение данных о пользователе",
                         //        "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> ");
                         //emit ready();
-                        responseServer(wrapper.getData());
+                        emit responseServer(wrapper.getData());
 
                     }
                         break;

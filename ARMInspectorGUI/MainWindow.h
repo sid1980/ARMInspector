@@ -25,6 +25,13 @@ public:
     MainWindow();
     virtual ~MainWindow();
     void initClient(ClientController *clientController);
+signals:
+    ///Запросить данные у сервера
+    void runServerCmd(const QString&);
+    ///ждать ответ  сервера 
+    void waitReady();
+
+
 private slots:
     void ListUsers();
     void OnExit();

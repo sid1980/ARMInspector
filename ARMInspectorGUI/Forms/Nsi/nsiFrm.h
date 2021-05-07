@@ -39,10 +39,9 @@ public:
     void closeEvent(QCloseEvent *event);
     ///Установить размер таблицы
     void setSizeTbl(const int& width, const int& height);
-public  slots:
-    void showData(const QString& );
     
 private slots:
+    void showData(const QString& );
     ///определить модель вывода данных
     void setModel(const QList<Nsi>& nsi);
     ///обработчик кнопки добавления записи НСИ
@@ -58,7 +57,7 @@ signals:
     void runServerCmd(const QString&);
     ///сигнализировать  о  необходимости  ожидания ответа от сервера 
     ///с результатом предыдущей операции
-    void waitServer();
+    void waitReady();
 
 private:
     Ui::nsiFrm *widget_;

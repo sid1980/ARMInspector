@@ -108,7 +108,7 @@ max-height: 13px;
     } else {
         juristFrm frm;
         frm.initClient(&clientController);
-        clientController.getListMRO();
+        //clientController.getListMRO();
         //QMenuBar * menuBar = frm.getMenuBar();
         frm.setWindowTitle("АРМ юриста");
         frm.setWindowState(Qt::WindowMaximized);

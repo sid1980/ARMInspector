@@ -47,7 +47,7 @@ public:
     //void closeEvent(QCloseEvent *event);
 signals:
     ///Ждать ответ сервера
-    void waitServer();
+    void waitReady();
     ///Запросить данные у сервера
     void runServerCmd(const QString&);
 

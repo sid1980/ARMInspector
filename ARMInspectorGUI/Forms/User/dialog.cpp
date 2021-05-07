@@ -81,6 +81,28 @@ Ui::dialog* Dialog::getUI() {
     return ui;
 }
 
+///-----------------------------------------------------------------------------
+///
+///         Инициализация ссылки на контроллер клиента.
+///          
+///-----------------------------------------------------------------------------
+
+void Dialog::initClient(ClientController *clientController) {
+    m_pClientController = clientController;
+    // Сигнально-слотовое соединение, сигнализирующее, что   контроллер комманд
+    // готов вернуть  результат  выполнения запроса к серверу.
+    connect(this, SIGNAL(ready()), m_pClientController, SLOT(formReady()));
+    ///выполнить команду на сервере
+    connect(this, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
+    //установить модель TableView после получения списка моделей (в данном случае пользователей)
+    connect(m_pClientController, SIGNAL(listUserReady(const QList<UserView>&)), this, SLOT(setModel(const QList<UserView>&)));
+    //установить модель TableView после получения списка моделей (в данном случае пользователей)
+    connect(m_pClientController, SIGNAL(listInspectionsReady(const QList<Inspection>&)), this, SLOT(setListInspections(const QList<Inspection>&)));
+    //Показать новую запись после ответа сервера
+    connect(m_pClientController, SIGNAL(responseServer(const QString&)), this, SLOT(showNewUserData(const QString&)));
+    //// Сигнально-слотовое соединение  ожидания ответа от сервера.
+    connect(this, SIGNAL(waitReady()), m_pClientController, SLOT(waitReady()));
+};
 
 
 
@@ -90,7 +112,9 @@ Ui::dialog* Dialog::getUI() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void Dialog::showNewUserData(const User& user) {
+void Dialog::showNewUserData(const QString& asUser) {
+    User user;
+    JsonSerializer::parse(asUser, user);
     //table2->selectRow(current.row());
     userview_->setId(user.getId());
     userview_->setFio(user.getFio());
@@ -121,6 +145,7 @@ void Dialog::showEditUserData(const User& user) {
     select->model()->setData(select->model()->index(rowidx, 1), userview_->getFio(), Qt::EditRole);
     select->model()->setData(select->model()->index(rowidx, 2), userview_->getInspection(), Qt::EditRole);
     select->model()->setData(select->model()->index(rowidx, 3), userview_->getName(), Qt::EditRole);
+    emit ready();
 }
 
 
@@ -168,6 +193,7 @@ void Dialog::setListInspections(const QList<Inspection>& inspections) {
     //QMessageBox::information(0, "Information Box", inspections[1].getName());
     usrFrm_->setInspections(inspections);
     usrEdtFrm_->setInspections(inspections);
+    emit ready();
 };
 
 ///-----------------------------------------------------------------------------
@@ -181,6 +207,7 @@ void Dialog::setModel(const QList<UserView>& users) {
     proxyModel_->setSourceModel(listusers_);
     this->getUI()->tableView->setSortingEnabled(true); // enable sortingEnabled
     this->getUI()->tableView->setModel(proxyModel_);
+    emit ready();
     //this->getUI()->tableView->setSpan(0,1,2,2);
 }
 
@@ -194,9 +221,8 @@ void Dialog::showBox() {
     this->getUI()->tableView->setColumnHidden(0, true);
     this->getUI()->tableView->resizeColumnsToContents();
     this->getUI()->tableView->resizeRowsToContents();
-
-    emit getInspections();
-    this->show();
+    //emit getInspections();
+    this->exec();
 }
 
 ///-----------------------------------------------------------------------------
@@ -243,7 +269,7 @@ void Dialog::on_pushButton_addUser_clicked() {
         //createAddUserQuery(*user);
         emit runServerCmd(Functor<User>::produce(ModelWrapper::ADD_NEW_USER, *user));
         //emit addUser(*user);
-        emit waitServer();
+        emit waitReady();
         delete user;
     }
 }
@@ -263,7 +289,7 @@ void Dialog::on_pushButton_editUser_clicked() {
         QJsonObject param;
         param.insert("ID", id);
         emit runServerCmd(Functor<User>::producePrm(ModelWrapper::GET_MODEL, param));
-        emit waitServer();
+        emit waitReady();
         usrEdtFrm_->getWidget()->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Сохранить"));
         usrEdtFrm_->getWidget()->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Отменить"));
         if (usrEdtFrm_->exec() == QDialog::Accepted) {
@@ -289,7 +315,7 @@ void Dialog::on_pushButton_editUser_clicked() {
             }
             //emit updateUser(*user);
             emit runServerCmd(Functor<User>::produce(ModelWrapper::EDIT_USER, *user));
-            emit waitServer();
+            emit waitReady();
             delete user;
 
         }
@@ -318,7 +344,7 @@ void Dialog::on_pushButton_deleteUser_clicked() {
             param.insert("ID", id);
             //emit deleteUser(id);
             emit runServerCmd(Functor<User>::producePrm(ModelWrapper::DEL_MODEL, param));
-            emit waitServer();
+            emit waitReady();
             listusers_->delModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
         } else {
             qDebug() << "Yes was *not* clicked";
@@ -360,7 +386,7 @@ void Dialog::on_pushButton_changePassword_clicked() {
             user->setPassword(pwdFrm_->getWidget()->lineEditPwd->text());
             emit runServerCmd(Functor<User>::produce(ModelWrapper::CHANGE_PASSWORD, *user));
             //emit setPwd(*user);
-            emit waitServer();
+            emit waitReady();
             delete user;
         }
     }

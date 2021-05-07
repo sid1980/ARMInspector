@@ -60,7 +60,7 @@ signals:
     ///Установить сессионого пользователя
     void setSessionUser(const User&);
     ///Ждать ответ сервера
-    void waitServer();
+    void waitReady();
     ///Сигнализировать о завершении процесса обработки сообщения от сервера.
     void ready();
     ///Передать список инспекций
@@ -69,12 +69,12 @@ signals:
     void getUserData(const qint64&);
     ///Удалить  данные о пользователе
     void deleteUser(const qint64&);
-    ///Запросить список инспекций
-    void getInspections();
     ///Cписок инспекций подготовлен  
     void listInspectionsReady(const QList<Inspection>&);
     ///Cписок НСИ подготовлен  
     void listNsiReady(const QList<Nsi>&);
+    ///Cписок пользователей подготовлен  
+    void listUserReady(const QList<UserView>&);
     ///Cписок МРО подготовлен  
     void listMroReady(const QList<Mro>&);
     ///Сигнал завершения работы.
@@ -84,7 +84,6 @@ signals:
 private:
     ///Командная обёртка в форме строки.
     QString m_aModelWrapperString;
-    Dialog* dialog_;
     reportFrm* reportDlg_;
 };
 
