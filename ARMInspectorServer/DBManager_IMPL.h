@@ -321,6 +321,7 @@ template<typename T> void DBManager::addModel() {
 
     QSqlQuery query(m_Db);
     attach +=model.insert() +"</a>";
+    qInfo() <<  model.insert();
     query.prepare(model.insert());
     model.bindData(&query);
 

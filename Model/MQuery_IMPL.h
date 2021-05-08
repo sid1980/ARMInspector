@@ -251,8 +251,8 @@ template <class T> QString MQuery<T>::removeById(const int& id) {
 
 template <class T> QString MQuery<T>::selectMaxID() {
 
-    return "SELECT * FROM "+ T::getModelName()
-            + " WHERE ID = (SELECT max(ID) FROM "+
+    return "SELECT * FROM "+ T::getModelName()   +
+            " WHERE ID = (SELECT max(ID) FROM "+
             T::getModelName() +")" ;
 }
 

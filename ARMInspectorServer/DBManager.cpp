@@ -229,19 +229,18 @@ void DBManager::deleteModel() {
 ///-----------------------------------------------------------------------------
 
 void DBManager::addModel() {
+    qInfo() << "Получаем модель";
     //Получаем модель.
     ModelWrapper::Model model = m_pModelWrapper->getEnumModel();
     //Выбрать модель, данные которой необходимо запросить. 
     switch (model) {
-        case ModelWrapper::Model::User:
-            addModel<User>();
-            break;
         case ModelWrapper::Model::Nsi:
             QJsonObject param;
             JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
             //номер НСИ
             Nsi::num_ = param[NSI_NUM].toString();
-            m_pModelWrapper->setData(param["data"].toString());
+            m_pModelWrapper->setData(param[DATA].toString());
+            //qInfo() << param[DATA].toString();
             addModel<Nsi>();
             break;
     }
