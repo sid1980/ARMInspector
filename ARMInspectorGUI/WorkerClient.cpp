@@ -271,12 +271,10 @@ void WorkerClient::process() {
                 switch (model) {
                     case ModelWrapper::Model::Nsi:
                     {
-                        //Nsi nsi;
-                        //JsonSerializer::parse(wrapper.getData(), nsi);
-                        //emit dialog_->showUserData(user);
-                        //QMessageBox::information(0, "Получение данных о пользователе",
-                        //        "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> ");
-                        //emit ready();
+                        Nsi nsi;
+                        JsonSerializer::parse(wrapper.getData(), nsi);
+                        //QMessageBox::information(0, "НСИ",
+                        //        " <a style='color:royalblue'> " + nsi.getName() + "</a> ");
                         emit responseServer(wrapper.getData());
 
                     }

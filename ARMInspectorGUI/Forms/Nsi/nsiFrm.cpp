@@ -52,6 +52,23 @@ Ui::nsiFrm* nsiFrm::getUI() {
     return widget_;
 }
 
+///-----------------------------------------------------------------------------
+///
+///         Инициализация ссылки на контроллер клиента.
+///          
+///-----------------------------------------------------------------------------
+
+void nsiFrm::initClient(ClientController *clientController) {
+    m_pClientController = clientController;
+    connect(this, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
+    ///выполнить команду на сервере
+    connect(this, SIGNAL(runServerCmd(const QString&)),
+            m_pClientController, SLOT(runServerCmd(const QString&)));
+    connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)),
+            this, SLOT(setModel(const QList<Nsi>&)));
+    connect(m_pClientController, SIGNAL(responseServer(const QString&)),
+            this, SLOT(showData(const QString&)));
+};
 
 ///-----------------------------------------------------------------------------
 ///
@@ -111,17 +128,17 @@ void nsiFrm::on_pushButton_addNsi_clicked() {
     frm.getUI()->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Отменить"));
     if (frm.exec() == QDialog::Accepted) {
         //QMessageBox::information(this, "Добавление записи НСИ", "QDialog::Accepted");
-        nsi_ = new Nsi(Nsi::num_);
+        Nsi* nsi = new Nsi(Nsi::num_);
         //QMessageBox::information(this, "Добавление новой записи НСИ", Nsi::num_);
-        nsi_->setName(frm.getUI()->lineEditName->text());
-        QString nsiAsString = JsonSerializer::serialize(*nsi_);
+        nsi->setName(frm.getUI()->lineEditName->text());
+        QString nsiAsString = JsonSerializer::serialize(*nsi);
         QJsonObject param;
-        param.insert("numNSI", Nsi::num_);
-        param.insert("data", nsiAsString);
-        emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::ADD_NEW_MODEL, param));
+        param.insert(NSI_NUM, Nsi::num_);
+        param.insert(DATA, nsiAsString);
+        emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::Command::ADD_NEW_MODEL, param));
         emit waitReady();
         //showNewRecordData(*nsi);
-        delete nsi_;
+        delete nsi;
     }
 }
 ///-----------------------------------------------------------------------------

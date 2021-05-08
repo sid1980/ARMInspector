@@ -175,14 +175,8 @@ void juristFrm::OnMro() {
 
 void juristFrm::OnArticle() {
     //QMessageBox::information(this, "АРМ Юриста", "Статьи КоАП");
-    //nsiFrm frm;
-    ///получить список записей справочника НСИ
     nsiFrm* frm = new nsiFrm();
-    connect(frm, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
-    connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)), frm, SLOT(setModel(const QList<Nsi>&)));
-    connect(m_pClientController, SIGNAL(responseServer(const QString&)), frm, SLOT(showData(const QString&)));
-    connect(frm, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
-    connect(this, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
+    frm->initClient(this->m_pClientController);
     QJsonObject param;
     Nsi::num_ = NSI_ARTICLE;
     param.insert(NSI_NUM, Nsi::num_);
@@ -191,11 +185,6 @@ void juristFrm::OnArticle() {
     frm->setWindowTitle("Статьи КоАП");
     frm->setSizeTbl(353, 570);
     frm->exec();
-    //frm->setAttribute(Qt::WA_DeleteOnClose);
-    //(new DialogDestroyer())->DelayedDestruction(frm);
-    //delete frm;
-    //frm->deleteLater();
-    delete frm;
 }
 
 
@@ -391,6 +380,9 @@ void juristFrm::initClient(ClientController *clientController) {
             this, SLOT(setlistMro(const QList<Mro>&)));
     // Сигнально - слотовое соединение ожидания ответа от сервера.
     connect(this, SIGNAL(waitReady()), m_pClientController, SLOT(waitReady()));
+    ///выполнить команду на сервере
+    connect(this, SIGNAL(runServerCmd(const QString&)), m_pClientController,
+            SLOT(runServerCmd(const QString&)));
 
 };
 ///-----------------------------------------------------------------------------

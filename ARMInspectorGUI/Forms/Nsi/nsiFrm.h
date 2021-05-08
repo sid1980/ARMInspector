@@ -27,6 +27,8 @@
 
 #include <QSortFilterProxyModel>
 #include "Functor.h"
+#include "ClientController.h"
+class ClientController;
 
 class nsiFrm : public QDialog {
     Q_OBJECT
@@ -39,9 +41,11 @@ public:
     void closeEvent(QCloseEvent *event);
     ///Установить размер таблицы
     void setSizeTbl(const int& width, const int& height);
-    
+    ///Инициализация ссылки на контроллер клинта
+    void initClient(ClientController *clientController);
+
 private slots:
-    void showData(const QString& );
+    void showData(const QString&);
     ///определить модель вывода данных
     void setModel(const QList<Nsi>& nsi);
     ///обработчик кнопки добавления записи НСИ
@@ -69,6 +73,9 @@ private:
     Nsi *nsi_;
     ///модель сортировеки 
     QSortFilterProxyModel *proxyModel_;
+    ///указатель контроллера клиента.
+    ClientController *m_pClientController{nullptr};
+
 };
 
 #endif /* _NSIFRM_H */
