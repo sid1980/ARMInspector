@@ -94,7 +94,7 @@ template<typename T> void DBManager::updateModel() {
     }
     //База данных открыта. Можно проводить авторизацию пользователя. 
     QSqlQuery query(m_Db);
-    //qDebug() << user.getName();
+    qDebug() << model.update();
     query.prepare(model.update());
     model.bindData(&query);
 
@@ -122,7 +122,7 @@ template<typename T> void DBManager::deleteModel() {
     QJsonObject param;
     JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
     //ID модели.
-    qint64 asId = param["ID"].toInt();
+    qint64 asId = param[ID_].toInt();
     if (!connectDB<T>()) {
         return;
     }
@@ -134,6 +134,7 @@ template<typename T> void DBManager::deleteModel() {
     delRecord<T>(model, MQuery<T>::removeById(asId));
     return;
 }
+
 
 ///-----------------------------------------------------------------------------
 ///
@@ -236,7 +237,7 @@ template<typename T> ItemContainer<T> DBManager::getAllRecordS() {
     //Проверить  и выполнить  SQL запрос.
     QSqlQuery query(m_Db);
     ///Выполнить SQL запрос
-    qDebug()<<"Выполнить SQL запрос:  " << MQuery<T>::selectAll();
+    qDebug() << "Выполнить SQL запрос:  " << MQuery<T>::selectAll();
     if (!query.exec(MQuery<T>::selectAll())) {
         setResult(container, Message::SQL_ERROR);
         return container;
@@ -287,8 +288,8 @@ template<typename T> void DBManager::delRecord(const T& model, const QString& qu
     }
     setResult(model, Message::MODEL_DEL_SUCCESS);
     return;
-
 }
+
 
 ///-----------------------------------------------------------------------------
 ///
@@ -299,7 +300,7 @@ template<typename T> void DBManager::delRecord(const T& model, const QString& qu
 template<typename T> void DBManager::addModel() {
     //Задать  функцию для установки результата выполнения команды сервера
     //и собщения о результате выполнения команды.
-    auto setResult = [this](T model, Message msg,QString attach) {
+    auto setResult = [this](T model, Message msg, QString attach) {
         //Подготовить данные.
         QString json = JsonSerializer::serialize(model);
         m_pModelWrapper->setData(json);
@@ -309,7 +310,7 @@ template<typename T> void DBManager::addModel() {
         m_pModelWrapper->setSuccess(result.success);
     };
     //дополнение к сообщению
-     QString attach="<br><a style='color:red'>";
+    QString attach = "<br><a style='color:red'>";
     //Создать модель данных 
     T model;
     JsonSerializer::parse(m_pModelWrapper->getData(), model);
@@ -320,8 +321,8 @@ template<typename T> void DBManager::addModel() {
 
 
     QSqlQuery query(m_Db);
-    attach +=model.insert() +"</a>";
-    qInfo() <<  model.insert();
+    attach += model.insert() + "</a>";
+    qInfo() << model.insert();
     query.prepare(model.insert());
     model.bindData(&query);
 
@@ -329,7 +330,7 @@ template<typename T> void DBManager::addModel() {
         query.prepare(MQuery<T>::selectMaxID());
         attach += MQuery<T>::selectMaxID();
         if (!query.exec()) {
-            setResult(model, Message::MODEL_ADD_FAILURE,attach);
+            setResult(model, Message::MODEL_ADD_FAILURE, attach);
             return;
         }
         //Выборка данных.
@@ -342,10 +343,10 @@ template<typename T> void DBManager::addModel() {
             ///Считать запись базы данных  в объект класса T.  
             model.read(recordObject);
         }
-        setResult(model, Message::MODEL_ADD_SUCCESS,attach);
+        setResult(model, Message::MODEL_ADD_SUCCESS, attach);
         qDebug() << "add model  succes: ";
     } else {
-        setResult(model, Message::MODEL_ADD_FAILURE,attach);
+        setResult(model, Message::MODEL_ADD_FAILURE, attach);
     }
     return;
 }
