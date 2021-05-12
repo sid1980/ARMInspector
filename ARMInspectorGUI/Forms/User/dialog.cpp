@@ -97,9 +97,9 @@ void Dialog::initClient(ClientController *clientController) {
     //Данные пользователя
     connect(m_pClientController, SIGNAL(userReady(const User&)), this, SLOT(fillUserEditFrm(const User&)));
     //установить модель TableView после получения списка моделей (в данном случае пользователей)
-    connect(m_pClientController, SIGNAL(listUserReady(const QList<UserView>&)), this, SLOT(setModel(const QList<UserView>&)));
+    connect(m_pClientController, SIGNAL(asUserList(const QList<UserView>&)), this, SLOT(setModel(const QList<UserView>&)));
     //установить модель TableView после получения списка моделей (в данном случае пользователей)
-    connect(m_pClientController, SIGNAL(listInspectionsReady(const QList<Inspection>&)), this, SLOT(setListInspections(const QList<Inspection>&)));
+    connect(m_pClientController, SIGNAL(asInspectionList(const QList<Inspection>&)), this, SLOT(setListInspections(const QList<Inspection>&)));
     //Показать новую запись после ответа сервера
     connect(m_pClientController, SIGNAL(responseServer(const QString&)), this, SLOT(showNewUserData(const QString&)));
     //// Сигнально-слотовое соединение  ожидания ответа от сервера.

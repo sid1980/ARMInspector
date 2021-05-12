@@ -55,26 +55,53 @@ Ui::nsiFrm* nsiFrm::getUI() {
 
 ///-----------------------------------------------------------------------------
 ///
-///         Инициализация ссылки на контроллер клиента.
+///         Обработать ответ сервера.
 ///          
 ///-----------------------------------------------------------------------------
 
-void nsiFrm::initClient(ClientController *clientController) {
-    m_pClientController = clientController;
-    connect(this, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
-    ///выполнить команду на сервере
-    connect(this, SIGNAL(runServerCmd(const QString&)),
-            m_pClientController, SLOT(runServerCmd(const QString&)));
-    ///от сервера получен список записей определенного   НСИ
-    connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)),
-            this, SLOT(setModel(const QList<Nsi>&)));
-    ///от сервера получен список записей определенного   НСИ
-    connect(m_pClientController, SIGNAL(nsiReady(const Nsi&)),
-            this, SLOT(showEditData(const Nsi&)));
-    ///получен ответ от сервера в виде строки
-    connect(m_pClientController, SIGNAL(responseServer(const QString&)),
-            this, SLOT(showData(const QString&)));
-};
+void nsiFrm::worker(const QString& asWrapper) {
+    ModelWrapper wrapper;
+    //Разворачиваем командную обёртку.
+    JsonSerializer::parse(asWrapper, wrapper);
+    ModelWrapper::Command command = wrapper.getEnumCommand();
+    switch (command) {
+        case ModelWrapper::Command::GET_LIST_MODELS:
+        {
+            ItemContainer<Nsi> nsiContainer;
+            JsonSerializer::parse(wrapper.getData(), nsiContainer);
+            QList<Nsi> listnsi = nsiContainer.getItemsList();
+            setModel(listnsi);
+            emit ready();
+        }
+            break;
+        case ModelWrapper::Command::ADD_NEW_MODEL:
+        {
+            Nsi nsi;
+            JsonSerializer::parse(wrapper.getData(), nsi);
+            showData(nsi);
+            emit ready();
+        }
+            break;
+        case ModelWrapper::Command::EDIT_MODEL:
+        {
+            //QMessageBox::information(this, "АРМ Юриста", asWrapper);
+            Nsi nsi;
+            JsonSerializer::parse(wrapper.getData(), nsi);
+            showEditData(nsi);
+            emit ready();
+        }
+            break;
+        case ModelWrapper::Command::DEL_MODEL:
+        {
+            Nsi nsi;
+            JsonSerializer::parse(wrapper.getData(), nsi);
+            QMessageBoxEx::information(Q_NULLPTR, wrapper.getHead(), wrapper.getMessage() +
+                    " <a style='color:royalblue'> " + nsi.getName() + "</a>");
+            emit ready();
+        }
+            break;
+    }
+}
 
 
 ///-----------------------------------------------------------------------------
@@ -88,7 +115,7 @@ void nsiFrm::setModel(const QList<Nsi>& nsi) {
     proxyModel_->setSourceModel(listnsi_);
     this->getUI()->tableView->setSortingEnabled(true); // enable sortingEnabled
     this->getUI()->tableView->setModel(proxyModel_);
-    emit ready();
+    //emit ready();
     //this->getUI()->tableView->setSpan(0,1,2,2);
 }
 
@@ -193,7 +220,7 @@ void nsiFrm::on_pushButton_deleteNsi_clicked() {
         if (reply == QMessageBox::Yes) {
             qDebug() << "Yes was clicked";
             QJsonObject param;
-            param.insert(ID_,id);
+            param.insert(ID_, id);
             param.insert(NSI_NUM, Nsi::num_);
 
             //emit deleteUser(id);
@@ -223,13 +250,11 @@ void nsiFrm::closeEvent(QCloseEvent *event) {
 ///          
 ///-----------------------------------------------------------------------------
 
-void nsiFrm::showData(const QString& asNsi) {
-    Nsi nsi;
-    JsonSerializer::parse(asNsi, nsi);
-    listnsi_->addModel(nsi);
+void nsiFrm::showData(const Nsi& nsi) {
+    Nsi nn = nsi;
+    listnsi_->addModel(nn);
     this->getUI()->tableView->selectRow(listnsi_->rowCount() - 1);
     this->getUI()->tableView->scrollToBottom();
-    emit ready();
 }
 
 
@@ -248,5 +273,5 @@ void nsiFrm::showEditData(const Nsi& nsi) {
     select->model()->setData(select->model()->index(rowidx, 0), nsi.getId(), Qt::EditRole);
     select->model()->setData(select->model()->index(rowidx, 1), nsi.getName(), Qt::EditRole);
 
-    emit ready();
+    //emit ready();
 }

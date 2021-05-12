@@ -52,8 +52,6 @@ void ClientController::init(ServerClient *apServerClient) {
     connect(m_pWorkerClient, SIGNAL(setSessionUser(const User&)), SLOT(setSessionUser(const User&)));
     ///данные о пользователе получены от сервера
     connect(m_pWorkerClient, SIGNAL(userReady(const User&)), this, SIGNAL(userReady(const User&)));
-    ///данные о НСИ получены от сервера
-    connect(m_pWorkerClient, SIGNAL(nsiReady(const Nsi&)), this, SIGNAL(nsiReady(const Nsi&)));
     ///список МРО получен от сервера 
     connect(m_pWorkerClient, SIGNAL(listMroReady(const QList<Mro>&)), this,
             SIGNAL(listMroReady(const QList<Mro>&)));
@@ -64,11 +62,6 @@ void ClientController::init(ServerClient *apServerClient) {
     ///список пользователей получен от сервера 
     connect(m_pWorkerClient, SIGNAL(listUserReady(const QList<UserView>&)), this,
             SIGNAL(listUserReady(const QList<UserView>&)));
-    //connect(m_pWorkerClient, &WorkerClient::addUser, this, &ClientController::addModel<User>);
-    //connect(m_pWorkerClient, SIGNAL(addUser(const User&)), SLOT(addModel<User>(const User&)));
-    ///список НСИ получен от сервера 
-    connect(m_pWorkerClient, SIGNAL(listNsiReady(const QList<Nsi>&)), this,
-            SIGNAL(listNsiReady(const QList<Nsi>&)));
 
 }
 ///Установить идентификатор сессии

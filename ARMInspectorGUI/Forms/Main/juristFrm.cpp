@@ -176,7 +176,8 @@ void juristFrm::OnMro() {
 void juristFrm::OnArticle() {
     //QMessageBox::information(this, "АРМ Юриста", "Статьи КоАП");
     nsiFrm* frm = new nsiFrm();
-    frm->initClient(this->m_pClientController);
+    connectNsi(*frm);
+    //frm->initClient(this->m_pClientController);
     QJsonObject param;
     Nsi::num_ = NSI_ARTICLE;
     param.insert(NSI_NUM, Nsi::num_);
@@ -187,29 +188,24 @@ void juristFrm::OnArticle() {
     frm->exec();
 }
 
+
 ///-----------------------------------------------------------------------------
 ///
-///         initConnectNsi
+///         connectNsi
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::initConnectNsi(const nsiFrm& frm) {
-        connect(frm, SIGNAL(ready()), this, SIGNAL(ready()));
+void juristFrm::connectNsi(const nsiFrm& frm) {
     ///выполнить команду на сервере
-    connect(frm, SIGNAL(runServerCmd(const QString&)),
-            this, SIGNAL(runServerCmd(const QString&)));
-    ///от сервера получен список записей определенного   НСИ
-    connect(this, SIGNAL(listNsiReady(const QList<Nsi>&)),
-            frm, SLOT(setModel(const QList<Nsi>&)));
-    ///от сервера получен список записей определенного   НСИ
-    connect(this, SIGNAL(nsiReady(const Nsi&)),
-            frm, SLOT(showEditData(const Nsi&)));
+    connect(&frm, SIGNAL(runServerCmd(const QString&)), this, SIGNAL(runServerCmd(const QString&)));
     ///получен ответ от сервера в виде строки
-    connect(this, SIGNAL(responseServer(const QString&)),
-            frm, SLOT(showData(const QString&)));
+    connect(this, SIGNAL(responseServer(const QString&)),&frm, SLOT(worker(const QString&)));
+    // Сигнально - слотовое соединение ожидания ответа от сервера.
+    connect(&frm, SIGNAL(waitReady()), this, SIGNAL(waitReady()));
+    ///сигнал завершения процесса обработки
+    connect(&frm, SIGNAL(ready()), this, SIGNAL(ready()));
 
-
-};
+}
 
 ///-----------------------------------------------------------------------------
 ///
@@ -219,15 +215,16 @@ void juristFrm::initConnectNsi(const nsiFrm& frm) {
 
 void juristFrm::initClient(ClientController *clientController) {
     m_pClientController = clientController;
-    // Сигнально-слотовое соединение, сигнализирующее, что   контроллер комманд
-    // готов вернуть  результат  выполнения запроса к серверу.
-    connect(m_pClientController, SIGNAL(listMroReady(const QList<Mro>&)),
-            this, SLOT(setlistMro(const QList<Mro>&)));
+    ///сигнал завершения процесса обработки
+    connect(this, SIGNAL(ready()), m_pClientController, SLOT(formReady()));
     // Сигнально - слотовое соединение ожидания ответа от сервера.
     connect(this, SIGNAL(waitReady()), m_pClientController, SLOT(waitReady()));
     ///выполнить команду на сервере
     connect(this, SIGNAL(runServerCmd(const QString&)), m_pClientController,
             SLOT(runServerCmd(const QString&)));
+    ///получен ответ от сервера в виде строки
+    connect(m_pClientController, SIGNAL(responseServer(const QString&)),
+            this, SIGNAL(responseServer(const QString&)));
 
 };
 
@@ -245,7 +242,7 @@ void juristFrm::OnSubject() {
     nsiFrm* frm = new nsiFrm();
     connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)),
             frm, SLOT(setModel(const QList<Nsi>&)));
-    
+
     connect(frm, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
     connect(m_pClientController, SIGNAL(responseServer(const QString&)), frm, SLOT(showData(const QString&)));
     connect(frm, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));

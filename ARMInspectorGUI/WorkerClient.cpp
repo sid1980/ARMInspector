@@ -120,11 +120,11 @@ void WorkerClient::process() {
                         break;
                     case ModelWrapper::Model::Nsi:
                     {
-                        ItemContainer<Nsi> nsiContainer;
-                        JsonSerializer::parse(wrapper.getData(), nsiContainer);
-                        QList<Nsi> nsi = nsiContainer.getItemsList();
+                        //ItemContainer<Nsi> nsiContainer;
+                        //JsonSerializer::parse(wrapper.getData(), nsiContainer);
+                        //QList<Nsi> nsi = nsiContainer.getItemsList();
                         //QMessageBox::information(0, "Information Box", nsi[1].getName());
-                        emit listNsiReady(nsi);
+                        emit responseServer(m_aModelWrapperString);
 
                     }
                         break;
@@ -259,13 +259,14 @@ void WorkerClient::process() {
                         break;
                     case ModelWrapper::Model::Nsi:
                     {
-                        Nsi nsi;
-                        JsonSerializer::parse(wrapper.getData(), nsi);
+                        //Nsi nsi;
+                        //JsonSerializer::parse(wrapper.getData(), nsi);
                         //emit dialog_->showUserData(user);
                         //QMessageBox::information(0, "Получение данных о пользователе",
                         //        "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> ");
                         //dialog_->fillUserEditFrm(user);
-                        emit nsiReady(nsi);
+                        //emit nsiReady(nsi);
+                        emit responseServer(m_aModelWrapperString);
                         //emit ready();
 
                     }
@@ -285,11 +286,11 @@ void WorkerClient::process() {
                 switch (model) {
                     case ModelWrapper::Model::Nsi:
                     {
-                        Nsi nsi;
-                        JsonSerializer::parse(wrapper.getData(), nsi);
+                        //Nsi nsi;
+                        //JsonSerializer::parse(wrapper.getData(), nsi);
                         //QMessageBox::information(0, "НСИ",
                         //        " <a style='color:royalblue'> " + nsi.getName() + "</a> ");
-                        emit responseServer(wrapper.getData());
+                        emit responseServer(m_aModelWrapperString);
 
                     }
                         break;
@@ -311,8 +312,8 @@ void WorkerClient::process() {
                     {
                         Nsi nsi;
                         JsonSerializer::parse(wrapper.getData(), nsi);
-                        //QMessageBox::information(Q_NULLPTR, "Worker", nsi.getName());
-                        emit nsiReady(nsi);
+                        QMessageBox::information(Q_NULLPTR, "Worker", nsi.getName());
+                        emit responseServer(m_aModelWrapperString);
                     }
                         break;
                 }
@@ -342,12 +343,12 @@ void WorkerClient::process() {
                         break;
                     case ModelWrapper::Model::Nsi:
                     {
-                        Nsi nsi;
-                        JsonSerializer::parse(wrapper.getData(), nsi);
+                        //Nsi nsi;
+                        //JsonSerializer::parse(wrapper.getData(), nsi);
                         //emit dialog_->showUserData(user);
-                        QMessageBoxEx::information(Q_NULLPTR, wrapper.getHead(), wrapper.getMessage() +
-                                " <a style='color:royalblue'> " + nsi.getName() + "</a>");
-                        emit ready();
+                        //QMessageBoxEx::information(Q_NULLPTR, wrapper.getHead(), wrapper.getMessage() +
+                        //        " <a style='color:royalblue'> " + nsi.getName() + "</a>");
+                        emit responseServer(m_aModelWrapperString);
 
                     }
                         break;

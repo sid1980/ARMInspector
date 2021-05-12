@@ -304,7 +304,7 @@ void User::bindData(QSqlQuery* asSqlQuery) {
 const QString& User::update() {
     qInfo() << "User::update()";
     return query_.update()->set()->
-            field(User::Column::ID)->equally()->bind(User::Column::ID)->
+//            field(User::Column::ID)->equally()->bind(User::Column::ID)->
             field(User::Column::FIO)->equally()->bind(User::Column::FIO)->
             field(User::Column::ID_INSPECTION)->equally()->bind(User::Column::ID_INSPECTION)->
             field(User::Column::NAME)->equally()->bind(User::Column::NAME)->

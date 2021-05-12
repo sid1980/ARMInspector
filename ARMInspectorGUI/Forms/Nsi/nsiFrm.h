@@ -41,23 +41,22 @@ public:
     void closeEvent(QCloseEvent *event);
     ///Установить размер таблицы
     void setSizeTbl(const int& width, const int& height);
-    ///Инициализация ссылки на контроллер клинта
-    void initClient(ClientController *clientController);
-
-private slots:
-
     ///показать отредактирование данные НСИ
     void showEditData(const Nsi&);
     ///показать данные НСИ
-    void showData(const QString&);
+    void showData(const Nsi&);
     ///определить модель вывода данных
     void setModel(const QList<Nsi>& nsi);
+
+private slots:
+
     ///обработчик кнопки добавления записи НСИ
     void on_pushButton_addNsi_clicked();
     ///обработчик кнопки редактирования записи НСИ
     void on_pushButton_editNsi_clicked();
     ///обработчик кнопки удаления  записи НСИ
     void on_pushButton_deleteNsi_clicked();
+    void worker(const QString& );
 
 signals:
     void ready();
