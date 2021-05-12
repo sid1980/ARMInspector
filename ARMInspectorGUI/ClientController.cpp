@@ -35,7 +35,8 @@ void ClientController::init(ServerClient *apServerClient) {
 
     //Создать обработчик сообщений сервера 
     m_pWorkerClient = new WorkerClient();
-    //addThread(QString(""));
+    // Сигнально-слотовое соединение  ожидания ответа от сервера.
+    connect(m_pWorkerClient, SIGNAL(waitReady()), SLOT(waitReady()));
     // Сигнально-слотовое соединение, сигнализирующее, что   контроллер комманд
     // готов вернуть  результат  выполнения запроса к серверу.
     connect(m_pCommandController, SIGNAL(onProcessRequestServer(QString)), SLOT(processRequestServer(QString)));
@@ -43,15 +44,16 @@ void ClientController::init(ServerClient *apServerClient) {
     connect(m_pWorkerClient, SIGNAL(setID(int)), SLOT(setSessionID(int)));
     // Сигнально-слотовое соединение установки идентификатора сессии.
     connect(m_pWorkerClient, SIGNAL(ready()), SLOT(formReady()));
-    // Сигнально-слотовое соединение для добавления нового пользователя в базу данных.
+    // Сигнально-слотовое соединение для  выполнения команды на сервере.
     connect(m_pWorkerClient, SIGNAL(runServerCmd(const QString&)), SLOT(runServerCmd(const QString&)));
-    // Сигнально-слотовое соединение для добавления нового пользователя в базу данных.
+    // Сигнально-слотовое соединение для передачи данных от сервера  получателю .
     connect(m_pWorkerClient, SIGNAL(responseServer(const QString&)), SIGNAL(responseServer(const QString&)));
-    ///пользователь прошёл аутентификацию
     ///необходимо установить данные сессионного пользователя
     connect(m_pWorkerClient, SIGNAL(setSessionUser(const User&)), SLOT(setSessionUser(const User&)));
-    ///список МРО получен от сервера 
+    ///данные о пользователе получены от сервера
     connect(m_pWorkerClient, SIGNAL(userReady(const User&)), this, SIGNAL(userReady(const User&)));
+    ///данные о НСИ получены от сервера
+    connect(m_pWorkerClient, SIGNAL(nsiReady(const Nsi&)), this, SIGNAL(nsiReady(const Nsi&)));
     ///список МРО получен от сервера 
     connect(m_pWorkerClient, SIGNAL(listMroReady(const QList<Mro>&)), this,
             SIGNAL(listMroReady(const QList<Mro>&)));
@@ -62,18 +64,12 @@ void ClientController::init(ServerClient *apServerClient) {
     ///список пользователей получен от сервера 
     connect(m_pWorkerClient, SIGNAL(listUserReady(const QList<UserView>&)), this,
             SIGNAL(listUserReady(const QList<UserView>&)));
-
     //connect(m_pWorkerClient, &WorkerClient::addUser, this, &ClientController::addModel<User>);
     //connect(m_pWorkerClient, SIGNAL(addUser(const User&)), SLOT(addModel<User>(const User&)));
-
-
-
     ///список НСИ получен от сервера 
     connect(m_pWorkerClient, SIGNAL(listNsiReady(const QList<Nsi>&)), this,
             SIGNAL(listNsiReady(const QList<Nsi>&)));
 
-    // Сигнально-слотовое соединение  ожидания ответа от сервера.
-    connect(m_pWorkerClient, SIGNAL(waitReady()), SLOT(waitReady()));
 }
 ///Установить идентификатор сессии
 

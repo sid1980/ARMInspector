@@ -170,9 +170,10 @@ const QString& Nsi::insert() {
 ///-----------------------------------------------------------------------------
 
 const QString& Nsi::update() {
-    qInfo() << "User::update()";
+    qInfo() << "Nsi::update()";
     return query_.update()->set()->
-            field(Nsi::Column::ID)->equally()->bind(Nsi::Column::ID)->
-            field(Nsi::Column::NAME)->equally()->bind(Nsi::Column::NAME)->prepare();
+//            field(Nsi::Column::ID)->equally()->bind(Nsi::Column::ID)->
+            field(Nsi::Column::NAME)->equally()->bind(Nsi::Column::NAME)->
+            where()->field(Nsi::Column::ID)->equally()->bind(Nsi::Column::ID)->prepare();
 
 }

@@ -28,6 +28,7 @@
 #define NSI_SUBJECT "5"
 #define NSI_NUM    "numNSI"
 #define DATA    "data"
+#define ID_    "ID"
 
 using namespace std;
 

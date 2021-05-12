@@ -47,6 +47,7 @@ WorkerClient::~WorkerClient() {
     //Освободить  ресурсы
 
 }
+
 ///-----------------------------------------------------------------------------
 ///
 ///            Инициализировать строку командной обёртки.
@@ -256,6 +257,19 @@ void WorkerClient::process() {
 
                     }
                         break;
+                    case ModelWrapper::Model::Nsi:
+                    {
+                        Nsi nsi;
+                        JsonSerializer::parse(wrapper.getData(), nsi);
+                        //emit dialog_->showUserData(user);
+                        //QMessageBox::information(0, "Получение данных о пользователе",
+                        //        "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> ");
+                        //dialog_->fillUserEditFrm(user);
+                        emit nsiReady(nsi);
+                        //emit ready();
+
+                    }
+                        break;
 
                 }
             }
@@ -285,6 +299,28 @@ void WorkerClient::process() {
                 break;
                 ///-----------------------------------------------------------------------------
                 ///
+                ///                         EDIT_MODEL
+                ///          
+                ///-----------------------------------------------------------------------------
+            case ModelWrapper::Command::EDIT_MODEL:
+            {
+                //Сервер вернул результат команды "EDIT_MODEL"     
+                ModelWrapper::Model model = wrapper.getEnumModel();
+                switch (model) {
+                    case ModelWrapper::Model::Nsi:
+                    {
+                        Nsi nsi;
+                        JsonSerializer::parse(wrapper.getData(), nsi);
+                        //QMessageBox::information(Q_NULLPTR, "Worker", nsi.getName());
+                        emit nsiReady(nsi);
+                    }
+                        break;
+                }
+            }
+                break;
+
+                ///-----------------------------------------------------------------------------
+                ///
                 ///                         DEL_MODEL
                 ///          
                 ///-----------------------------------------------------------------------------
@@ -300,6 +336,17 @@ void WorkerClient::process() {
                         //emit dialog_->showUserData(user);
                         QMessageBoxEx::information(0, wrapper.getHead(), wrapper.getMessage() +
                                 "пользователя <a style='color:royalblue'> " + user.getFio() + "</a>");
+                        emit ready();
+
+                    }
+                        break;
+                    case ModelWrapper::Model::Nsi:
+                    {
+                        Nsi nsi;
+                        JsonSerializer::parse(wrapper.getData(), nsi);
+                        //emit dialog_->showUserData(user);
+                        QMessageBoxEx::information(Q_NULLPTR, wrapper.getHead(), wrapper.getMessage() +
+                                " <a style='color:royalblue'> " + nsi.getName() + "</a>");
                         emit ready();
 
                     }

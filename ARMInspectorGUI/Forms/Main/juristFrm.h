@@ -44,12 +44,24 @@ public:
     void OnMro();
     void OnArticle();
     void OnSubject();
+    void initConnectNsi(const nsiFrm& );
+
     //void closeEvent(QCloseEvent *event);
 signals:
+    ///сигнал готовности
+    ready();
     ///Ждать ответ сервера
     void waitReady();
     ///Запросить данные у сервера
     void runServerCmd(const QString&);
+    ///Ответ сервера
+    void responseServer(const QString&);
+    ///список НСИ подготовлен    
+    void listNsiReady(const QList<Nsi>&);
+    ///запись НСИ подготовлена    
+    void nsiReady(const Nsi&);
+    ///ответ сервера в виде строки
+    responseServer(const QString&);
 
 private slots:
     void onTableClicked(const QModelIndex &);

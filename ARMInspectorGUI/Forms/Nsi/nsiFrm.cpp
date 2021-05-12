@@ -52,6 +52,7 @@ Ui::nsiFrm* nsiFrm::getUI() {
     return widget_;
 }
 
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Инициализация ссылки на контроллер клиента.
@@ -64,11 +65,17 @@ void nsiFrm::initClient(ClientController *clientController) {
     ///выполнить команду на сервере
     connect(this, SIGNAL(runServerCmd(const QString&)),
             m_pClientController, SLOT(runServerCmd(const QString&)));
+    ///от сервера получен список записей определенного   НСИ
     connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)),
             this, SLOT(setModel(const QList<Nsi>&)));
+    ///от сервера получен список записей определенного   НСИ
+    connect(m_pClientController, SIGNAL(nsiReady(const Nsi&)),
+            this, SLOT(showEditData(const Nsi&)));
+    ///получен ответ от сервера в виде строки
     connect(m_pClientController, SIGNAL(responseServer(const QString&)),
             this, SLOT(showData(const QString&)));
 };
+
 
 ///-----------------------------------------------------------------------------
 ///
@@ -156,7 +163,14 @@ void nsiFrm::on_pushButton_editNsi_clicked() {
     Nsi nsi = listnsi_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
     frm.getUI()->lineEditName->setText(nsi.getName());
     if (frm.exec() == QDialog::Accepted) {
-        QMessageBox::information(this, "Редактирование записи НСИ", "QDialog::Accepted");
+        ///        QMessageBox::information(this, "Редактирование записи НСИ", "QDialog::Accepted");
+        nsi.setName(frm.getUI()->lineEditName->text());
+        QString nsiAsString = JsonSerializer::serialize(nsi);
+        QJsonObject param;
+        param.insert(NSI_NUM, Nsi::num_);
+        param.insert(DATA, nsiAsString);
+        emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::Command::EDIT_MODEL, param));
+        emit waitReady();
     }
 }
 
@@ -167,8 +181,29 @@ void nsiFrm::on_pushButton_editNsi_clicked() {
 ///-----------------------------------------------------------------------------
 
 void nsiFrm::on_pushButton_deleteNsi_clicked() {
-    //QMessageBox::information(this, "АРМ Юриста", "on_pushButton_deleteNsi_clicked");
+    int rowidx = proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()).row();
+    if (rowidx >= 0) {
+        Nsi nsi = listnsi_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
+        auto id = nsi.getId();
+        QMessageBoxEx::StandardButton reply;
+        reply = QMessageBoxEx::question(this, "Удаление записи",
+                "Вы действительно хотите удалить запись <br><br><a style='font-size:14px;color:red;'> " +
+                nsi.getName() + "</a> ?<br>",
+                QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
+            qDebug() << "Yes was clicked";
+            QJsonObject param;
+            param.insert(ID_,id);
+            param.insert(NSI_NUM, Nsi::num_);
 
+            //emit deleteUser(id);
+            emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::DEL_MODEL, param));
+            emit waitReady();
+            listnsi_->delModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
+        } else {
+            qDebug() << "Yes was *not* clicked";
+        }
+    }
 }
 
 ///-----------------------------------------------------------------------------
@@ -194,5 +229,24 @@ void nsiFrm::showData(const QString& asNsi) {
     listnsi_->addModel(nsi);
     this->getUI()->tableView->selectRow(listnsi_->rowCount() - 1);
     this->getUI()->tableView->scrollToBottom();
+    emit ready();
+}
+
+
+///-----------------------------------------------------------------------------
+///
+///         показать данные отредактированной  записи
+///          
+///-----------------------------------------------------------------------------
+
+void nsiFrm::showEditData(const Nsi& nsi) {
+    //QMessageBox::information(Q_NULLPTR, "showEditData", nsi.getName());
+
+    QItemSelectionModel *select = this->getUI()->tableView->selectionModel();
+    int rowidx = select->currentIndex().row();
+    this->getUI()->tableView->scrollTo(select->currentIndex());
+    select->model()->setData(select->model()->index(rowidx, 0), nsi.getId(), Qt::EditRole);
+    select->model()->setData(select->model()->index(rowidx, 1), nsi.getName(), Qt::EditRole);
+
     emit ready();
 }

@@ -45,6 +45,10 @@ public:
     void initClient(ClientController *clientController);
 
 private slots:
+
+    ///показать отредактирование данные НСИ
+    void showEditData(const Nsi&);
+    ///показать данные НСИ
     void showData(const QString&);
     ///определить модель вывода данных
     void setModel(const QList<Nsi>& nsi);

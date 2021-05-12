@@ -187,6 +187,50 @@ void juristFrm::OnArticle() {
     frm->exec();
 }
 
+///-----------------------------------------------------------------------------
+///
+///         initConnectNsi
+///          
+///-----------------------------------------------------------------------------
+
+void juristFrm::initConnectNsi(const nsiFrm& frm) {
+        connect(frm, SIGNAL(ready()), this, SIGNAL(ready()));
+    ///выполнить команду на сервере
+    connect(frm, SIGNAL(runServerCmd(const QString&)),
+            this, SIGNAL(runServerCmd(const QString&)));
+    ///от сервера получен список записей определенного   НСИ
+    connect(this, SIGNAL(listNsiReady(const QList<Nsi>&)),
+            frm, SLOT(setModel(const QList<Nsi>&)));
+    ///от сервера получен список записей определенного   НСИ
+    connect(this, SIGNAL(nsiReady(const Nsi&)),
+            frm, SLOT(showEditData(const Nsi&)));
+    ///получен ответ от сервера в виде строки
+    connect(this, SIGNAL(responseServer(const QString&)),
+            frm, SLOT(showData(const QString&)));
+
+
+};
+
+///-----------------------------------------------------------------------------
+///
+///         Инициализация ссылки на контроллер клиента.
+///          
+///-----------------------------------------------------------------------------
+
+void juristFrm::initClient(ClientController *clientController) {
+    m_pClientController = clientController;
+    // Сигнально-слотовое соединение, сигнализирующее, что   контроллер комманд
+    // готов вернуть  результат  выполнения запроса к серверу.
+    connect(m_pClientController, SIGNAL(listMroReady(const QList<Mro>&)),
+            this, SLOT(setlistMro(const QList<Mro>&)));
+    // Сигнально - слотовое соединение ожидания ответа от сервера.
+    connect(this, SIGNAL(waitReady()), m_pClientController, SLOT(waitReady()));
+    ///выполнить команду на сервере
+    connect(this, SIGNAL(runServerCmd(const QString&)), m_pClientController,
+            SLOT(runServerCmd(const QString&)));
+
+};
+
 
 ///-----------------------------------------------------------------------------
 ///
@@ -201,6 +245,7 @@ void juristFrm::OnSubject() {
     nsiFrm* frm = new nsiFrm();
     connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)),
             frm, SLOT(setModel(const QList<Nsi>&)));
+    
     connect(frm, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
     connect(m_pClientController, SIGNAL(responseServer(const QString&)), frm, SLOT(showData(const QString&)));
     connect(frm, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
@@ -368,26 +413,7 @@ void juristFrm::spanTbl() {
 
 ///-----------------------------------------------------------------------------
 ///
-///         Инициализация ссылки на контроллер клиента.
-///          
-///-----------------------------------------------------------------------------
-
-void juristFrm::initClient(ClientController *clientController) {
-    m_pClientController = clientController;
-    // Сигнально-слотовое соединение, сигнализирующее, что   контроллер комманд
-    // готов вернуть  результат  выполнения запроса к серверу.
-    connect(m_pClientController, SIGNAL(listMroReady(const QList<Mro>&)),
-            this, SLOT(setlistMro(const QList<Mro>&)));
-    // Сигнально - слотовое соединение ожидания ответа от сервера.
-    connect(this, SIGNAL(waitReady()), m_pClientController, SLOT(waitReady()));
-    ///выполнить команду на сервере
-    connect(this, SIGNAL(runServerCmd(const QString&)), m_pClientController,
-            SLOT(runServerCmd(const QString&)));
-
-};
-///-----------------------------------------------------------------------------
-///
-///         Инициализация ссылки на контроллер клиента.
+///         Заполнение списка МРО
 ///          
 ///-----------------------------------------------------------------------------
 

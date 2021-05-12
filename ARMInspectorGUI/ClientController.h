@@ -62,6 +62,8 @@ signals:
     void listInspectionsReady(const QList<Inspection>&);
     ///Данные пользователя  
     void userReady(const User&);
+    ///Данные НСИ  
+    void nsiReady(const Nsi&);
 
 private slots:
 
