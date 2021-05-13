@@ -93,8 +93,7 @@ void Worker::process() {
                     break;
                 case ModelWrapper::Command::ADD_NEW_MODEL:
                 {
-                    //Добавление нового пользователя .
-                    //qInfo() << "___________________________ModelWrapper::Command::ADD_NEW_MODEL___________________________________________________";
+                    //Добавление новой  записи .
 
                     pDBManager->addModel();
                 }
@@ -123,7 +122,7 @@ void Worker::process() {
                     pDBManager->getModel();
                 }
                     break;
-                case ModelWrapper::Command::EDIT_MODEL:
+                case ModelWrapper::Command::UPDATE_MODEL:
                 {
                     //Редактировать модель.
                     pDBManager->updateModel();

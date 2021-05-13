@@ -99,11 +99,11 @@ template<typename T> void DBManager::updateModel() {
     model.bindData(&query);
 
     if (query.exec()) {
-        setResult(model, Message::MODEL_EDIT_SUCCESS);
+        setResult(model, Message::MODEL_UPDATE_SUCCESS);
         qDebug() << "update model  succes: ";
     } else {
-        setResult(model, Message::MODEL_EDIT_FAILURE);
-        //qDebug() << "update person failed: " << query.lastError();
+        setResult(model, Message::MODEL_UPDATE_FAILURE);
+        qDebug() << "update model failed: ";
     }
     return;
 }

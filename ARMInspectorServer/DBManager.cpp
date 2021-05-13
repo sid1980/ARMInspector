@@ -216,7 +216,7 @@ void DBManager::deleteModel() {
             JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
             //ноиер НСИ
             Nsi::num_ = param[NSI_NUM].toString();
-//            m_pModelWrapper->setData(param[DATA].toString());
+            //            m_pModelWrapper->setData(param[DATA].toString());
             deleteModel<Nsi>();
             break;
     }
@@ -236,6 +236,7 @@ void DBManager::addModel() {
     //Выбрать модель, данные которой необходимо запросить. 
     switch (model) {
         case ModelWrapper::Model::Nsi:
+        {
             QJsonObject param;
             JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
             //номер НСИ
@@ -243,6 +244,15 @@ void DBManager::addModel() {
             m_pModelWrapper->setData(param[DATA].toString());
             //qInfo() << param[DATA].toString();
             addModel<Nsi>();
+        }
+            break;
+        case ModelWrapper::Model::Mro:
+        {
+            //qInfo() << param[DATA].toString();
+            addModel<Mro>();
+        }
+            break;
+        default:
             break;
     }
 }
