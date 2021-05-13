@@ -328,6 +328,9 @@ void DBManager::getListModels() {
         case ModelWrapper::Model::Mro:
             getListModels<Mro>();
             break;
+        case ModelWrapper::Model::MroView:
+            getListModels<MroView>();
+            break;
         case ModelWrapper::Model::UserView:
             getListModels<UserView>();
             break;

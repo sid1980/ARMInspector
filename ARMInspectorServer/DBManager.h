@@ -22,6 +22,7 @@
 #include <array>
 #include "User/User.h"
 #include "Mro/Mro.h"
+#include "Mro/MroView.h"
 #include "User/UserView.h"
 #include "Inspection/Inspection.h"
 #include "Nsi/Nsi.h"
