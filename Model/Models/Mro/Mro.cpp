@@ -11,12 +11,11 @@
  * Created on 20 апреля 2021 г., 15:36
  */
 
-#include "Mro/Mro.h"
-#include "Nsi/Nsi.h" 
+#include "Mro/Mro.h" 
 
-ModelWrapper::Model Mro::model_ = {ModelWrapper::Model::Mro};
+ModelWrapper::Model  Mro::model_={ModelWrapper::Model::Mro};
 
-Mro::Mro() : id_(0), name_(""), inspection_("") {
+Mro::Mro() : id_(0), name_(""), inspection_(0) {
 }
 
 Mro::~Mro() {
@@ -30,7 +29,7 @@ void Mro::setName(const QString& name) {
     name_ = name;
 };
 
-void Mro::setInspection(const QString& inspection) {
+void Mro::setInspection(const qint64& inspection) {
     inspection_ = inspection;
 };
 
@@ -42,7 +41,7 @@ const QString& Mro::getName() const {
     return name_;
 };
 
-const QString&Mro::getInspection() const {
+const qint64& Mro::getInspection() const {
     return inspection_;
 };
 
@@ -55,14 +54,11 @@ const QString&Mro::getInspection() const {
 ///-----------------------------------------------------------------------------
 
 void Mro::read(const QJsonObject &jsonObj) {
+    
     array<QString, MRO_COLUMN> fld = Mro::getFields();
     this->setId(jsonObj[fld[Mro::Column::ID]].toInt());
     this->setName(jsonObj[fld[Mro::Column::NAME]].toString());
-    this->setName(jsonObj[fld[Mro::Column::INSPECTION]].toString());
-
-    //this->setId(jsonObj["id"].toInt());
-    //this->setName(jsonObj["name"].toString());
-    //this->setInspection(jsonObj["id_inspection"].toInt());
+    this->setInspection(jsonObj[fld[Mro::Column::INSPECTION]].toInt());
 };
 
 ///-----------------------------------------------------------------------------
@@ -73,6 +69,7 @@ void Mro::read(const QJsonObject &jsonObj) {
 ///-----------------------------------------------------------------------------
 
 void Mro::write(QJsonObject &jsonObj) const {
+    
     array<QString, MRO_COLUMN> fld = Mro::getFields();
     jsonObj[fld[Mro::Column::ID]] = this->getId();
     jsonObj[fld[Mro::Column::NAME]] = this->getName();
@@ -119,15 +116,13 @@ void Mro::setData(const int& position, const QVariant& value) {
             this->setName(value.toString());
             break;
         case Mro::Column::INSPECTION:
-            this->setInspection(value.toString());
+            this->setInspection(value.toInt());
             break;
         default:
             break;
     }
 
 };
-
-
 ///-----------------------------------------------------------------------------
 ///
 ///

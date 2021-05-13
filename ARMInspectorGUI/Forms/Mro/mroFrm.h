@@ -16,6 +16,7 @@
 
 #include "ui_mroFrm.h"
 #include "Mro/Mro.h"
+#include "Mro/MroView.h"
 #include "ModelList.h"
 #include "mroEditForm.h"
 #include "Functor.h"
@@ -32,9 +33,9 @@ public:
     ///Установить размер таблицы
     void setSizeTbl(const int& width, const int& height);
     ///определить модель вывода данных
-    void setModel(const QList<Mro>& mro);
+    void setModel(const QList<MroView>& mro);
     ///показать данные МРО
-    void showData(const Mro& asMro);
+    void showData(const MroView& asMro);
 private slots:
     ///обработчик кнопки добавления записи НСИ
     void on_pushButton_AddMro_clicked();
@@ -55,9 +56,9 @@ signals:
 private:
     Ui::mroFrm *widget_;
     ///ссылка на модель  данных 
-    ModelList<Mro>* listmro_;
+    ModelList<MroView>* listmro_;
     ///ссылк на экземпляр модели вывода данных
-    Mro *mro_;
+    MroView *mro_;
     ///модель сортировеки 
     QSortFilterProxyModel *proxyModel_;
 

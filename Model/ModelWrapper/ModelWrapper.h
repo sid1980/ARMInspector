@@ -46,6 +46,7 @@ public:
         Unknown,
         User,
         Mro,
+        MroView,
         Nsi,
         RptColumn,
         UserView,
@@ -80,7 +81,8 @@ public:
         QHash<Model, QString> ListModel = {
             {Model::User, "user"},
             {Model::UserView, "v_user"},
-            {Model::Mro, "v_mro"},
+            {Model::Mro, "mro"},
+            {Model::MroView, "v_mro"},
             {Model::Inspection, "inspection"},
             {Model::Nsi, "nsi_"}
         };

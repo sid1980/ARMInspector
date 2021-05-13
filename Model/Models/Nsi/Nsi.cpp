@@ -68,7 +68,7 @@ void Nsi::read(const QJsonObject &jsonObj) {
 ///-----------------------------------------------------------------------------
 
 void Nsi::write(QJsonObject &jsonObj) const {
-    array<QString, 2> fld = Nsi::getFields();
+    array<QString, NSI_COLUMN> fld = Nsi::getFields();
     jsonObj[fld[Nsi::Column::ID]] = this->getId();
     jsonObj[fld[Nsi::Column::NAME]] = this->getName();
 

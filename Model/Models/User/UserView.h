@@ -63,8 +63,8 @@ public:
 
     ///Список названий полей базы
 
-    static array<QString, 4> getFields() {
-        return array<QString, USERV_COLUMN 4>{
+    static array<QString, USERV_COLUMN> getFields() {
+        return array<QString, USERV_COLUMN>{
             "id",
             "fio",
             "inspection",

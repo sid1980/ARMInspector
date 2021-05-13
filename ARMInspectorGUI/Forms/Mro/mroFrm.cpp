@@ -23,7 +23,7 @@
 mroFrm::mroFrm(QWidget *parent) :
 QDialog(parent), widget_(new Ui::mroFrm) {
     widget_->setupUi(this);
-    listmro_ = new ModelList<Mro>();
+    listmro_ = new ModelList<MroView>();
     proxyModel_ = new QSortFilterProxyModel(listmro_);
 
 }
@@ -58,7 +58,7 @@ Ui::mroFrm* mroFrm::getUI() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void mroFrm::setModel(const QList<Mro>& mro) {
+void mroFrm::setModel(const QList<MroView>& mro) {
     listmro_->setListModel(mro);
     proxyModel_->setSourceModel(listmro_);
     this->getUI()->tableView_Mro->setSortingEnabled(true); // enable sortingEnabled
@@ -81,16 +81,16 @@ void mroFrm::worker(const QString& asWrapper) {
     switch (command) {
         case ModelWrapper::Command::GET_LIST_MODELS:
         {
-            ItemContainer<Mro> mroContainer;
+            ItemContainer<MroView> mroContainer;
             JsonSerializer::parse(wrapper.getData(), mroContainer);
-            QList<Mro> listmro = mroContainer.getItemsList();
+            QList<MroView> listmro = mroContainer.getItemsList();
             setModel(listmro);
             emit ready();
         }
             break;
         case ModelWrapper::Command::ADD_NEW_MODEL:
         {
-            Mro mro;
+            MroView mro;
             JsonSerializer::parse(wrapper.getData(), mro);
             showData(mro);
             emit ready();
@@ -193,8 +193,8 @@ void mroFrm::on_pushButton_RemoveMro_clicked() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void mroFrm::showData(const Mro& asMro) {
-    Mro mro = asMro;
+void mroFrm::showData(const MroView& asMro) {
+    MroView mro = asMro;
     listmro_->addModel(mro);
     this->getUI()->tableView_Mro->selectRow(listmro_->rowCount() - 1);
     this->getUI()->tableView_Mro->scrollToBottom();

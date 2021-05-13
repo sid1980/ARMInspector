@@ -5,14 +5,14 @@
  */
 
 /* 
- * File:   Mro.h
- * Author: kazun_as
+ * File:   MroView.h
+ * Author: kazun
  *
- * Created on 20 апреля 2021 г., 15:36
+ * Created on 13 мая 2021 г., 20:11
  */
 
-#ifndef MRO_H
-#define MRO_H
+#ifndef MROVIEW_H
+#define MROVIEW_H
 #include <QtCore/QJsonObject>
 #include "JsonSerializable.h"
 #include <QVariant>
@@ -21,11 +21,10 @@
 #include <MQuery.h>
 #include "ModelWrapper.h"
 #include <array>
-#include <QSqlQuery>
-#define MRO_COLUMN 3
+#define MROVIEW_COLUMN 3
 using namespace std;
 
-class Mro : public JsonSerializable, Model {
+class MroView : public JsonSerializable, Model{
 public:
     static ModelWrapper::Model model_;
     enum Column {
@@ -34,14 +33,14 @@ public:
         INSPECTION
     };
 
-    Mro();
-    virtual ~Mro();
+    MroView();
+    virtual ~MroView();
     void setId(const qint64& id);
     void setName(const QString& name);
-    void setInspection(const qint64& inspection);
+    void setInspection(const QString& inspection);
     const qint64& getId()const;
     const QString& getName()const;
-    const qint64& getInspection()const;
+    const QString& getInspection()const;
     ///Функции сериализации объекта класса
     ///Считывание JSON объкта в поля класса
     void read(const QJsonObject &jsonObj);
@@ -61,11 +60,11 @@ public:
 
     ///Список названий полей базы
 
-    static array<QString, MRO_COLUMN> getFields() {
-        return array<QString, MRO_COLUMN>{
+    static array<QString, MROVIEW_COLUMN> getFields() {
+        return array<QString, MROVIEW_COLUMN>{
             "id",
             "name",
-            "id_inspection",};
+            "inspection",};
     }
 
 
@@ -80,23 +79,20 @@ public:
     virtual const QVariant getData(const int&) const;
     ///Установить  данные  модели.
     virtual void setData(const int&, const QVariant&);
-    ///привязать парвметры sql запроса к данным
-    void bindData(QSqlQuery* asSqlQuery);
-    ///сформировать sql запрос вставки новой записи
-    const QString& insert();
+
 
 
 private:
-    MQuery<Mro> query_;
+    MQuery<MroView> query_;
     //Поля класса
     ///Идентификатор пользователя
     qint64 id_;
     ///Название МРО 
     QString name_;
     ///Идентификатор инспекции
-    qint64 inspection_;
+    QString inspection_;
 
 };
 
-#endif /* MRO_H */
+#endif /* MROVIEW_H */
 
