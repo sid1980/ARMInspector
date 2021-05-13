@@ -98,70 +98,16 @@ void WorkerClient::process() {
         //                                  Команда на сервере выполнена успешно.
         //*******************************************************************************************************************************************
         switch (command) {
-            case ModelWrapper::Command::GET_LIST_MODELS:
-                ///-----------------------------------------------------------------------------
-                ///
-                ///                         GET_LIST_MODELS
-                ///          
-                ///-----------------------------------------------------------------------------
-                //Сервер вернул результат команды "GET_LIST_MODELS"  
-                //Процесс обработки возвращённого реультата.    
-
-                switch (model) {
-                    case ModelWrapper::Model::Mro:
-                    {
-                        ItemContainer<Mro> mroContainer;
-                        JsonSerializer::parse(wrapper.getData(), mroContainer);
-                        QList<Mro> mro = mroContainer.getItemsList();
-                        //QMessageBox::information(0, "Information Box", inspections[1].getName());
-                        emit listMroReady(mro);
-
-                    }
-                        break;
-                    case ModelWrapper::Model::Nsi:
-                    {
-                        //ItemContainer<Nsi> nsiContainer;
-                        //JsonSerializer::parse(wrapper.getData(), nsiContainer);
-                        //QList<Nsi> nsi = nsiContainer.getItemsList();
-                        //QMessageBox::information(0, "Information Box", nsi[1].getName());
-                        emit responseServer(m_aModelWrapperString);
-
-                    }
-                        break;
-                    case ModelWrapper::Model::Inspection:
-                    {
-                        ItemContainer<Inspection> inspectionContainer;
-                        JsonSerializer::parse(wrapper.getData(), inspectionContainer);
-                        QList<Inspection> inspections = inspectionContainer.getItemsList();
-                        //QMessageBox::information(0, "Information Box", inspections[1].getName());
-                        emit listInspectionsReady(inspections);
-
-                    }
-                        break;
-                    case ModelWrapper::Model::UserView:
-                    {
-                        //QMessageBox::information(0, "Information Box", "This is information text");
-                        ItemContainer<UserView> userContainer;
-                        JsonSerializer::parse(wrapper.getData(), userContainer);
-                        QList<UserView> users = userContainer.getItemsList();
-                        emit listUserReady(users);
-                        //dialog_->setModel(userContainer.getItemsList());
-                        //dialog_->getUI()->tableView->setModel(new ModelList<UserView>(userContainer.getItemsList()));
-                        //dialog_->showBox();
-
-                    }
-                        break;
-                }
+            case ModelWrapper::Command::SET_SESSION_ID:
+            {
+                ///Сообщить контроллеру клиента о небходимости
+                //установить ID сессии
+                emit setID(wrapper.getSessionID());
+            }
                 break;
-                ///-----------------------------------------------------------------------------
-                ///
-                ///                         LOGIN
-                ///          
-                ///-----------------------------------------------------------------------------
             case ModelWrapper::Command::LOGIN:
             {
                 //Сервер вернул результат команды "LOGIN"     
-                //Процесс обработки возвращённого реультата.    
                 User user;
                 JsonSerializer::parse(wrapper.getData(), user);
                 emit setSessionUser(user);
@@ -172,206 +118,12 @@ void WorkerClient::process() {
                 emit ready();
             }
                 break;
-                ///-----------------------------------------------------------------------------
-                ///
-                ///                         ADD_NEW_USER
-                ///          
-                ///-----------------------------------------------------------------------------
-            case ModelWrapper::Command::ADD_NEW_USER:
-            {
-                //Сервер вернул результат команды "ADD_NEW_USER"     
-                //Процесс обработки возвращённого реультата.  
-                //connect(this, SIGNAL(readyUserData(const User&)),
-                //        dialog_, SLOT(showUserData(const User&)));
-                //User user;
-                //JsonSerializer::parse(wrapper.getData(), user);
-
-                //dialog_->showNewUserData(user);
-                emit responseServer(wrapper.getData());
-                //emit readyUserData(user);
-                //emit ready();
-
-            }
-                break;
-                ///-----------------------------------------------------------------------------
-                ///
-                ///                         EDIT_USER
-                ///          
-                ///-----------------------------------------------------------------------------
-            case ModelWrapper::Command::EDIT_USER:
-            {
-                //Сервер вернул результат команды "EDIT_USER"     
-                User user;
-                JsonSerializer::parse(wrapper.getData(), user);
-
-                //dialog_->showUserData(user);
-                //emit readyUserData(user);
-                QMessageBox::information(0, "Редактирование пользовтеля",
-                        "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно отредактирован");
-                //dialog_->showEditUserData(user);
-                emit ready();
-
-            }
-                break;
-                ///-----------------------------------------------------------------------------
-                ///
-                ///                         CHANGE_PASSWORD
-                ///          
-                ///-----------------------------------------------------------------------------
-            case ModelWrapper::Command::CHANGE_PASSWORD:
-            {
-                //Сервер вернул результат команды "EDIT_USER"     
-                User user;
-                JsonSerializer::parse(wrapper.getData(), user);
-
-                //dialog_->showUserData(user);
-                //emit readyUserData(user);
-                QMessageBox::information(0, wrapper.getHead(), wrapper.getMessage() +
-                        QString(":<br><br> <a style='font-size:14px;color:royalblue'> ") + user.getName() + QString("</a>"));
-                //QMessageBox::information(0, "Редактирование пользовтеля",
-                //        "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно отредактирован");
-                //dialog_->showEditUserData(user);
-                emit ready();
-
-            }
-                break;
-                ///-----------------------------------------------------------------------------
-                ///
-                ///                         GET_MODEL
-                ///          
-                ///-----------------------------------------------------------------------------
-            case ModelWrapper::Command::GET_MODEL:
-            {
-                //Сервер вернул результат команды "GET_MODEL"     
-                switch (model) {
-                    case ModelWrapper::Model::User:
-                    {
-                        User user;
-                        JsonSerializer::parse(wrapper.getData(), user);
-                        //emit dialog_->showUserData(user);
-                        //QMessageBox::information(0, "Получение данных о пользователе",
-                        //        "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> ");
-                        //dialog_->fillUserEditFrm(user);
-                        emit userReady(user);
-                        //emit ready();
-
-                    }
-                        break;
-                    case ModelWrapper::Model::Nsi:
-                    {
-                        //Nsi nsi;
-                        //JsonSerializer::parse(wrapper.getData(), nsi);
-                        //emit dialog_->showUserData(user);
-                        //QMessageBox::information(0, "Получение данных о пользователе",
-                        //        "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> ");
-                        //dialog_->fillUserEditFrm(user);
-                        //emit nsiReady(nsi);
-                        emit responseServer(m_aModelWrapperString);
-                        //emit ready();
-
-                    }
-                        break;
-
-                }
-            }
-                break;
-                ///-----------------------------------------------------------------------------
-                ///
-                ///                         ADD_MODEL
-                ///          
-                ///-----------------------------------------------------------------------------
-            case ModelWrapper::Command::ADD_NEW_MODEL:
-            {
-                //Сервер вернул результат команды "ADD_NEW_MODEL"     
-                switch (model) {
-                    case ModelWrapper::Model::Nsi:
-                    {
-                        //Nsi nsi;
-                        //JsonSerializer::parse(wrapper.getData(), nsi);
-                        //QMessageBox::information(0, "НСИ",
-                        //        " <a style='color:royalblue'> " + nsi.getName() + "</a> ");
-                        emit responseServer(m_aModelWrapperString);
-
-                    }
-                        break;
-
-                }
-            }
-                break;
-                ///-----------------------------------------------------------------------------
-                ///
-                ///                         EDIT_MODEL
-                ///          
-                ///-----------------------------------------------------------------------------
-            case ModelWrapper::Command::EDIT_MODEL:
-            {
-                //Сервер вернул результат команды "EDIT_MODEL"     
-                ModelWrapper::Model model = wrapper.getEnumModel();
-                switch (model) {
-                    case ModelWrapper::Model::Nsi:
-                    {
-                        Nsi nsi;
-                        JsonSerializer::parse(wrapper.getData(), nsi);
-                        QMessageBox::information(Q_NULLPTR, "Worker", nsi.getName());
-                        emit responseServer(m_aModelWrapperString);
-                    }
-                        break;
-                }
-            }
-                break;
-
-                ///-----------------------------------------------------------------------------
-                ///
-                ///                         DEL_MODEL
-                ///          
-                ///-----------------------------------------------------------------------------
-            case ModelWrapper::Command::DEL_MODEL:
-            {
-                //Сервер вернул результат команды "DEL_MODEL"     
-                ModelWrapper::Model model = wrapper.getEnumModel();
-                switch (model) {
-                    case ModelWrapper::Model::User:
-                    {
-                        User user;
-                        JsonSerializer::parse(wrapper.getData(), user);
-                        //emit dialog_->showUserData(user);
-                        QMessageBoxEx::information(0, wrapper.getHead(), wrapper.getMessage() +
-                                "пользователя <a style='color:royalblue'> " + user.getFio() + "</a>");
-                        emit ready();
-
-                    }
-                        break;
-                    case ModelWrapper::Model::Nsi:
-                    {
-                        //Nsi nsi;
-                        //JsonSerializer::parse(wrapper.getData(), nsi);
-                        //emit dialog_->showUserData(user);
-                        //QMessageBoxEx::information(Q_NULLPTR, wrapper.getHead(), wrapper.getMessage() +
-                        //        " <a style='color:royalblue'> " + nsi.getName() + "</a>");
-                        emit responseServer(m_aModelWrapperString);
-
-                    }
-                        break;
-                }
-            }
-                break;
-
-                ///-----------------------------------------------------------------------------
-                ///
-                ///                         NOP
-                ///          
-                ///-----------------------------------------------------------------------------
             case ModelWrapper::Command::NOP:
             {
                 qInfo() << "Command is incorrect";
 
             }
                 break;
-                ///-----------------------------------------------------------------------------
-                ///
-                ///                         SERVER_RESPONSE
-                ///          
-                ///-----------------------------------------------------------------------------
             case ModelWrapper::Command::SERVER_RESPONSE:
             {
 
@@ -379,17 +131,17 @@ void WorkerClient::process() {
 
             }
                 break;
-                ///-----------------------------------------------------------------------------
-                ///
-                ///                         SET_SESSION_ID
-                ///          
-                ///-----------------------------------------------------------------------------
-            case ModelWrapper::Command::SET_SESSION_ID:
-            {
-                ///Сообщить контроллеру клиента о небходимости
-                //установить ID сессии
-                emit setID(wrapper.getSessionID());
-            }
+            case ModelWrapper::Command::GET_LIST_MODELS:
+            case ModelWrapper::Command::ADD_NEW_USER:
+            case ModelWrapper::Command::EDIT_USER:
+            case ModelWrapper::Command::CHANGE_PASSWORD:
+            case ModelWrapper::Command::GET_MODEL:
+            case ModelWrapper::Command::ADD_NEW_MODEL:
+            case ModelWrapper::Command::UPDATE_MODEL:
+            case ModelWrapper::Command::DEL_MODEL:
+                emit responseServer(m_aModelWrapperString);
+                break;
+            default:
                 break;
         }
     } else {
@@ -397,7 +149,7 @@ void WorkerClient::process() {
         //                                  Ошибка выполнения команды на сервере.
         //*******************************************************************************************************************************************
         QMessageBoxEx::setCustomTextForButton(QMessageBox::Yes, "Да");
-        QMessageBoxEx::critical(Q_NULLPTR, wrapper.getHead(), wrapper.getMessage());
+        QMessageBoxEx::critical(Q_NULLPTR, wrapper.getHead(), "Ошибка " + wrapper.getMessage());
     }
 }
 

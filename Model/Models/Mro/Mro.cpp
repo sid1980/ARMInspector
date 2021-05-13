@@ -11,11 +11,12 @@
  * Created on 20 апреля 2021 г., 15:36
  */
 
-#include "Mro/Mro.h" 
+#include "Mro/Mro.h"
+#include "Nsi/Nsi.h" 
 
-ModelWrapper::Model  Mro::model_={ModelWrapper::Model::Mro};
+ModelWrapper::Model Mro::model_ = {ModelWrapper::Model::Mro};
 
-Mro::Mro() : id_(0), name_(""), inspection_(0) {
+Mro::Mro() : id_(0), name_(""), inspection_("") {
 }
 
 Mro::~Mro() {
@@ -29,7 +30,7 @@ void Mro::setName(const QString& name) {
     name_ = name;
 };
 
-void Mro::setInspection(const qint64& inspection) {
+void Mro::setInspection(const QString& inspection) {
     inspection_ = inspection;
 };
 
@@ -41,7 +42,7 @@ const QString& Mro::getName() const {
     return name_;
 };
 
-const qint64& Mro::getInspection() const {
+const QString&Mro::getInspection() const {
     return inspection_;
 };
 
@@ -54,9 +55,14 @@ const qint64& Mro::getInspection() const {
 ///-----------------------------------------------------------------------------
 
 void Mro::read(const QJsonObject &jsonObj) {
-    this->setId(jsonObj["id"].toInt());
-    this->setName(jsonObj["name"].toString());
-    this->setInspection(jsonObj["id_inspection"].toInt());
+    array<QString, MRO_COLUMN> fld = Mro::getFields();
+    this->setId(jsonObj[fld[Mro::Column::ID]].toInt());
+    this->setName(jsonObj[fld[Mro::Column::NAME]].toString());
+    this->setName(jsonObj[fld[Mro::Column::INSPECTION]].toString());
+
+    //this->setId(jsonObj["id"].toInt());
+    //this->setName(jsonObj["name"].toString());
+    //this->setInspection(jsonObj["id_inspection"].toInt());
 };
 
 ///-----------------------------------------------------------------------------
@@ -67,10 +73,10 @@ void Mro::read(const QJsonObject &jsonObj) {
 ///-----------------------------------------------------------------------------
 
 void Mro::write(QJsonObject &jsonObj) const {
-
-    jsonObj["id"] = this->getId();
-    jsonObj["name"] = this->getName();
-    jsonObj["id_inspection"] = this->getInspection();
+    array<QString, MRO_COLUMN> fld = Mro::getFields();
+    jsonObj[fld[Mro::Column::ID]] = this->getId();
+    jsonObj[fld[Mro::Column::NAME]] = this->getName();
+    jsonObj[fld[Mro::Column::INSPECTION]] = this->getInspection();
 
 };
 
@@ -85,11 +91,11 @@ void Mro::write(QJsonObject &jsonObj) const {
 const QVariant Mro::getData(const int& position) const {
 
     switch (position) {
-        case 0:
+        case Mro::Column::ID:
             return this->getId();
-        case 1:
+        case Mro::Column::NAME:
             return this->getName();
-        case 2:
+        case Mro::Column::INSPECTION:
             return this->getInspection();
         default:
             return 0;
@@ -106,18 +112,63 @@ const QVariant Mro::getData(const int& position) const {
 
 void Mro::setData(const int& position, const QVariant& value) {
     switch (position) {
-        case 0:
+        case Mro::Column::ID:
             this->setId(value.toInt());
             break;
-        case 1:
+        case Mro::Column::NAME:
             this->setName(value.toString());
             break;
-        case 2:
-            this->setInspection(value.toInt());
+        case Mro::Column::INSPECTION:
+            this->setInspection(value.toString());
             break;
         default:
             break;
     }
 
 };
+
+
+///-----------------------------------------------------------------------------
+///
+///
+///         Привязать данные к запросу. 
+///
+///
+///-----------------------------------------------------------------------------
+
+void Mro::bindData(QSqlQuery* asSqlQuery) {
+    qInfo() << "Mro::bindData";
+    QList<int> list = query_.getBindColumnList();
+    if (!list.isEmpty()) {
+        array<QString, MRO_COLUMN> fld = Mro::getFields();
+        for (int i = 0; i < list.size(); i++) {
+            qInfo() << QString::number(list.at(i));
+            switch (list.at(i)) {
+                case Mro::Column::ID:
+                    asSqlQuery->bindValue(":" + fld[Mro::Column::ID], this->getId());
+                    break;
+                case Mro::Column::NAME:
+                    asSqlQuery->bindValue(":" + fld[Mro::Column::NAME], this->getName());
+                    break;
+                case Mro::Column::INSPECTION:
+                    asSqlQuery->bindValue(":" + fld[Mro::Column::INSPECTION], this->getInspection());
+                    break;
+            }
+        }
+        //QMessageBox::information(0, "Information Box", this->getName());
+    }
+}
+
+
+///-----------------------------------------------------------------------------
+///
+///         Добавить запись в справочник . 
+///
+///
+///-----------------------------------------------------------------------------
+
+const QString& Mro::insert() {
+    qInfo() << "Mro::insert()";
+    return query_.insert()->field(Mro::Column::NAME)->prepare();
+}
 

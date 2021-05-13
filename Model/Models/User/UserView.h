@@ -27,8 +27,10 @@
 #include <array>
 #include <MQuery.h>
 #include "ModelWrapper.h"
+#define USERV_COLUMN 4
 
 using namespace std;
+
 
 class UserView : public JsonSerializable, Model {
 public:
@@ -62,7 +64,7 @@ public:
     ///Список названий полей базы
 
     static array<QString, 4> getFields() {
-        return array<QString, 4>{
+        return array<QString, USERV_COLUMN 4>{
             "id",
             "fio",
             "inspection",

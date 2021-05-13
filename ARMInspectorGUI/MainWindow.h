@@ -25,16 +25,24 @@ public:
     MainWindow();
     virtual ~MainWindow();
     void initClient(ClientController *clientController);
+    ///создать сигнально-слотовые соединения
+    ///между основноё формой и формой ввода-редактирования 
+    void createUserConnector(const Dialog& frm);
 signals:
     ///Запросить данные у сервера
     void runServerCmd(const QString&);
+    ///сигнал завершения операции и готовности
+    ///к выполнению следующей операций
+    void ready();
     ///ждать ответ  сервера 
     void waitReady();
-
+    ///ответ сервера
+    void responseServer(const QString&);
 
 private slots:
     void ListUsers();
     void OnExit();
+
 private:
     Ui::MainWindow widget;
     ///Контроллер клиента.

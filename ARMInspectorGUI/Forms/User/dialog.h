@@ -56,11 +56,19 @@ public:
     ~Dialog();
     ///Получить ссылку на виджет
     Ui::dialog* getUI();
-    ///Инициализация ссылки на контроллер клинта
-    void initClient(ClientController *clientController);
 
     ///вывести на экран  окно списка пользователей
     void showBox();
+    ///показать отредактированные данные о  пользователе в  окне списка пользователей
+    void showEditUserData(const User&);
+    ///определить модель вывода данных
+    void setModel(const QList<UserView>& nsi);
+    //Показать новую добавленную запись в списке пользователей
+    void showNewUserData(const User&);
+    //Данные пользователя
+    void fillUserEditFrm(const User& user);
+    //установить список инспекций
+    void setListInspections(const QList<Inspection>&);
 private slots:
     ///обработчик кнопки добавления пользователя
     void on_pushButton_addUser_clicked();
@@ -70,36 +78,15 @@ private slots:
     void on_pushButton_deleteUser_clicked();
     ///обработчик кнопки удаления  пользователя
     void on_pushButton_changePassword_clicked();
-    //установить список инспекций
-    void setListInspections(const QList<Inspection>&);
 public slots:
-    ///показать отредактированные данные о  пользователе в  окне списка пользователей
-    void showEditUserData(const User&);
-    ///определить модель вывода данных
-    void setModel(const QList<UserView>& nsi);
-    //Показать новую добавленную запись в списке пользователей
-    void showNewUserData(const QString&);
-    //Данные пользователя
-    void fillUserEditFrm(const User& user);
+    ///Обработчик команд (ответов) сервера
+    void worker(const QString& asWrapper);
+
 signals:
     ///Сигнализировать о завершении процесса обработки сообщения от сервера.
     void ready();
-
     ///Запросить данные у сервера
     void runServerCmd(const QString&);
-    ///заменить пароль пользователя
-    void setPwd(const User&);
-    ///пользователе подготовлены и необходимо их передать на сервер
-    void addUser(const User&);
-    ///сигнализировать  о  готовности передать на сервер отредактированные 
-    ///данные  выбранного  пользователя
-    void updateUser(const User&);
-    ///сигнализировать  о  необходимости получить от сервера данные о
-    ///пользователе
-    void getUserData(const qint64&);
-    ///сигнализировать  о  необходимости удалить на сервере данные о
-    ///пользователе
-    void deleteUser(const qint64&);
     ///ждать ответ  сервера 
     void waitReady();
 

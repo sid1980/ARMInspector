@@ -81,30 +81,6 @@ Ui::dialog* Dialog::getUI() {
     return ui;
 }
 
-///-----------------------------------------------------------------------------
-///
-///         Инициализация ссылки на контроллер клиента.
-///          
-///-----------------------------------------------------------------------------
-
-void Dialog::initClient(ClientController *clientController) {
-    m_pClientController = clientController;
-    // Сигнально-слотовое соединение, сигнализирующее, что   контроллер комманд
-    // готов вернуть  результат  выполнения запроса к серверу.
-    connect(this, SIGNAL(ready()), m_pClientController, SLOT(formReady()));
-    ///выполнить команду на сервере
-    connect(this, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
-    //Данные пользователя
-    connect(m_pClientController, SIGNAL(userReady(const User&)), this, SLOT(fillUserEditFrm(const User&)));
-    //установить модель TableView после получения списка моделей (в данном случае пользователей)
-    connect(m_pClientController, SIGNAL(asUserList(const QList<UserView>&)), this, SLOT(setModel(const QList<UserView>&)));
-    //установить модель TableView после получения списка моделей (в данном случае пользователей)
-    connect(m_pClientController, SIGNAL(asInspectionList(const QList<Inspection>&)), this, SLOT(setListInspections(const QList<Inspection>&)));
-    //Показать новую запись после ответа сервера
-    connect(m_pClientController, SIGNAL(responseServer(const QString&)), this, SLOT(showNewUserData(const QString&)));
-    //// Сигнально-слотовое соединение  ожидания ответа от сервера.
-    connect(this, SIGNAL(waitReady()), m_pClientController, SLOT(waitReady()));
-};
 
 
 
@@ -114,9 +90,8 @@ void Dialog::initClient(ClientController *clientController) {
 ///          
 ///-----------------------------------------------------------------------------
 
-void Dialog::showNewUserData(const QString& asUser) {
-    User user;
-    JsonSerializer::parse(asUser, user);
+void Dialog::showNewUserData(const User& asUser) {
+    User user = asUser;
     //table2->selectRow(current.row());
     userview_->setId(user.getId());
     userview_->setFio(user.getFio());
@@ -151,6 +126,135 @@ void Dialog::showEditUserData(const User& user) {
 }
 
 
+///-----------------------------------------------------------------------------
+///
+///         Обработать команду (ответ) сервера.
+///          
+///-----------------------------------------------------------------------------
+
+void Dialog::worker(const QString& asWrapper) {
+    ModelWrapper wrapper;
+    //Разворачиваем командную обёртку.
+    JsonSerializer::parse(asWrapper, wrapper);
+    ModelWrapper::Command command = wrapper.getEnumCommand();
+    ModelWrapper::Model model = wrapper.getEnumModel();
+    switch (command) {
+            ///-----------------------------------------------------------------------------
+            ///
+            ///                         GET_LIST_MODELS
+            ///          
+            ///-----------------------------------------------------------------------------
+            //Сервер вернул результат команды "GET_LIST_MODELS"  
+
+        case ModelWrapper::Command::GET_LIST_MODELS:
+        {
+            //Сервер вернул результат команды "GET_LIST_MODELS"  
+            //Процесс обработки возвращённого реультата.    
+
+            switch (model) {
+                case ModelWrapper::Model::Inspection:
+                {
+                    ItemContainer<Inspection> inspectionContainer;
+                    JsonSerializer::parse(wrapper.getData(), inspectionContainer);
+                    QList<Inspection> inspections = inspectionContainer.getItemsList();
+                    setListInspections(inspections);
+                    emit ready();
+                }
+                    break;
+                case ModelWrapper::Model::UserView:
+                {
+                    ItemContainer<UserView> userContainer;
+                    JsonSerializer::parse(wrapper.getData(), userContainer);
+                    QList<UserView> users = userContainer.getItemsList();
+                    setModel(users);
+                    emit ready();
+
+                }
+                    break;
+                default:
+                    break;
+            }
+        }
+            break;
+            ///-----------------------------------------------------------------------------
+            ///
+            ///                         ADD_NEW_USER
+            ///          
+            ///-----------------------------------------------------------------------------
+        case ModelWrapper::Command::ADD_NEW_USER:
+        {
+            //Сервер вернул результат команды "ADD_NEW_USER"     
+            User user;
+            JsonSerializer::parse(wrapper.getData(), user);
+            showNewUserData(user);
+            emit ready();
+
+        }
+            break;
+
+            ///-----------------------------------------------------------------------------
+            ///
+            ///                         EDIT_USER
+            ///          
+            ///-----------------------------------------------------------------------------
+        case ModelWrapper::Command::EDIT_USER:
+        {
+            //Сервер вернул результат команды "EDIT_USER"     
+            User user;
+            JsonSerializer::parse(wrapper.getData(), user);
+            QMessageBox::information(0, "Редактирование пользовтеля",
+                    "Пользователь <a style='color:royalblue'> " + user.getFio() + "</a> успешно отредактирован");
+            showEditUserData(user);
+            emit ready();
+
+        }
+            break;
+            ///-----------------------------------------------------------------------------
+            ///
+            ///                         CHANGE_PASSWORD
+            ///          
+            ///-----------------------------------------------------------------------------
+        case ModelWrapper::Command::CHANGE_PASSWORD:
+        {
+            //Сервер вернул результат команды "CHANGE_PASSWORD"     
+            User user;
+            JsonSerializer::parse(wrapper.getData(), user);
+            QMessageBox::information(0, wrapper.getHead(), wrapper.getMessage() +
+                    QString(":<br><br> <a style='font-size:14px;color:royalblue'> ") + user.getName() + QString("</a>"));
+            emit ready();
+        }
+            break;
+
+            ///-----------------------------------------------------------------------------
+            ///
+            ///                         GET_MODEL
+            ///          
+            ///-----------------------------------------------------------------------------
+        case ModelWrapper::Command::GET_MODEL:
+        {
+            User user;
+            JsonSerializer::parse(wrapper.getData(), user);
+            fillUserEditFrm(user);
+            emit ready();
+
+        }
+            break;
+
+        case ModelWrapper::Command::DEL_MODEL:
+        {
+            //Сервер вернул результат команды "DEL_MODEL"     
+            User user;
+            JsonSerializer::parse(wrapper.getData(), user);
+            //emit dialog_->showUserData(user);
+            QMessageBoxEx::information(0, wrapper.getHead(), wrapper.getMessage() +
+                    "пользователя <a style='color:royalblue'> " + user.getFio() + "</a>");
+            emit ready();
+        }
+            break;
+        default:
+            break;
+    }
+}
 
 
 ///-----------------------------------------------------------------------------
@@ -181,7 +285,6 @@ void Dialog::fillUserEditFrm(const User& user) {
             allButtons[i - 1]->setChecked(true);
         }
     }
-    emit ready();
 }
 
 
@@ -196,7 +299,6 @@ void Dialog::setListInspections(const QList<Inspection>& inspections) {
     //QMessageBox::information(0, "Information Box", inspections[1].getName());
     usrFrm_->setInspections(inspections);
     usrEdtFrm_->setInspections(inspections);
-    emit ready();
 };
 
 ///-----------------------------------------------------------------------------

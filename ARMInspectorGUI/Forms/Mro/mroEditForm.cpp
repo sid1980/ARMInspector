@@ -5,38 +5,32 @@
  */
 
 /*
- * File:   mroFrm.cpp
+ * File:   mroEditForm.cpp
  * Author: kazun_as
  *
- * Created on 4 мая 2021 г., 16:28
+ * Created on 13 мая 2021 г., 14:47
  */
 
-#include "mroFrm.h"
-
+#include "mroEditForm.h"
 ///-----------------------------------------------------------------------------
 ///
 ///         Конструктор.
 ///          
 ///-----------------------------------------------------------------------------
 
-mroFrm::mroFrm(QWidget *parent) :
-QDialog(parent), widget_(new Ui::mroFrm) {
+mroEditForm::mroEditForm(QWidget *parent) :
+QDialog(parent), widget_(new Ui::mroEditForm) {
     widget_->setupUi(this);
-    listmro_ = new ModelList<Mro>();
-    proxyModel_ = new QSortFilterProxyModel(listmro_);
-
 }
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Деструктор.
 ///          
 ///-----------------------------------------------------------------------------
 
-mroFrm::~mroFrm() {
+mroEditForm::~mroEditForm() {
     delete widget_;
-    delete listmro_;
-    delete proxyModel_;
-
 }
 
 
@@ -46,22 +40,6 @@ mroFrm::~mroFrm() {
 ///          
 ///-----------------------------------------------------------------------------
 
-Ui::mroFrm* mroFrm::getUI() {
+Ui::mroEditForm* mroEditForm::getUI() {
     return widget_;
-}
-
-
-///-----------------------------------------------------------------------------
-///
-///         определить модель вывода данных
-///          
-///-----------------------------------------------------------------------------
-
-void mroFrm::setModel(const QList<Mro>& mro) {
-    listmro_->setListModel(mro);
-    proxyModel_->setSourceModel(listmro_);
-    this->getUI()->tableView_Mro->setSortingEnabled(true); // enable sortingEnabled
-    this->getUI()->tableView_Mro->setModel(proxyModel_);
-    emit ready();
-    //this->getUI()->tableView->setSpan(0,1,2,2);
 }

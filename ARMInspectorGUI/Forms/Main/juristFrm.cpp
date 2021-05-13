@@ -89,6 +89,7 @@ juristFrm::~juristFrm() {
     delete model_;
     delete m_pMenuBar;
 }
+
 ///-----------------------------------------------------------------------------
 ///
 ///         getMenuBar.
@@ -108,6 +109,11 @@ QMenuBar * juristFrm::getMenuBar() {
 void juristFrm::OnGenerateReport() {
     //QVBoxLayout *layout = new QVBoxLayout;
     //ayout->addWidget(widget->tableView);
+    ///получен ответ от сервера в виде строки
+    connect(this, SIGNAL(responseServer(const QString&)), this, SLOT(worker(const QString&)));
+    QJsonObject param;
+    emit runServerCmd(Functor<Mro>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
+    emit waitReady();
     this->showControlsFrm();
     report();
     //QMessageBox::information(0, "Menu", "Отчёт Приложение 1");
@@ -156,6 +162,7 @@ void juristFrm::OnInspection() {
     QMessageBox::information(this, "АРМ Юриста", "OnInspection()");
 
 }
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Меню.Список МРО.
@@ -163,8 +170,16 @@ void juristFrm::OnInspection() {
 ///-----------------------------------------------------------------------------
 
 void juristFrm::OnMro() {
-    QMessageBox::information(this, "АРМ Юриста", "OnMro()");
-
+    //QMessageBox::information(this, "АРМ Юриста", "OnMro()");
+    mroFrm* frm = new mroFrm();
+    createFrmConnector(*frm);
+    //frm->initClient(this->m_pClientController);
+    QJsonObject param;
+    emit runServerCmd(Functor<Mro>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
+    emit waitReady();
+    frm->setWindowTitle("МРО");
+    frm->setSizeTbl(553, 200);
+    frm->exec();
 }
 
 ///-----------------------------------------------------------------------------
@@ -176,7 +191,7 @@ void juristFrm::OnMro() {
 void juristFrm::OnArticle() {
     //QMessageBox::information(this, "АРМ Юриста", "Статьи КоАП");
     nsiFrm* frm = new nsiFrm();
-    connectNsi(*frm);
+    createFrmConnector(*frm);
     //frm->initClient(this->m_pClientController);
     QJsonObject param;
     Nsi::num_ = NSI_ARTICLE;
@@ -191,15 +206,15 @@ void juristFrm::OnArticle() {
 
 ///-----------------------------------------------------------------------------
 ///
-///         connectNsi
+///         сигнально-слотовое соединение juristFrm<---->nsiFrm
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::connectNsi(const nsiFrm& frm) {
+void juristFrm::createFrmConnector(const QDialog& frm) {
     ///выполнить команду на сервере
     connect(&frm, SIGNAL(runServerCmd(const QString&)), this, SIGNAL(runServerCmd(const QString&)));
     ///получен ответ от сервера в виде строки
-    connect(this, SIGNAL(responseServer(const QString&)),&frm, SLOT(worker(const QString&)));
+    connect(this, SIGNAL(responseServer(const QString&)), &frm, SLOT(worker(const QString&)));
     // Сигнально - слотовое соединение ожидания ответа от сервера.
     connect(&frm, SIGNAL(waitReady()), this, SIGNAL(waitReady()));
     ///сигнал завершения процесса обработки
@@ -210,6 +225,7 @@ void juristFrm::connectNsi(const nsiFrm& frm) {
 ///-----------------------------------------------------------------------------
 ///
 ///         Инициализация ссылки на контроллер клиента.
+///         сигнально-слотовое соединение juristFrm<---->m_pClientController
 ///          
 ///-----------------------------------------------------------------------------
 
@@ -231,30 +247,67 @@ void juristFrm::initClient(ClientController *clientController) {
 
 ///-----------------------------------------------------------------------------
 ///
+///         Обработать команду (ответ) сервера.
+///          
+///-----------------------------------------------------------------------------
+
+void juristFrm::worker(const QString& asWrapper) {
+    ModelWrapper wrapper;
+    //Разворачиваем командную обёртку.
+    JsonSerializer::parse(asWrapper, wrapper);
+    ModelWrapper::Command command = wrapper.getEnumCommand();
+    ModelWrapper::Model model = wrapper.getEnumModel();
+    switch (command) {
+            ///-----------------------------------------------------------------------------
+            ///
+            ///                         GET_LIST_MODELS
+            ///          
+            ///-----------------------------------------------------------------------------
+            //Сервер вернул результат команды "GET_LIST_MODELS"  
+
+        case ModelWrapper::Command::GET_LIST_MODELS:
+        {
+            //Сервер вернул результат команды "GET_LIST_MODELS"  
+            //Процесс обработки возвращённого реультата.    
+
+            switch (model) {
+                case ModelWrapper::Model::Mro:
+                {
+                    ItemContainer<Mro> mroContainer;
+                    JsonSerializer::parse(wrapper.getData(), mroContainer);
+                    QList<Mro> listmro = mroContainer.getItemsList();
+                    setlistMro(listmro);
+                    emit ready();
+                }
+                    break;
+                default:
+                    break;
+            }
+        }
+            break;
+        default:
+            break;
+    }
+}
+
+
+///-----------------------------------------------------------------------------
+///
 ///         Справочник субъектов АП.
 ///          
 ///-----------------------------------------------------------------------------
 
 void juristFrm::OnSubject() {
-    //QMessageBox::information(this, "АРМ Юриста", "Статьи КоАП");
-    //nsiFrm frm;
-    ///получить список записей справочника НСИ
     nsiFrm* frm = new nsiFrm();
-    connect(m_pClientController, SIGNAL(listNsiReady(const QList<Nsi>&)),
-            frm, SLOT(setModel(const QList<Nsi>&)));
-
-    connect(frm, SIGNAL(ready()), m_pClientController, SIGNAL(ready()));
-    connect(m_pClientController, SIGNAL(responseServer(const QString&)), frm, SLOT(showData(const QString&)));
-    connect(frm, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
-    connect(this, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
+    createFrmConnector(*frm);
+    //frm->initClient(this->m_pClientController);
     QJsonObject param;
     Nsi::num_ = NSI_SUBJECT;
     param.insert(NSI_NUM, Nsi::num_);
     emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
-    frm->setWindowTitle("Субъекты АП");
     emit waitReady();
+    frm->setWindowTitle("Субъекты АП");
     frm->setSizeTbl(353, 200);
-    //frm->setAttribute(Qt::WA_DeleteOnClose);
     frm->exec();
 }
 

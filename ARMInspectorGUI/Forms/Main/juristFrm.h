@@ -22,6 +22,7 @@
 #include <QStandardItemModel>
 #include "ClientController.h"
 #include "Mro/Mro.h"
+#include "Mro/mroFrm.h"
 #include "Nsi/nsiFrm.h"
 #include "DialogDestroyer.h"
 
@@ -44,8 +45,12 @@ public:
     void OnMro();
     void OnArticle();
     void OnSubject();
-    void connectNsi(const nsiFrm&);
+    ///создать сигнально-слотовые соединения
+    ///между основноё формой и формой ввода-редактирования 
+    void createFrmConnector(const QDialog&);
     //void closeEvent(QCloseEvent *event);
+    void setlistMro(const QList<Mro>&);
+
 signals:
     ///сигнал готовности
     void ready();
@@ -62,8 +67,9 @@ signals:
 
 private slots:
     void onTableClicked(const QModelIndex &);
-    void setlistMro(const QList<Mro>&);
     void on_pushButton_Report_clicked();
+    ///Обработчик команд (ответов) сервера
+    void worker(const QString& asWrapper);
 private:
     Ui::juristFrm widget;
     QMenuBar * m_pMenuBar;

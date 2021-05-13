@@ -56,6 +56,7 @@ private slots:
     void on_pushButton_editNsi_clicked();
     ///обработчик кнопки удаления  записи НСИ
     void on_pushButton_deleteNsi_clicked();
+    ///Обработчик команд (ответов) сервера
     void worker(const QString& );
 
 signals:
@@ -63,7 +64,6 @@ signals:
     ///Запросить данные у сервера
     void runServerCmd(const QString&);
     ///сигнализировать  о  необходимости  ожидания ответа от сервера 
-    ///с результатом предыдущей операции
     void waitReady();
 
 private:

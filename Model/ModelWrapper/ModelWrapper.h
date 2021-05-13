@@ -31,7 +31,7 @@ public:
         DEL_MODEL,
         ADD_NEW_USER,
         ADD_NEW_MODEL,
-        EDIT_MODEL,
+        UPDATE_MODEL,
         EDIT_USER,
         CHANGE_PASSWORD,
         SERVER_RESPONSE,
@@ -64,7 +64,7 @@ public:
         {Command::ADD_NEW_MODEL, "Добавить новую запись."},
         {Command::CHANGE_PASSWORD, "Изменить пароль пользователя."},
         {Command::EDIT_USER, "Редактировать пользователя."},
-        {Command::EDIT_MODEL, "Редактировать млдель."},
+        {Command::UPDATE_MODEL, "Редактировать млдель."},
         {Command::GET_MODEL, "Получить экземпляр модели."},
         {Command::DEL_MODEL, "Удалить  экземпляр модели."},
         {Command::SERVER_RESPONSE, "Сообщение  сервера."},
@@ -80,7 +80,7 @@ public:
         QHash<Model, QString> ListModel = {
             {Model::User, "user"},
             {Model::UserView, "v_user"},
-            {Model::Mro, "mro"},
+            {Model::Mro, "v_mro"},
             {Model::Inspection, "inspection"},
             {Model::Nsi, "nsi_"}
         };

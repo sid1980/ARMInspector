@@ -17,6 +17,9 @@
 #include "ui_mroFrm.h"
 #include "Mro/Mro.h"
 #include "ModelList.h"
+#include "mroEditForm.h"
+#include "Functor.h"
+#include "MQuery.h"
 
 class mroFrm : public QDialog {
     Q_OBJECT
@@ -26,11 +29,29 @@ public:
     ~mroFrm();
     ///Получить ссылку на виджет
     Ui::mroFrm* getUI();
-private slots:
+    ///Установить размер таблицы
+    void setSizeTbl(const int& width, const int& height);
     ///определить модель вывода данных
     void setModel(const QList<Mro>& mro);
+    ///показать данные МРО
+    void showData(const Mro& asMro);
+private slots:
+    ///обработчик кнопки добавления записи НСИ
+    void on_pushButton_AddMro_clicked();
+    ///обработчик кнопки редактирования записи НСИ
+    void on_pushButton_EditMro_clicked();
+    ///обработчик кнопки удаления  записи НСИ
+    void on_pushButton_RemoveMro_clicked();
+
+    ///Обработчик команд (ответов) сервера
+    void worker(const QString&);
+
 signals:
     void ready();
+    ///Запросить данные у сервера
+    void runServerCmd(const QString&);
+    ///сигнализировать  о  необходимости  ожидания ответа от сервера 
+    void waitReady();
 private:
     Ui::mroFrm *widget_;
     ///ссылка на модель  данных 

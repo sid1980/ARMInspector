@@ -38,7 +38,7 @@ void MainWindow::ListUsers() {
     //QMessageBox::information(0, "АРМ Администратора", "Список пользователей");
     //m_pClientController->getListModels(ModelWrapper::Model::UserView);
     Dialog* frm = new Dialog();
-    frm->initClient(this->m_pClientController);
+    createUserConnector(*frm);
     QJsonObject param;
     emit runServerCmd(Functor<UserView>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
     emit waitReady();
@@ -47,6 +47,47 @@ void MainWindow::ListUsers() {
     frm->showBox();
     //delete frm;
 }
+
+///-----------------------------------------------------------------------------
+///
+///         сигнально-слотовое соединение MainWindow<---->Dialog
+///          
+///-----------------------------------------------------------------------------
+
+void MainWindow::createUserConnector(const Dialog& frm) {
+    ///выполнить команду на сервере
+    connect(&frm, SIGNAL(runServerCmd(const QString&)), this, SIGNAL(runServerCmd(const QString&)));
+    ///получен ответ от сервера в виде строки
+    connect(this, SIGNAL(responseServer(const QString&)), &frm, SLOT(worker(const QString&)));
+    // Сигнально - слотовое соединение ожидания ответа от сервера.
+    connect(&frm, SIGNAL(waitReady()), this, SIGNAL(waitReady()));
+    ///сигнал завершения процесса обработки
+    connect(&frm, SIGNAL(ready()), this, SIGNAL(ready()));
+
+}
+
+///-----------------------------------------------------------------------------
+///
+///         initClient
+///          
+///-----------------------------------------------------------------------------
+
+void MainWindow::initClient(ClientController * clientController) {
+    m_pClientController = clientController;
+    ///сигнал завершения процесса обработки
+    connect(this, SIGNAL(ready()), m_pClientController, SLOT(formReady()));
+    // Сигнально - слотовое соединение ожидания ответа от сервера.
+    connect(this, SIGNAL(waitReady()), m_pClientController, SLOT(waitReady()));
+    ///выполнить команду на сервере
+    connect(this, SIGNAL(runServerCmd(const QString&)), m_pClientController,
+            SLOT(runServerCmd(const QString&)));
+    ///получен ответ от сервера в виде строки
+    connect(m_pClientController, SIGNAL(responseServer(const QString&)),
+            this, SIGNAL(responseServer(const QString&)));
+
+};
+
+
 
 ///-----------------------------------------------------------------------------
 ///
@@ -69,20 +110,6 @@ void MainWindow::OnExit() {
 }
 
 
-///-----------------------------------------------------------------------------
-///
-///         initClient
-///          
-///-----------------------------------------------------------------------------
-
-void MainWindow::initClient(ClientController * clientController) {
-    m_pClientController = clientController;
-    connect(this, SIGNAL(runServerCmd(const QString&)), m_pClientController, SLOT(runServerCmd(const QString&)));
-    // Сигнально-слотовое соединение  ожидания ответа от сервера.
-    connect(this, SIGNAL(waitReady()), m_pClientController, SLOT(waitReady()));
-
-
-};
 
 
 

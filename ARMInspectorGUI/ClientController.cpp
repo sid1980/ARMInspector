@@ -50,18 +50,6 @@ void ClientController::init(ServerClient *apServerClient) {
     connect(m_pWorkerClient, SIGNAL(responseServer(const QString&)), SIGNAL(responseServer(const QString&)));
     ///необходимо установить данные сессионного пользователя
     connect(m_pWorkerClient, SIGNAL(setSessionUser(const User&)), SLOT(setSessionUser(const User&)));
-    ///данные о пользователе получены от сервера
-    connect(m_pWorkerClient, SIGNAL(userReady(const User&)), this, SIGNAL(userReady(const User&)));
-    ///список МРО получен от сервера 
-    connect(m_pWorkerClient, SIGNAL(listMroReady(const QList<Mro>&)), this,
-            SIGNAL(listMroReady(const QList<Mro>&)));
-    ///список инспекций  получен от сервера 
-    connect(m_pWorkerClient, SIGNAL(listInspectionsReady(const QList<Inspection>&)), this,
-            SIGNAL(listInspectionsReady(const QList<Inspection>&)));
-
-    ///список пользователей получен от сервера 
-    connect(m_pWorkerClient, SIGNAL(listUserReady(const QList<UserView>&)), this,
-            SIGNAL(listUserReady(const QList<UserView>&)));
 
 }
 ///Установить идентификатор сессии

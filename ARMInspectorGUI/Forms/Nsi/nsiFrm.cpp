@@ -82,7 +82,7 @@ void nsiFrm::worker(const QString& asWrapper) {
             emit ready();
         }
             break;
-        case ModelWrapper::Command::EDIT_MODEL:
+        case ModelWrapper::Command::UPDATE_MODEL:
         {
             //QMessageBox::information(this, "АРМ Юриста", asWrapper);
             Nsi nsi;
@@ -99,6 +99,8 @@ void nsiFrm::worker(const QString& asWrapper) {
                     " <a style='color:royalblue'> " + nsi.getName() + "</a>");
             emit ready();
         }
+            break;
+        default:
             break;
     }
 }
@@ -157,7 +159,7 @@ void nsiFrm::on_pushButton_addNsi_clicked() {
     //QMessageBox::information(this, "АРМ Юриста", "on_pushButton_addNsi_clicked");
     this->getUI()->tableView->model()->sort(-1);
     nsiEditForm frm;
-    frm.setWindowTitle("Добавление новой статьи КоАП");
+    frm.setWindowTitle("Добавление новой записи");
     frm.getUI()->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Добавить"));
     frm.getUI()->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Отменить"));
     if (frm.exec() == QDialog::Accepted) {
@@ -196,7 +198,7 @@ void nsiFrm::on_pushButton_editNsi_clicked() {
         QJsonObject param;
         param.insert(NSI_NUM, Nsi::num_);
         param.insert(DATA, nsiAsString);
-        emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::Command::EDIT_MODEL, param));
+        emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::Command::UPDATE_MODEL, param));
         emit waitReady();
     }
 }

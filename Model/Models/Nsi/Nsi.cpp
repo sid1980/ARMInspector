@@ -55,7 +55,7 @@ const QString& Nsi::getName() const {
 ///-----------------------------------------------------------------------------
 
 void Nsi::read(const QJsonObject &jsonObj) {
-    array<QString, 2> fld = Nsi::getFields();
+    array<QString, NSI_COLUMN> fld = Nsi::getFields();
     this->setId(jsonObj[fld[Nsi::Column::ID]].toInt());
     this->setName(jsonObj[fld[Nsi::Column::NAME]].toString());
 };
@@ -154,7 +154,7 @@ void Nsi::bindData(QSqlQuery* asSqlQuery) {
 ///-----------------------------------------------------------------------------
 
 const QString& Nsi::insert() {
-    qInfo() << "User::insert()";
+    qInfo() << "Nsi::insert()";
     return query_.insert()->field(Nsi::Column::NAME)->prepare();
 }
 
