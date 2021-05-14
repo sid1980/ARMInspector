@@ -208,6 +208,9 @@ void DBManager::deleteModel() {
         case ModelWrapper::Model::UserView:
             deleteModel<UserView>();
             break;
+        case ModelWrapper::Model::Mro:
+            deleteModel<Mro>();
+            break;
         case ModelWrapper::Model::Inspection:
             deleteModel<Inspection>();
             break;
@@ -270,12 +273,19 @@ void DBManager::updateModel() {
     //Выбрать модель, данные которой необходимо запросить. 
     switch (model) {
         case ModelWrapper::Model::Nsi:
+        {
             QJsonObject param;
             JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
             //ноиер НСИ
             Nsi::num_ = param[NSI_NUM].toString();
             m_pModelWrapper->setData(param[DATA].toString());
             updateModel<Nsi>();
+        }
+            break;
+        case ModelWrapper::Model::Mro:
+        {
+            updateModel<Mro>();
+        }
             break;
     }
 }
@@ -300,6 +310,12 @@ void DBManager::getModel() {
             break;
         case ModelWrapper::Model::Inspection:
             getModel<Inspection>();
+            break;
+        case ModelWrapper::Model::Mro:
+            getModel<Mro>();
+            break;
+        case ModelWrapper::Model::MroView:
+            getModel<MroView>();
             break;
         case ModelWrapper::Model::Nsi:
             QJsonObject param;

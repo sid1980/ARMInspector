@@ -237,7 +237,7 @@ template<typename T> ItemContainer<T> DBManager::getAllRecordS() {
     //Проверить  и выполнить  SQL запрос.
     QSqlQuery query(m_Db);
     ///Выполнить SQL запрос
-    qDebug() << "Выполнить SQL запрос:  " << MQuery<T>::selectAll();
+    qDebug() << QString::fromLocal8Bit("Выполнить SQL запрос:  ") << MQuery<T>::selectAll();
     if (!query.exec(MQuery<T>::selectAll())) {
         setResult(container, Message::SQL_ERROR);
         return container;
@@ -249,6 +249,7 @@ template<typename T> ItemContainer<T> DBManager::getAllRecordS() {
         T model;
         for (int x = 0; x < query.record().count(); x++) {
             recordObject.insert(query.record().fieldName(x), QJsonValue::fromVariant(query.value(x)));
+            //qDebug() << query.record().fieldName(x) << "   " << QString::fromLocal8Bit(QJsonValue::fromVariant(query.value(x)).toString().toStdString().c_str());
         }
         ///Считать запись базы данных  в объект класса T.  
         model.read(recordObject);
