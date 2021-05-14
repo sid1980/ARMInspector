@@ -25,6 +25,7 @@
 #include "Mro/mroFrm.h"
 #include "Nsi/nsiFrm.h"
 #include "DialogDestroyer.h"
+#include "Inspection/inspectionFrm.h"
 
 class juristFrm : public QMainWindow {
     Q_OBJECT

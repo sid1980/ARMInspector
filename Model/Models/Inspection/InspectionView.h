@@ -24,7 +24,7 @@
 #define INSPECTIONVIEW_COLUMN 3
 using namespace std;
 
-class InspectionView {
+class InspectionView: public JsonSerializable, Model {
 public:
     static ModelWrapper::Model model_;
 

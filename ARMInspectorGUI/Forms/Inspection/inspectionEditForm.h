@@ -15,7 +15,7 @@
 #define _INSPECTIONEDITFORM_H
 
 #include "ui_inspectionEditForm.h"
-
+#include "Mro/Mro.h"
 class inspectionEditForm : public QDialog {
     Q_OBJECT
 public:
@@ -31,7 +31,7 @@ public:
 
 
 private:
-    Ui::mroEditForm* widget_;
+    Ui::inspectionEditForm* widget_;
     ///список инспекций
     QList<Mro> listmro_;
 };

@@ -159,7 +159,19 @@ void juristFrm::OnExit() {
 ///-----------------------------------------------------------------------------
 
 void juristFrm::OnInspection() {
-    QMessageBox::information(this, "АРМ Юриста", "OnInspection()");
+    //QMessageBox::information(this, "АРМ Юриста", "OnInspection()");
+    inspectionFrm* frm = new inspectionFrm();
+    createFrmConnector(*frm);
+    //frm->initClient(this->m_pClientController);
+    QJsonObject param;
+    emit runServerCmd(Functor<InspectionView>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
+    emit waitReady();
+    emit runServerCmd(Functor<Mro>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
+    emit waitReady();
+    frm->setWindowTitle("Список инспекций");
+    frm->setSizeTbl(853, 550);
+    frm->exec();
+
 
 }
 

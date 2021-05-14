@@ -28,6 +28,8 @@
 #include "ModelWrapper.h"
 #include <QSqlQuery>
 #define INSPECTION_COLUMN 3
+#define ID_    "ID"
+
 using namespace std;
 
 class Inspection : public JsonSerializable, Model {

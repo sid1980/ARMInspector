@@ -85,6 +85,7 @@ public:
             {Model::Mro, "mro"},
             {Model::MroView, "v_mro"},
             {Model::Inspection, "inspection"},
+            {Model::InspectionView, "v_inspection"},
             {Model::Nsi, "nsi_"}
         };
         return ListModel;

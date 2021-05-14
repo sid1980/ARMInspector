@@ -67,7 +67,7 @@ private:
     ///ссылк на экземпляр модели вывода данных
     InspectionView *inspectionview_;
     ///ссылка на окно ввоода новой записи
-    inspectionEditForm *inspectionFrm_;
+    inspectionEditForm *inspectionEditFrm_;
 
     ///модель сортировеки 
     QSortFilterProxyModel *proxyModel_;

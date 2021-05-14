@@ -26,7 +26,7 @@ QDialog(parent), widget_(new Ui::inspectionFrm) {
     listinspection_ = new ModelList<InspectionView>();
     proxyModel_ = new QSortFilterProxyModel(listinspection_);
     inspectionview_ = new InspectionView();
-    inspectionFrm_ = new inspectionEditForm(this);
+    inspectionEditFrm_ = new inspectionEditForm(this);
 
 }
 ///-----------------------------------------------------------------------------
@@ -40,7 +40,7 @@ inspectionFrm::~inspectionFrm() {
     delete listinspection_;
     delete proxyModel_;
     delete inspectionview_;
-    delete inspectionFrm_;
+    delete inspectionEditFrm_;
 
 }
 
@@ -192,15 +192,15 @@ void inspectionFrm::on_pushButton_Add_clicked() {
     //QMessageBox::information(this, "АРМ Юриста", "on_pushButton_addMro_clicked()");
     this->getUI()->tableView->model()->sort(-1);
     //mroEditForm frm;
-    inspectionFrm_->setWindowTitle("Добавление новой записи");
-    inspectionFrm_->getUI()->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Добавить"));
-    inspectionFrm_->getUI()->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Отменить"));
-    if (inspectionFrm_->exec() == QDialog::Accepted) {
+    inspectionEditFrm_->setWindowTitle("Добавление новой записи");
+    inspectionEditFrm_->getUI()->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Добавить"));
+    inspectionEditFrm_->getUI()->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Отменить"));
+    if (inspectionEditFrm_->exec() == QDialog::Accepted) {
         //QMessageBox::information(this, "Добавление записи НСИ", "QDialog::Accepted");
         Mro* mro = new Mro();
         //QMessageBox::information(this, "Добавление новой записи НСИ", Nsi::num_);
-        mro->setName(inspectionFrm_->getUI()->lineEdit->text());
-        mro->setInspection(inspectionFrm_->getListMro()[inspectionFrm_->getUI()->comboBox->currentIndex()].getId());
+        mro->setName(inspectionEditFrm_->getUI()->lineEdit->text());
+        mro->setInspection(inspectionEditFrm_->getListMro()[inspectionEditFrm_->getUI()->comboBox->currentIndex()].getId());
 
         //QString mroAsString = JsonSerializer::serialize(*mro);
         //QJsonObject param;
@@ -222,24 +222,23 @@ void inspectionFrm::on_pushButton_Edit_clicked() {
     //QMessageBox::information(this, "АРМ Юриста", "on_pushButton_editMro_clicked()");
     int rowidx = proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()).row();
     if (rowidx >= 0) {
-        MroView mroV = listinspection_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
-        auto id = mroV.getId();
+        InspectionView inspectionV = listinspection_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
+        auto id = inspectionV.getId();
         QJsonObject param;
-        param.insert("ID", id);
+        param.insert(ID_, id);
         emit runServerCmd(Functor<Mro>::producePrm(ModelWrapper::Command::GET_MODEL, param));
         emit waitReady();
-        inspectionFrm_->setWindowTitle("Редактирование записи");
-        inspectionFrm_->getUI()->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Сохранить"));
-        inspectionFrm_->getUI()->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Отменить"));
-        if (inspectionFrm_->exec() == QDialog::Accepted) {
-            Mro* mro = new Mro();
-            mro->setId(id);
-            mro->setName(inspectionFrm_->getUI()->lineEdit->text());
-            mro->setInspection(inspectionFrm_->getListMro()[inspectionFrm_->getUI()->comboBox->currentIndex()].getId());
-            //emit updateUser(*user);
-            emit runServerCmd(Functor<Mro>::produce(ModelWrapper::Command::UPDATE_MODEL, *mro));
+        inspectionEditFrm_->setWindowTitle("Редактирование");
+        inspectionEditFrm_->getUI()->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Сохранить"));
+        inspectionEditFrm_->getUI()->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Отменить"));
+        if (inspectionEditFrm_->exec() == QDialog::Accepted) {
+            Inspection* inspection = new Inspection();
+            inspection->setId(id);
+            inspection->setName(inspectionEditFrm_->getUI()->lineEdit->text());
+            inspection->setMro(inspectionEditFrm_->getListMro()[inspectionEditFrm_->getUI()->comboBox->currentIndex()].getId());
+            emit runServerCmd(Functor<Inspection>::produce(ModelWrapper::Command::UPDATE_MODEL, *inspection));
             emit waitReady();
-            delete mro;
+            delete inspection;
         }
     }
 }
@@ -255,19 +254,19 @@ void inspectionFrm::on_pushButton_Remove_clicked() {
     //Question MessageBox
     int rowidx = proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()).row();
     if (rowidx >= 0) {
-        MroView mro = listinspection_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
-        auto id = mro.getId();
+        InspectionView inspection = listinspection_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
+        auto id = inspection.getId();
         QMessageBoxEx::StandardButton reply;
         reply = QMessageBoxEx::question(this, "Удаление записи",
-                "Вы действительно хотите удалить МРО <br><br><a style='font-size:14px;color:red;'> " +
-                mro.getName() + "</a> ?<br>",
+                "Вы действительно хотите удалить РЭГИ <br><br><a style='font-size:14px;color:red;'> " +
+                inspection.getName() + "</a> ?<br>",
                 QMessageBox::Yes | QMessageBox::No);
         if (reply == QMessageBox::Yes) {
             qDebug() << "Yes was clicked";
             QJsonObject param;
             param.insert(ID_, id);
             //emit deleteUser(id);
-            emit runServerCmd(Functor<Mro>::producePrm(ModelWrapper::DEL_MODEL, param));
+            emit runServerCmd(Functor<Inspection>::producePrm(ModelWrapper::DEL_MODEL, param));
             emit waitReady();
             listinspection_->delModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
         } else {
@@ -284,9 +283,9 @@ void inspectionFrm::on_pushButton_Remove_clicked() {
 
 void inspectionFrm::showData(const Inspection& asInspection) {
     Inspection inspection = asInspection;
-    inspectionview_->setId(mro.getId());
-    inspectionview_->setName(mro.getName());
-    inspectionview_->setMro(inspectionFrm_->getListMro()[inspection.getInspection() - 1].getName());
+    inspectionview_->setId(inspection.getId());
+    inspectionview_->setName(inspection.getName());
+    inspectionview_->setMro(inspectionEditFrm_->getListMro()[inspection.getMro() - 1].getName());
 
     listinspection_->addModel(*inspectionview_);
     this->getUI()->tableView->selectRow(listinspection_->rowCount() - 1);
@@ -299,16 +298,16 @@ void inspectionFrm::showData(const Inspection& asInspection) {
 ///          
 ///-----------------------------------------------------------------------------
 
-void inspectionFrm::showEditData(const Mro& mro) {
-    inspectionview_->setId(mro.getId());
-    inspectionview_->setName(mro.getName());
-    inspectionview_->setMro(inspectionFrm_->getListMro()[mro.getInspection() - 1].getName());
+void inspectionFrm::showEditData(const Inspection& inspection) {
+    inspectionview_->setId(inspection.getId());
+    inspectionview_->setName(inspection.getName());
+    inspectionview_->setMro(inspectionEditFrm_->getListMro()[inspection.getMro() - 1].getName());
     QItemSelectionModel *select = this->getUI()->tableView->selectionModel();
     int rowidx = select->currentIndex().row();
     this->getUI()->tableView->scrollTo(select->currentIndex());
     select->model()->setData(select->model()->index(rowidx, 0), inspectionview_->getId(), Qt::EditRole);
     select->model()->setData(select->model()->index(rowidx, 1), inspectionview_->getName(), Qt::EditRole);
-    select->model()->setData(select->model()->index(rowidx, 2), inspectionview_->getInspection(), Qt::EditRole);
+    select->model()->setData(select->model()->index(rowidx, 2), inspectionview_->getMro(), Qt::EditRole);
 }
 
 ///-----------------------------------------------------------------------------
@@ -320,7 +319,7 @@ void inspectionFrm::showEditData(const Mro& mro) {
 
 void inspectionFrm::setListMro(const QList<Mro>& listmro) {
     //QMessageBox::information(0, "Information Box", inspections[1].getName());
-    inspectionFrm_->setListMro(listmro);
+    inspectionEditFrm_->setListMro(listmro);
 }
 
 ///-----------------------------------------------------------------------------
@@ -330,10 +329,10 @@ void inspectionFrm::setListMro(const QList<Mro>& listmro) {
 ///-----------------------------------------------------------------------------
 
 void inspectionFrm::fillEditFrm(const Inspection& inspection) {
-    inspectionFrm_->getUI()->lineEdit->setText(inspection.getName());
-    for (int i = 0; i < inspectionFrm_->getListMro().size(); i++) {
-        if (inspectionFrm_->getListMro()[i].getId() == inspection.getMro()) {
-            inspectionFrm_->getUI()->comboBox->setCurrentIndex(i);
+    inspectionEditFrm_->getUI()->lineEdit->setText(inspection.getName());
+    for (int i = 0; i < inspectionEditFrm_->getListMro().size(); i++) {
+        if (inspectionEditFrm_->getListMro()[i].getId() == inspection.getMro()) {
+            inspectionEditFrm_->getUI()->comboBox->setCurrentIndex(i);
             break;
         }
     }
