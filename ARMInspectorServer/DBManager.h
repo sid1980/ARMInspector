@@ -25,6 +25,7 @@
 #include "Mro/MroView.h"
 #include "User/UserView.h"
 #include "Inspection/Inspection.h"
+#include "Inspection/InspectionView.h"
 #include "Nsi/Nsi.h"
 
 using namespace std;

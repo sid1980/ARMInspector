@@ -353,6 +353,9 @@ void DBManager::getListModels() {
         case ModelWrapper::Model::Inspection:
             getListModels<Inspection>();
             break;
+        case ModelWrapper::Model::InspectionView:
+            getListModels<InspectionView>();
+            break;
         case ModelWrapper::Model::Nsi:
             QJsonObject param;
             JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
