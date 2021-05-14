@@ -13,7 +13,7 @@
 
 #include "Mro/Mro.h" 
 
-ModelWrapper::Model  Mro::model_={ModelWrapper::Model::Mro};
+ModelWrapper::Model Mro::model_ = {ModelWrapper::Model::Mro};
 
 Mro::Mro() : id_(0), name_(""), inspection_(0) {
 }
@@ -54,7 +54,7 @@ const qint64& Mro::getInspection() const {
 ///-----------------------------------------------------------------------------
 
 void Mro::read(const QJsonObject &jsonObj) {
-    
+
     array<QString, MRO_COLUMN> fld = Mro::getFields();
     this->setId(jsonObj[fld[Mro::Column::ID]].toInt());
     this->setName(jsonObj[fld[Mro::Column::NAME]].toString());
@@ -69,7 +69,7 @@ void Mro::read(const QJsonObject &jsonObj) {
 ///-----------------------------------------------------------------------------
 
 void Mro::write(QJsonObject &jsonObj) const {
-    
+
     array<QString, MRO_COLUMN> fld = Mro::getFields();
     jsonObj[fld[Mro::Column::ID]] = this->getId();
     jsonObj[fld[Mro::Column::NAME]] = this->getName();
@@ -164,6 +164,25 @@ void Mro::bindData(QSqlQuery* asSqlQuery) {
 
 const QString& Mro::insert() {
     qInfo() << "Mro::insert()";
-    return query_.insert()->field(Mro::Column::NAME)->prepare();
+    return query_.insert()->field(Mro::Column::NAME)->
+            field(Mro::Column::INSPECTION)->
+            prepare();
 }
 
+///-----------------------------------------------------------------------------
+///
+///         Изменить данные МРО. 
+///
+///
+///-----------------------------------------------------------------------------
+
+const QString& Mro::update() {
+    qInfo() << "Mro::update()";
+    return query_.update()->set()->
+            //            field(User::Column::ID)->equally()->bind(User::Column::ID)->
+            field(Mro::Column::NAME)->equally()->bind(Mro::Column::NAME)->
+            field(Mro::Column::INSPECTION)->equally()->bind(Mro::Column::INSPECTION)->
+            where()->field(Mro::Column::ID)->equally()->bind(Mro::Column::ID)->
+            prepare();
+
+}

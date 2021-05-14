@@ -20,7 +20,7 @@
 
 #include "Inspection/Inspection.h"
 
-ModelWrapper::Model Inspection::model_={ModelWrapper::Model::Inspection};
+ModelWrapper::Model Inspection::model_ = {ModelWrapper::Model::Inspection};
 
 ///-----------------------------------------------------------------------------
 ///
@@ -77,10 +77,12 @@ const qint64& Inspection::getMro()const {
 ///-----------------------------------------------------------------------------
 
 void Inspection::read(const QJsonObject &jsonObj) {
-    this->setId(jsonObj["id"].toInt());
-    this->setName(jsonObj["name_i"].toString());
-    this->setMro(jsonObj["id_mro"].toInt());
-};
+
+    array<QString, INSPECTION_COLUMN> fld = Inspection::getFields();
+    this->setId(jsonObj[fld[Inspection::Column::ID]].toInt());
+    this->setName(jsonObj[fld[Inspection::Column::NAME]].toString());
+    this->setMro(jsonObj[fld[Inspection::Column::MRO]].toInt());
+}
 
 ///-----------------------------------------------------------------------------
 ///
@@ -91,9 +93,10 @@ void Inspection::read(const QJsonObject &jsonObj) {
 
 void Inspection::write(QJsonObject &jsonObj) const {
 
-    jsonObj["id"] = this->getId();
-    jsonObj["name_i"] = this->getName();
-    jsonObj["id_mro"] = this->getMro();
+    array<QString, INSPECTION_COLUMN> fld = Inspection::getFields();
+    jsonObj[fld[Inspection::Column::ID]] = this->getId();
+    jsonObj[fld[Inspection::Column::NAME]] = this->getName();
+    jsonObj[fld[Inspection::Column::MRO]] = this->getMro();
 };
 
 ///-----------------------------------------------------------------------------
@@ -106,11 +109,11 @@ void Inspection::write(QJsonObject &jsonObj) const {
 const QVariant Inspection::getData(const int& position) const {
 
     switch (position) {
-        case 0:
+        case Inspection::Column::ID:
             return this->getId();
-        case 1:
+        case Inspection::Column::NAME:
             return this->getName();
-        case 2:
+        case Inspection::Column::MRO:
             return this->getMro();
         default:
             return 0;
@@ -127,13 +130,13 @@ const QVariant Inspection::getData(const int& position) const {
 
 void Inspection::setData(const int& position, const QVariant& value) {
     switch (position) {
-        case 0:
+        case Inspection::Column::ID:
             this->setId(value.toInt());
             break;
-        case 1:
+        case Inspection::Column::NAME:
             this->setName(value.toString());
             break;
-        case 2:
+        case Inspection::Column::MRO:
             this->setMro(value.toInt());
             break;
         default:
@@ -141,4 +144,65 @@ void Inspection::setData(const int& position, const QVariant& value) {
     }
 
 };
+///-----------------------------------------------------------------------------
+///
+///
+///         Привязать данные к запросу. 
+///
+///
+///-----------------------------------------------------------------------------
 
+void Inspection::bindData(QSqlQuery* asSqlQuery) {
+    qInfo() << "Mro::bindData";
+    QList<int> list = query_.getBindColumnList();
+    if (!list.isEmpty()) {
+        array<QString, INSPECTION_COLUMN> fld = Inspection::getFields();
+        for (int i = 0; i < list.size(); i++) {
+            qInfo() << QString::number(list.at(i));
+            switch (list.at(i)) {
+                case Inspection::Column::ID:
+                    asSqlQuery->bindValue(":" + fld[Inspection::Column::ID], this->getId());
+                    break;
+                case Inspection::Column::NAME:
+                    asSqlQuery->bindValue(":" + fld[Inspection::Column::NAME], this->getName());
+                    break;
+                case Inspection::Column::MRO:
+                    asSqlQuery->bindValue(":" + fld[Inspection::Column::MRO], this->getMro());
+                    break;
+            }
+        }
+        //QMessageBox::information(0, "Information Box", this->getName());
+    }
+}
+
+///-----------------------------------------------------------------------------
+///
+///         Добавить запись в справочник . 
+///
+///
+///-----------------------------------------------------------------------------
+
+const QString& Inspection::insert() {
+    qInfo() << "Inspection::insert()";
+    return query_.insert()->field(Inspection::Column::NAME)->
+            field(Inspection::Column::MRO)->
+            prepare();
+}
+
+///-----------------------------------------------------------------------------
+///
+///         Изменить данные инспекции. 
+///
+///
+///-----------------------------------------------------------------------------
+
+const QString& Inspection::update() {
+    qInfo() << "Inspection::update()";
+    return query_.update()->set()->
+            //            field(User::Column::ID)->equally()->bind(User::Column::ID)->
+            field(Inspection::Column::NAME)->equally()->bind(Inspection::Column::NAME)->
+            field(Inspection::Column::MRO)->equally()->bind(Inspection::Column::MRO)->
+            where()->field(Inspection::Column::ID)->equally()->bind(Inspection::Column::ID)->
+            prepare();
+
+}

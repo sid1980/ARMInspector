@@ -5,52 +5,51 @@
  */
 
 /* 
- * File:   mroFrm.h
+ * File:   inspectionFrm.h
  * Author: kazun_as
  *
- * Created on 4 мая 2021 г., 16:28
+ * Created on 14 мая 2021 г., 15:40
  */
 
-#ifndef _MROFRM_H
-#define _MROFRM_H
+#ifndef _INSPECTIONFRM_H
+#define _INSPECTIONFRM_H
 
-#include "ui_mroFrm.h"
-#include "Mro/Mro.h"
-#include "Mro/MroView.h"
+#include "ui_inspectionFrm.h"
+#include "Inspection/Inspection.h"
+#include "Inspection/InspectionView.h"
 #include "ModelList.h"
-#include "mroEditForm.h"
 #include "Functor.h"
 #include "MQuery.h"
 #include "QMessageBoxEx.h"
-
-class mroFrm : public QDialog {
-    Q_OBJECT
+#include "inspectionEditForm.h"
+class inspectionFrm : public QDialog {
+     Q_OBJECT
 public:
     ///конструктор
-    explicit mroFrm(QWidget *parent = 0);
-    ~mroFrm();
+    explicit inspectionFrm(QWidget *parent = 0);
+    ~inspectionFrm();
     ///Получить ссылку на виджет
-    Ui::mroFrm* getUI();
+    Ui::inspectionFrm* getUI();
     ///Установить размер таблицы
     void setSizeTbl(const int& width, const int& height);
     ///определить модель вывода данных
-    void setModel(const QList<MroView>& mro);
+    void setModel(const QList<InspectionView>& mro);
     ///показать данные МРО
-    void showData(const Mro& asMro);
+    void showData(const Inspection& );
     ///показать отредактированные данные 
-    void showEditData(const Mro&);
+    void showEditData(const Inspection&);
     //установить список инспекций
-    void setListInspections(const QList<Inspection>&);
+    void setListMro(const QList<Mro>&);
     //Данные МРО
-    void fillEditFrm(const Mro& mro);
+    void fillEditFrm(const Inspection& inspection);
 
 private slots:
     ///обработчик кнопки добавления записи НСИ
-    void on_pushButton_AddMro_clicked();
+    void on_pushButton_Add_clicked();
     ///обработчик кнопки редактирования записи НСИ
-    void on_pushButton_EditMro_clicked();
+    void on_pushButton_Edit_clicked();
     ///обработчик кнопки удаления  записи НСИ
-    void on_pushButton_RemoveMro_clicked();
+    void on_pushButton_Remove_clicked();
 
     ///Обработчик команд (ответов) сервера
     void worker(const QString&);
@@ -62,17 +61,17 @@ signals:
     ///сигнализировать  о  необходимости  ожидания ответа от сервера 
     void waitReady();
 private:
-    Ui::mroFrm *widget_;
+    Ui::inspectionFrm *widget_;
     ///ссылка на модель  данных 
-    ModelList<MroView>* listmro_;
+    ModelList<InspectionView>* listinspection_;
     ///ссылк на экземпляр модели вывода данных
-    MroView *mroview_;
+    InspectionView *inspectionview_;
     ///ссылка на окно ввоода новой записи
-    mroEditForm *mroFrm_;
+    inspectionEditForm *inspectionFrm_;
 
     ///модель сортировеки 
     QSortFilterProxyModel *proxyModel_;
 
 };
 
-#endif /* _MROFRM_H */
+#endif /* _INSPECTIONFRM_H */

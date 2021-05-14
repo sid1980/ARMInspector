@@ -23,6 +23,8 @@
 #include <array>
 #include <QSqlQuery>
 #define MRO_COLUMN 3
+#define ID_    "ID"
+
 using namespace std;
 
 class Mro : public JsonSerializable, Model {
@@ -83,7 +85,10 @@ public:
     ///привязать парвметры sql запроса к данным
     void bindData(QSqlQuery* asSqlQuery);
     ///сформировать sql запрос вставки новой записи
+    
+    ///SQL запросы
     const QString& insert();
+    const QString& update();
 
 
 private:

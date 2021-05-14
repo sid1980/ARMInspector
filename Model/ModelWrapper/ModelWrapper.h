@@ -50,7 +50,8 @@ public:
         Nsi,
         RptColumn,
         UserView,
-        Inspection
+        Inspection,
+        InspectionView
     };
 
 

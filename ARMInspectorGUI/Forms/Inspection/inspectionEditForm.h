@@ -5,36 +5,35 @@
  */
 
 /* 
- * File:   mroEditForm.h
+ * File:   inspectionEditForm.h
  * Author: kazun_as
  *
- * Created on 13 мая 2021 г., 14:47
+ * Created on 14 мая 2021 г., 16:11
  */
 
-#ifndef _MROEDITFORM_H
-#define _MROEDITFORM_H
+#ifndef _INSPECTIONEDITFORM_H
+#define _INSPECTIONEDITFORM_H
 
-#include "ui_mroEditForm.h"
-#include "Inspection/Inspection.h"
+#include "ui_inspectionEditForm.h"
 
-class mroEditForm : public QDialog {
+class inspectionEditForm : public QDialog {
     Q_OBJECT
 public:
     ///конструктор
-    explicit mroEditForm(QWidget *parent = 0);
-    virtual ~mroEditForm();
+    explicit inspectionEditForm(QWidget *parent = 0);
+    virtual ~inspectionEditForm();
     ///Получить ссылку на виджет
-    Ui::mroEditForm* getUI();
+    Ui::inspectionEditForm* getUI();
     ///получить список инспекций
-    const QList<Inspection>& getInspections() const;
+    const QList<Mro>& getListMro() const;
     /// инициализировать список инспекций
-    void setInspections(const QList<Inspection>&);
+    void setListMro(const QList<Mro>&);
 
 
 private:
     Ui::mroEditForm* widget_;
     ///список инспекций
-    QList<Inspection> inspections_;
+    QList<Mro> listmro_;
 };
 
-#endif /* _MROEDITFORM_H */
+#endif /* _INSPECTIONEDITFORM_H */

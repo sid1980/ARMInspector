@@ -5,21 +5,22 @@
  */
 
 /*
- * File:   mroEditForm.cpp
+ * File:   inspectionEditForm.cpp
  * Author: kazun_as
  *
- * Created on 13 мая 2021 г., 14:47
+ * Created on 14 мая 2021 г., 16:11
  */
 
-#include "mroEditForm.h"
+#include "inspectionEditForm.h"
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Конструктор.
 ///          
 ///-----------------------------------------------------------------------------
 
-mroEditForm::mroEditForm(QWidget *parent) :
-QDialog(parent), widget_(new Ui::mroEditForm) {
+inspectionEditForm::inspectionEditForm(QWidget *parent) :
+QDialog(parent), widget_(new Ui::inspectionEditForm) {
     widget_->setupUi(this);
 }
 
@@ -29,7 +30,7 @@ QDialog(parent), widget_(new Ui::mroEditForm) {
 ///          
 ///-----------------------------------------------------------------------------
 
-mroEditForm::~mroEditForm() {
+inspectionEditForm::~inspectionEditForm() {
     delete widget_;
 }
 
@@ -40,7 +41,7 @@ mroEditForm::~mroEditForm() {
 ///          
 ///-----------------------------------------------------------------------------
 
-Ui::mroEditForm* mroEditForm::getUI() {
+Ui::inspectionEditForm* inspectionEditForm::getUI() {
     return widget_;
 }
 ///-----------------------------------------------------------------------------
@@ -49,8 +50,8 @@ Ui::mroEditForm* mroEditForm::getUI() {
 ///          
 ///-----------------------------------------------------------------------------
 
-const QList<Inspection>& mroEditForm::getInspections()const {
-    return inspections_;
+const QList<Mro>& inspectionEditForm::getListMro()const {
+    return listmro_;
 };
 
 ///-----------------------------------------------------------------------------
@@ -60,11 +61,11 @@ const QList<Inspection>& mroEditForm::getInspections()const {
 ///          
 ///-----------------------------------------------------------------------------
 
-void mroEditForm::setInspections(const QList<Inspection>& inspections) {
-    inspections_ = inspections;
-    this->getUI()->comboBoxInspection->clear();
-    for (auto& t : inspections_) {
-        this->getUI()->comboBoxInspection->addItem(t.getName());
+void inspectionEditForm::setListMro(const QList<Mro>& listmro) {
+    listmro_ =  listmro;
+    this->getUI()->comboBox->clear();
+    for (auto& t : listmro_) {
+        this->getUI()->comboBox->addItem(t.getName());
     }
 
 }

@@ -12,7 +12,7 @@
  */
 
 #include "MroView.h"
-ModelWrapper::Model  MroView::model_={ModelWrapper::Model::MroView};
+ModelWrapper::Model MroView::model_ = {ModelWrapper::Model::MroView};
 
 MroView::MroView() : id_(0), name_(""), inspection_("") {
 }
@@ -53,11 +53,14 @@ const QString& MroView::getInspection() const {
 ///-----------------------------------------------------------------------------
 
 void MroView::read(const QJsonObject &jsonObj) {
-    
+
     array<QString, MROVIEW_COLUMN> fld = MroView::getFields();
     this->setId(jsonObj[fld[MroView::Column::ID]].toInt());
     this->setName(jsonObj[fld[MroView::Column::NAME]].toString());
-    this->setName(jsonObj[fld[MroView::Column::INSPECTION]].toString());
+    this->setInspection(jsonObj[fld[MroView::Column::INSPECTION]].toString());
+    ///qDebug() << fld[MroView::Column::ID];
+    ///qDebug() << fld[MroView::Column::NAME];
+    ///qDebug() << fld[MroView::Column::INSPECTION];
 };
 
 ///-----------------------------------------------------------------------------
@@ -68,7 +71,7 @@ void MroView::read(const QJsonObject &jsonObj) {
 ///-----------------------------------------------------------------------------
 
 void MroView::write(QJsonObject &jsonObj) const {
-    
+
     array<QString, MROVIEW_COLUMN> fld = MroView::getFields();
     jsonObj[fld[MroView::Column::ID]] = this->getId();
     jsonObj[fld[MroView::Column::NAME]] = this->getName();

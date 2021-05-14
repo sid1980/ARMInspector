@@ -5,13 +5,13 @@
  */
 
 /*
- * File:   mroFrm.cpp
+ * File:   inspectionFrm.cpp
  * Author: kazun_as
  *
- * Created on 4 мая 2021 г., 16:28
+ * Created on 14 мая 2021 г., 15:40
  */
 
-#include "mroFrm.h"
+#include "inspectionFrm.h"
 #include "ItemContainer.h"
 
 ///-----------------------------------------------------------------------------
@@ -20,13 +20,13 @@
 ///          
 ///-----------------------------------------------------------------------------
 
-mroFrm::mroFrm(QWidget *parent) :
-QDialog(parent), widget_(new Ui::mroFrm) {
+inspectionFrm::inspectionFrm(QWidget *parent) :
+QDialog(parent), widget_(new Ui::inspectionFrm) {
     widget_->setupUi(this);
-    listmro_ = new ModelList<MroView>();
-    proxyModel_ = new QSortFilterProxyModel(listmro_);
-    mroview_ = new MroView();
-    mroFrm_ = new mroEditForm(this);
+    listinspection_ = new ModelList<InspectionView>();
+    proxyModel_ = new QSortFilterProxyModel(listinspection_);
+    inspectionview_ = new InspectionView();
+    inspectionFrm_ = new inspectionEditForm(this);
 
 }
 ///-----------------------------------------------------------------------------
@@ -35,12 +35,12 @@ QDialog(parent), widget_(new Ui::mroFrm) {
 ///          
 ///-----------------------------------------------------------------------------
 
-mroFrm::~mroFrm() {
+inspectionFrm::~inspectionFrm() {
     delete widget_;
-    delete listmro_;
+    delete listinspection_;
     delete proxyModel_;
-    delete mroview_;
-    delete mroFrm_;
+    delete inspectionview_;
+    delete inspectionFrm_;
 
 }
 
@@ -51,7 +51,7 @@ mroFrm::~mroFrm() {
 ///          
 ///-----------------------------------------------------------------------------
 
-Ui::mroFrm* mroFrm::getUI() {
+Ui::inspectionFrm* inspectionFrm::getUI() {
     return widget_;
 }
 
@@ -62,11 +62,11 @@ Ui::mroFrm* mroFrm::getUI() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void mroFrm::setModel(const QList<MroView>& mro) {
-    listmro_->setListModel(mro);
-    proxyModel_->setSourceModel(listmro_);
-    this->getUI()->tableView_Mro->setSortingEnabled(true); // enable sortingEnabled
-    this->getUI()->tableView_Mro->setModel(proxyModel_);
+void inspectionFrm::setModel(const QList<InspectionView>& inspection) {
+    listinspection_->setListModel(inspection);
+    proxyModel_->setSourceModel(listinspection_);
+    this->getUI()->tableView->setSortingEnabled(true); // enable sortingEnabled
+    this->getUI()->tableView->setModel(proxyModel_);
     emit ready();
     //this->getUI()->tableView_Mro->setSpan(0,1,2,2);
 }
@@ -77,7 +77,7 @@ void mroFrm::setModel(const QList<MroView>& mro) {
 ///          
 ///-----------------------------------------------------------------------------
 
-void mroFrm::worker(const QString& asWrapper) {
+void inspectionFrm::worker(const QString& asWrapper) {
     ModelWrapper wrapper;
     //Разворачиваем командную обёртку.
     JsonSerializer::parse(asWrapper, wrapper);
@@ -87,24 +87,24 @@ void mroFrm::worker(const QString& asWrapper) {
         case ModelWrapper::Command::GET_LIST_MODELS:
         {
             switch (model) {
-                case ModelWrapper::Model::Inspection:
+                case ModelWrapper::Model::Mro:
                 {
-                    ItemContainer<Inspection> inspectionContainer;
-                    JsonSerializer::parse(wrapper.getData(), inspectionContainer);
-                    QList<Inspection> listInspection = inspectionContainer.getItemsList();
-                    setListInspections(listInspection);
-                    //QMessageBox::information(this, "mroFrm::worker", listmro[0].getName());
+                    ItemContainer<Mro> mroContainer;
+                    JsonSerializer::parse(wrapper.getData(), mroContainer);
+                    QList<Mro> listmro = mroContainer.getItemsList();
+                    setListMro(listmro);
+                    //QMessageBox::information(this, "inspectionFrm::worker", listmro[0].getName());
                     //setModel(listmro);
                     emit ready();
                 }
                     break;
-                case ModelWrapper::Model::MroView:
+                case ModelWrapper::Model::InspectionView:
                 {
-                    ItemContainer<MroView> mroContainer;
-                    JsonSerializer::parse(wrapper.getData(), mroContainer);
-                    QList<MroView> listmro = mroContainer.getItemsList();
-                    //QMessageBox::information(this, "mroFrm::worker", listmro[0].getName());
-                    setModel(listmro);
+                    ItemContainer<InspectionView> inspectionContainer;
+                    JsonSerializer::parse(wrapper.getData(), inspectionContainer);
+                    QList<InspectionView> listinspection = inspectionContainer.getItemsList();
+                    //QMessageBox::information(this, "inspectionFrm::worker", listmro[0].getName());
+                    setModel(listinspection);
                     emit ready();
                 }
                     break;
@@ -115,37 +115,37 @@ void mroFrm::worker(const QString& asWrapper) {
             break;
         case ModelWrapper::Command::GET_MODEL:
         {
-            Mro mro;
-            JsonSerializer::parse(wrapper.getData(), mro);
-            fillEditFrm(mro);
+            Inspection inspection;
+            JsonSerializer::parse(wrapper.getData(), inspection);
+            fillEditFrm(inspection);
             emit ready();
         }
             break;
 
         case ModelWrapper::Command::ADD_NEW_MODEL:
         {
-            Mro mro;
-            JsonSerializer::parse(wrapper.getData(), mro);
-            showData(mro);
+            Inspection inspection;
+            JsonSerializer::parse(wrapper.getData(), inspection);
+            showData(inspection);
             emit ready();
         }
             break;
         case ModelWrapper::Command::UPDATE_MODEL:
         {
-            Mro mro;
-            JsonSerializer::parse(wrapper.getData(), mro);
-            showEditData(mro);
+            Inspection inspection;
+            JsonSerializer::parse(wrapper.getData(), inspection);
+            showEditData(inspection);
             emit ready();
         }
             break;
         case ModelWrapper::Command::DEL_MODEL:
         {
             //Сервер вернул результат команды "DEL_MODEL"     
-            Mro mro;
-            JsonSerializer::parse(wrapper.getData(), mro);
+            Inspection inspection;
+            JsonSerializer::parse(wrapper.getData(), inspection);
             //emit dialog_->showUserData(user);
             QMessageBoxEx::information(0, wrapper.getHead(), wrapper.getMessage() +
-                    "МРО  <a style='color:royalblue'> " + mro.getName() + "</a>");
+                    "МРО  <a style='color:royalblue'> " + inspection.getName() + "</a>");
 
             emit ready();
         }
@@ -160,27 +160,27 @@ void mroFrm::worker(const QString& asWrapper) {
 ///          
 ///-----------------------------------------------------------------------------
 
-void mroFrm::setSizeTbl(const int& width, const int& height) {
+void inspectionFrm::setSizeTbl(const int& width, const int& height) {
     //frm.getUI()->tableView_Mro->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
     //frm.getUI()->tableView_Mro->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     //frm.getUI()->tableView_Mro->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    this->getUI()->tableView_Mro->setSelectionBehavior(QAbstractItemView::SelectRows);
-    this->getUI()->tableView_Mro->setSelectionMode(QAbstractItemView::SingleSelection);
-    this->getUI()->tableView_Mro->setSortingEnabled(true);
-    this->getUI()->tableView_Mro->verticalHeader()->hide();
-    this->getUI()->tableView_Mro->setWordWrap(false);
-    this->getUI()->tableView_Mro->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-    this->getUI()->tableView_Mro->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-    this->getUI()->tableView_Mro->setShowGrid(false);
-    this->getUI()->tableView_Mro->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    this->getUI()->tableView_Mro->horizontalHeader()->setHighlightSections(false);
-    this->getUI()->tableView_Mro->setAlternatingRowColors(true); // alternative colors 
-    this->getUI()->tableView_Mro->setFrameShape(QFrame::NoFrame);
-    this->getUI()->tableView_Mro->setMinimumWidth(width);
-    this->getUI()->tableView_Mro->setMinimumHeight(height);
-    this->getUI()->tableView_Mro->setColumnWidth(0, 85);
-    this->getUI()->tableView_Mro->setColumnWidth(1, (width - 85) / 2);
-    this->getUI()->tableView_Mro->setColumnWidth(2, (width - 85) / 2);
+    this->getUI()->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    this->getUI()->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
+    this->getUI()->tableView->setSortingEnabled(true);
+    this->getUI()->tableView->verticalHeader()->hide();
+    this->getUI()->tableView->setWordWrap(false);
+    this->getUI()->tableView->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+    this->getUI()->tableView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+    this->getUI()->tableView->setShowGrid(false);
+    this->getUI()->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    this->getUI()->tableView->horizontalHeader()->setHighlightSections(false);
+    this->getUI()->tableView->setAlternatingRowColors(true); // alternative colors 
+    this->getUI()->tableView->setFrameShape(QFrame::NoFrame);
+    this->getUI()->tableView->setMinimumWidth(width);
+    this->getUI()->tableView->setMinimumHeight(height);
+    this->getUI()->tableView->setColumnWidth(0, 85);
+    this->getUI()->tableView->setColumnWidth(1, (width - 85) / 2);
+    this->getUI()->tableView->setColumnWidth(2, (width - 85) / 2);
 }
 ///-----------------------------------------------------------------------------
 ///
@@ -188,19 +188,19 @@ void mroFrm::setSizeTbl(const int& width, const int& height) {
 ///          
 ///-----------------------------------------------------------------------------
 
-void mroFrm::on_pushButton_AddMro_clicked() {
+void inspectionFrm::on_pushButton_Add_clicked() {
     //QMessageBox::information(this, "АРМ Юриста", "on_pushButton_addMro_clicked()");
-    this->getUI()->tableView_Mro->model()->sort(-1);
+    this->getUI()->tableView->model()->sort(-1);
     //mroEditForm frm;
-    mroFrm_->setWindowTitle("Добавление новой записи");
-    mroFrm_->getUI()->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Добавить"));
-    mroFrm_->getUI()->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Отменить"));
-    if (mroFrm_->exec() == QDialog::Accepted) {
+    inspectionFrm_->setWindowTitle("Добавление новой записи");
+    inspectionFrm_->getUI()->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Добавить"));
+    inspectionFrm_->getUI()->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Отменить"));
+    if (inspectionFrm_->exec() == QDialog::Accepted) {
         //QMessageBox::information(this, "Добавление записи НСИ", "QDialog::Accepted");
         Mro* mro = new Mro();
         //QMessageBox::information(this, "Добавление новой записи НСИ", Nsi::num_);
-        mro->setName(mroFrm_->getUI()->lineEditName->text());
-        mro->setInspection(mroFrm_->getInspections()[mroFrm_->getUI()->comboBoxInspection->currentIndex()].getId());
+        mro->setName(inspectionFrm_->getUI()->lineEdit->text());
+        mro->setInspection(inspectionFrm_->getListMro()[inspectionFrm_->getUI()->comboBox->currentIndex()].getId());
 
         //QString mroAsString = JsonSerializer::serialize(*mro);
         //QJsonObject param;
@@ -218,24 +218,24 @@ void mroFrm::on_pushButton_AddMro_clicked() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void mroFrm::on_pushButton_EditMro_clicked() {
+void inspectionFrm::on_pushButton_Edit_clicked() {
     //QMessageBox::information(this, "АРМ Юриста", "on_pushButton_editMro_clicked()");
-    int rowidx = proxyModel_->mapToSource(this->getUI()->tableView_Mro->currentIndex()).row();
+    int rowidx = proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()).row();
     if (rowidx >= 0) {
-        MroView mroV = listmro_->getModel(proxyModel_->mapToSource(this->getUI()->tableView_Mro->currentIndex()));
+        MroView mroV = listinspection_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
         auto id = mroV.getId();
         QJsonObject param;
         param.insert("ID", id);
         emit runServerCmd(Functor<Mro>::producePrm(ModelWrapper::Command::GET_MODEL, param));
         emit waitReady();
-        mroFrm_->setWindowTitle("Редактирование записи");
-        mroFrm_->getUI()->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Сохранить"));
-        mroFrm_->getUI()->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Отменить"));
-        if (mroFrm_->exec() == QDialog::Accepted) {
+        inspectionFrm_->setWindowTitle("Редактирование записи");
+        inspectionFrm_->getUI()->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Сохранить"));
+        inspectionFrm_->getUI()->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Отменить"));
+        if (inspectionFrm_->exec() == QDialog::Accepted) {
             Mro* mro = new Mro();
             mro->setId(id);
-            mro->setName(mroFrm_->getUI()->lineEditName->text());
-            mro->setInspection(mroFrm_->getInspections()[mroFrm_->getUI()->comboBoxInspection->currentIndex()].getId());
+            mro->setName(inspectionFrm_->getUI()->lineEdit->text());
+            mro->setInspection(inspectionFrm_->getListMro()[inspectionFrm_->getUI()->comboBox->currentIndex()].getId());
             //emit updateUser(*user);
             emit runServerCmd(Functor<Mro>::produce(ModelWrapper::Command::UPDATE_MODEL, *mro));
             emit waitReady();
@@ -250,12 +250,12 @@ void mroFrm::on_pushButton_EditMro_clicked() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void mroFrm::on_pushButton_RemoveMro_clicked() {
+void inspectionFrm::on_pushButton_Remove_clicked() {
     //QMessageBox::information(this, "АРМ Юриста", "on_pushButton_removeMro_clicked()");
     //Question MessageBox
-    int rowidx = proxyModel_->mapToSource(this->getUI()->tableView_Mro->currentIndex()).row();
+    int rowidx = proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()).row();
     if (rowidx >= 0) {
-        MroView mro = listmro_->getModel(proxyModel_->mapToSource(this->getUI()->tableView_Mro->currentIndex()));
+        MroView mro = listinspection_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
         auto id = mro.getId();
         QMessageBoxEx::StandardButton reply;
         reply = QMessageBoxEx::question(this, "Удаление записи",
@@ -269,7 +269,7 @@ void mroFrm::on_pushButton_RemoveMro_clicked() {
             //emit deleteUser(id);
             emit runServerCmd(Functor<Mro>::producePrm(ModelWrapper::DEL_MODEL, param));
             emit waitReady();
-            listmro_->delModel(proxyModel_->mapToSource(this->getUI()->tableView_Mro->currentIndex()));
+            listinspection_->delModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
         } else {
             qDebug() << "Yes was *not* clicked";
         }
@@ -282,15 +282,15 @@ void mroFrm::on_pushButton_RemoveMro_clicked() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void mroFrm::showData(const Mro& asMro) {
-    Mro mro = asMro;
-    mroview_->setId(mro.getId());
-    mroview_->setName(mro.getName());
-    mroview_->setInspection(mroFrm_->getInspections()[mro.getInspection() - 1].getName());
+void inspectionFrm::showData(const Inspection& asInspection) {
+    Inspection inspection = asInspection;
+    inspectionview_->setId(mro.getId());
+    inspectionview_->setName(mro.getName());
+    inspectionview_->setMro(inspectionFrm_->getListMro()[inspection.getInspection() - 1].getName());
 
-    listmro_->addModel(*mroview_);
-    this->getUI()->tableView_Mro->selectRow(listmro_->rowCount() - 1);
-    this->getUI()->tableView_Mro->scrollToBottom();
+    listinspection_->addModel(*inspectionview_);
+    this->getUI()->tableView->selectRow(listinspection_->rowCount() - 1);
+    this->getUI()->tableView->scrollToBottom();
 }
 
 ///-----------------------------------------------------------------------------
@@ -299,16 +299,16 @@ void mroFrm::showData(const Mro& asMro) {
 ///          
 ///-----------------------------------------------------------------------------
 
-void mroFrm::showEditData(const Mro& mro) {
-    mroview_->setId(mro.getId());
-    mroview_->setName(mro.getName());
-    mroview_->setInspection(mroFrm_->getInspections()[mro.getInspection() - 1].getName());
-    QItemSelectionModel *select = this->getUI()->tableView_Mro->selectionModel();
+void inspectionFrm::showEditData(const Mro& mro) {
+    inspectionview_->setId(mro.getId());
+    inspectionview_->setName(mro.getName());
+    inspectionview_->setMro(inspectionFrm_->getListMro()[mro.getInspection() - 1].getName());
+    QItemSelectionModel *select = this->getUI()->tableView->selectionModel();
     int rowidx = select->currentIndex().row();
-    this->getUI()->tableView_Mro->scrollTo(select->currentIndex());
-    select->model()->setData(select->model()->index(rowidx, 0), mroview_->getId(), Qt::EditRole);
-    select->model()->setData(select->model()->index(rowidx, 1), mroview_->getName(), Qt::EditRole);
-    select->model()->setData(select->model()->index(rowidx, 2), mroview_->getInspection(), Qt::EditRole);
+    this->getUI()->tableView->scrollTo(select->currentIndex());
+    select->model()->setData(select->model()->index(rowidx, 0), inspectionview_->getId(), Qt::EditRole);
+    select->model()->setData(select->model()->index(rowidx, 1), inspectionview_->getName(), Qt::EditRole);
+    select->model()->setData(select->model()->index(rowidx, 2), inspectionview_->getInspection(), Qt::EditRole);
 }
 
 ///-----------------------------------------------------------------------------
@@ -318,9 +318,9 @@ void mroFrm::showEditData(const Mro& mro) {
 ///          
 ///-----------------------------------------------------------------------------
 
-void mroFrm::setListInspections(const QList<Inspection>& inspections) {
+void inspectionFrm::setListMro(const QList<Mro>& listmro) {
     //QMessageBox::information(0, "Information Box", inspections[1].getName());
-    mroFrm_->setInspections(inspections);
+    inspectionFrm_->setListMro(listmro);
 }
 
 ///-----------------------------------------------------------------------------
@@ -329,11 +329,11 @@ void mroFrm::setListInspections(const QList<Inspection>& inspections) {
 ///          
 ///-----------------------------------------------------------------------------
 
-void mroFrm::fillEditFrm(const Mro& mro) {
-    mroFrm_->getUI()->lineEditName->setText(mro.getName());
-    for (int i = 0; i < mroFrm_->getInspections().size(); i++) {
-        if (mroFrm_->getInspections()[i].getId() == mro.getInspection()) {
-            mroFrm_->getUI()->comboBoxInspection->setCurrentIndex(i);
+void inspectionFrm::fillEditFrm(const Inspection& inspection) {
+    inspectionFrm_->getUI()->lineEdit->setText(inspection.getName());
+    for (int i = 0; i < inspectionFrm_->getListMro().size(); i++) {
+        if (inspectionFrm_->getListMro()[i].getId() == inspection.getMro()) {
+            inspectionFrm_->getUI()->comboBox->setCurrentIndex(i);
             break;
         }
     }

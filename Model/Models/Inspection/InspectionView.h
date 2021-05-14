@@ -3,21 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-/****************************************************************************
- **
- **             Класс модели инспекции Inspection.
- **
- ****************************************************************************/
 
 /* 
- * File:   Inspection.h
- * Author: kazun
+ * File:   InspectionView.h
+ * Author: kazun_as
  *
- * Created on 3 апреля 2021 г., 21:58
+ * Created on 14 мая 2021 г., 14:44
  */
 
-#ifndef INSPECTION_H
-#define INSPECTION_H
+#ifndef INSPECTIONVIEW_H
+#define INSPECTIONVIEW_H
 #include <QtCore/QJsonObject>
 #include "JsonSerializable.h"
 #include "Model.h"
@@ -26,11 +21,10 @@
 #include <array>
 #include <MQuery.h>
 #include "ModelWrapper.h"
-#include <QSqlQuery>
-#define INSPECTION_COLUMN 3
+#define INSPECTIONVIEW_COLUMN 3
 using namespace std;
 
-class Inspection : public JsonSerializable, Model {
+class InspectionView {
 public:
     static ModelWrapper::Model model_;
 
@@ -40,16 +34,16 @@ public:
         MRO
     };
     ///Конструктор
-    Inspection();
+    InspectionView();
     ///деструктор
-    virtual ~Inspection();
+    virtual ~InspectionView();
     ///Функции чтения - записи полей класса
     void setId(const qint64& id);
     void setName(const QString& name);
-    void setMro(const qint64& mro);
+    void setMro(const QString& mro);
     const qint64& getId()const;
     const QString& getName()const;
-    const qint64& getMro()const;
+    const QString & getMro()const;
 
     ///Функции сериализации объекта класса
     ///Считывание JSON объкта в поля класса
@@ -59,11 +53,11 @@ public:
 
     ///Список названий полей базы
 
-    static array<QString, INSPECTION_COLUMN> getFields() {
-        return array<QString, INSPECTION_COLUMN>{
+    static array<QString, INSPECTIONVIEW_COLUMN> getFields() {
+        return array<QString, INSPECTIONVIEW_COLUMN>{
             "id",
-            "name_i",
-            "id_mro"};
+            "name",
+            "mro"};
     }
 
 
@@ -89,24 +83,14 @@ public:
     ///Установить  данные  модели.
     virtual void setData(const int&, const QVariant&);
 
-    ///привязать парвметры sql запроса к данным
-    void bindData(QSqlQuery* asSqlQuery);
-    ///сформировать sql запрос вставки новой записи
-
-    ///SQL запросы
-    const QString& insert();
-    const QString& update();
-
-
 
 private:
 
-    MQuery<Inspection> query_;
+    MQuery<InspectionView> query_;
     qint64 id_;
     QString name_;
-    qint64 mro_;
-
+    QString mro_;
 };
 
-#endif /* INSPECTION_H */
+#endif /* INSPECTIONVIEW_H */
 

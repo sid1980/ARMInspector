@@ -177,8 +177,10 @@ void juristFrm::OnMro() {
     QJsonObject param;
     emit runServerCmd(Functor<MroView>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
     emit waitReady();
+    emit runServerCmd(Functor<Inspection>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
+    emit waitReady();
     frm->setWindowTitle("МРО");
-    frm->setSizeTbl(553, 200);
+    frm->setSizeTbl(953, 200);
     frm->exec();
 }
 

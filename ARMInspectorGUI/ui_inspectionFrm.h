@@ -1,13 +1,13 @@
 /********************************************************************************
-** Form generated from reading UI file 'mroFrm.ui'
+** Form generated from reading UI file 'inspectionFrm.ui'
 **
 ** Created by: Qt User Interface Compiler version 5.13.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
-#ifndef UI_MROFRM_H
-#define UI_MROFRM_H
+#ifndef UI_INSPECTIONFRM_H
+#define UI_INSPECTIONFRM_H
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
@@ -19,23 +19,21 @@
 
 QT_BEGIN_NAMESPACE
 
-class Ui_mroFrm
+class Ui_inspectionFrm
 {
 public:
-    QGridLayout *gridLayout_2;
     QGridLayout *gridLayout;
-    QTableView *tableView_Mro;
-    QPushButton *pushButton_AddMro;
-    QPushButton *pushButton_EditMro;
-    QPushButton *pushButton_RemoveMro;
+    QTableView *tableView;
+    QPushButton *pushButton_Add;
+    QPushButton *pushButton_Edit;
+    QPushButton *pushButton_Remove;
 
-    void setupUi(QDialog *mroFrm)
+    void setupUi(QDialog *inspectionFrm)
     {
-        if (mroFrm->objectName().isEmpty())
-            mroFrm->setObjectName(QString::fromUtf8("mroFrm"));
-        mroFrm->resize(400, 300);
-        mroFrm->setLayoutDirection(Qt::LeftToRight);
-        mroFrm->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        if (inspectionFrm->objectName().isEmpty())
+            inspectionFrm->setObjectName(QString::fromUtf8("inspectionFrm"));
+        inspectionFrm->resize(400, 300);
+        inspectionFrm->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "color: white;\n"
 "background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #88d, stop: 0.1 #99e, stop: 0.49 #77c, stop: 0.5 #66b, stop: 1 #77c);\n"
 "border-width: 1px;\n"
@@ -119,53 +117,48 @@ public:
 "max-height: 13px;\n"
 "}\n"
 ""));
-        gridLayout_2 = new QGridLayout(mroFrm);
-        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
-        gridLayout = new QGridLayout();
+        gridLayout = new QGridLayout(inspectionFrm);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        tableView_Mro = new QTableView(mroFrm);
-        tableView_Mro->setObjectName(QString::fromUtf8("tableView_Mro"));
+        tableView = new QTableView(inspectionFrm);
+        tableView->setObjectName(QString::fromUtf8("tableView"));
 
-        gridLayout->addWidget(tableView_Mro, 0, 0, 1, 3);
+        gridLayout->addWidget(tableView, 0, 0, 1, 3);
 
-        pushButton_AddMro = new QPushButton(mroFrm);
-        pushButton_AddMro->setObjectName(QString::fromUtf8("pushButton_AddMro"));
+        pushButton_Add = new QPushButton(inspectionFrm);
+        pushButton_Add->setObjectName(QString::fromUtf8("pushButton_Add"));
 
-        gridLayout->addWidget(pushButton_AddMro, 1, 0, 1, 1);
+        gridLayout->addWidget(pushButton_Add, 1, 0, 1, 1);
 
-        pushButton_EditMro = new QPushButton(mroFrm);
-        pushButton_EditMro->setObjectName(QString::fromUtf8("pushButton_EditMro"));
+        pushButton_Edit = new QPushButton(inspectionFrm);
+        pushButton_Edit->setObjectName(QString::fromUtf8("pushButton_Edit"));
 
-        gridLayout->addWidget(pushButton_EditMro, 1, 1, 1, 1);
+        gridLayout->addWidget(pushButton_Edit, 1, 1, 1, 1);
 
-        pushButton_RemoveMro = new QPushButton(mroFrm);
-        pushButton_RemoveMro->setObjectName(QString::fromUtf8("pushButton_RemoveMro"));
+        pushButton_Remove = new QPushButton(inspectionFrm);
+        pushButton_Remove->setObjectName(QString::fromUtf8("pushButton_Remove"));
 
-        gridLayout->addWidget(pushButton_RemoveMro, 1, 2, 1, 1);
-
-
-        gridLayout_2->addLayout(gridLayout, 0, 0, 1, 1);
+        gridLayout->addWidget(pushButton_Remove, 1, 2, 1, 1);
 
 
-        retranslateUi(mroFrm);
+        retranslateUi(inspectionFrm);
 
-        QMetaObject::connectSlotsByName(mroFrm);
+        QMetaObject::connectSlotsByName(inspectionFrm);
     } // setupUi
 
-    void retranslateUi(QDialog *mroFrm)
+    void retranslateUi(QDialog *inspectionFrm)
     {
-        mroFrm->setWindowTitle(QCoreApplication::translate("mroFrm", "mroFrm", nullptr));
-        pushButton_AddMro->setText(QCoreApplication::translate("mroFrm", "\320\224\320\276\320\261\320\260\320\262\320\270\321\202\321\214 ", nullptr));
-        pushButton_EditMro->setText(QCoreApplication::translate("mroFrm", "\320\240\320\265\320\264\320\260\320\272\321\202\320\270\321\200\320\276\320\262\320\260\321\202\321\214 ", nullptr));
-        pushButton_RemoveMro->setText(QCoreApplication::translate("mroFrm", "\320\243\320\264\320\260\320\273\320\270\321\202\321\214", nullptr));
+        inspectionFrm->setWindowTitle(QCoreApplication::translate("inspectionFrm", "inspectionFrm", nullptr));
+        pushButton_Add->setText(QCoreApplication::translate("inspectionFrm", "\320\224\320\276\320\261\320\260\320\262\320\270\321\202\321\214 ", nullptr));
+        pushButton_Edit->setText(QCoreApplication::translate("inspectionFrm", "\320\240\320\265\320\264\320\260\320\272\321\202\320\270\321\200\320\276\320\262\320\260\321\202\321\214 ", nullptr));
+        pushButton_Remove->setText(QCoreApplication::translate("inspectionFrm", "\320\243\320\264\320\260\320\273\320\270\321\202\321\214", nullptr));
     } // retranslateUi
 
 };
 
 namespace Ui {
-    class mroFrm: public Ui_mroFrm {};
+    class inspectionFrm: public Ui_inspectionFrm {};
 } // namespace Ui
 
 QT_END_NAMESPACE
 
-#endif // UI_MROFRM_H
+#endif // UI_INSPECTIONFRM_H
