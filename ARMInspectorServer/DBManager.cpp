@@ -328,6 +328,11 @@ void DBManager::updateModel() {
             updateModel<Mro>();
         }
             break;
+        case ModelWrapper::Model::Inspection:
+        {
+            updateModel<Inspection>();
+        }
+            break;
         default:
         {
             auto setResult = [this](Message msg, QString attach) {
