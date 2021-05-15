@@ -49,6 +49,7 @@ public:
         MroView,
         Nsi,
         RptColumn,
+        RptColumnView,
         UserView,
         Inspection,
         InspectionView
@@ -84,6 +85,8 @@ public:
             {Model::MroView, "v_mro"},
             {Model::Inspection, "inspection"},
             {Model::InspectionView, "v_inspection"},
+            {Model::RptColumn, "reportcol"},
+            {Model::RptColumnView, "v_reportcol"},
             {Model::Nsi, "nsi_"}
         };
         return ListModel;

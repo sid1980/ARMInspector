@@ -389,19 +389,19 @@ void juristFrm::report() {
     this->widget.tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     this->widget.tableView->setColumnWidth(1, 290);
 
-    for (int i = 16; i < 27; i++) {
+    for (int i = 16; i < 29; i++) {
         this->widget.tableView->setColumnWidth(i, 50);
     }
-    for (int i = 27; i < 29; i++) {
+    for (int i = 29; i < 31; i++) {
         this->widget.tableView->setColumnWidth(i, 120);
     }
-    for (int i = 0; i < 34; i++) {
-        if (i > 6) {
-            if (i != 9 && i != 20 && i != 21 && i != 22 && i != 23 && i != 24 && i != 25 && i != 32 && i != 33)
+    for (int i = 0; i < 35; i++) {
+        if (i > 7) {
+            if (i != 10 && i != 21 && i != 22 && i != 23 && i != 24 && i != 25 && i != 26 && i != 33 && i != 34)
                 this->widget.tableView->setRowHeight(i, 35);
         }
     }
-    connect(this->widget.tableView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
+    //connect(this->widget.tableView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
     //this->widget.tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     //this->widget.tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     //QString style = R"(
@@ -444,7 +444,7 @@ void juristFrm::spanTbl() {
             QStringList lineToken = fileLine.split(";", QString::KeepEmptyParts);
 
             // load parsed data to model accordingly
-            if (lineindex < 7 || lineindex == 22 || lineindex == 25 || lineindex == 32 || lineindex == 33) {
+            if (lineindex < 8 || lineindex == 23 || lineindex == 26 || lineindex == 33 || lineindex == 34|| lineindex == 35) {
                 int spanCol = 1;
                 int j = 0;
                 for (; j < lineToken.size(); j++) {
@@ -463,7 +463,7 @@ void juristFrm::spanTbl() {
                     //QString style = R"()";
                 }
                 if (spanCol > 1) {
-                    if (lineindex != 4) {
+                    if (lineindex != 5) {
                         this->widget.tableView->setSpan(lineindex, j - spanCol, 1, spanCol);
                     }
                 }

@@ -5,20 +5,21 @@
  */
 
 /* 
- * File:   RptColumn.cpp
+ * File:   RptColumnViewView.cpp
  * Author: kazun_as
  * 
- * Created on 23 апреля 2021 г., 15:14
+ * Created on 15 мая 2021 г., 13:49
  */
 
-#include "RptColumn.h"
-ModelWrapper::Model RptColumn::model_={ModelWrapper::Model::RptColumn};
+#include "RptColumnView.h"
 
-RptColumn::RptColumn() {
+RptColumnView::RptColumnView() {
 }
 
+RptColumnView::RptColumnView(const RptColumnView& orig) {
+}
 
-RptColumn::~RptColumn() {
+RptColumnView::~RptColumnView() {
 }
 
 ///-----------------------------------------------------------------------------
@@ -27,30 +28,35 @@ RptColumn::~RptColumn() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void RptColumn::setId(const qint64& id) {
+void RptColumnView::setId(const qint64& id) {
     id_ = id;
 };
-void RptColumn::setArticle(const qint64& article) {
+
+void RptColumnView::setArticle(const QString& article) {
     article_ = article;
 };
-void RptColumn::setOffenseSubject(const qint64& offense_subject) {
-    offense_subject_ = offense_subject;
+
+void RptColumnView::setSubject(const QString& subject) {
+    subject_ = subject;
 };
-void RptColumn::setCol(const qint64& col) {
+
+void RptColumnView::setCol(const qint64& col) {
     col_ = col;
 };
 
-
-const qint64& RptColumn::getId() const {
+const qint64& RptColumnView::getId() const {
     return id_;
 };
-const qint64& RptColumn::getArticle() const {
+
+const QString& RptColumnView::getArticle() const {
     return article_;
 };
-const qint64& RptColumn::getOffenseSubject() const {
-    return offense_subject_;
+
+const QString& RptColumnView::getSubject() const {
+    return subject_;
 };
-const qint64& RptColumn::getCol() const {
+
+const qint64& RptColumnView::getCol() const {
     return col_;
 };
 
@@ -63,11 +69,12 @@ const qint64& RptColumn::getCol() const {
 ///          
 ///-----------------------------------------------------------------------------
 
-void RptColumn::read(const QJsonObject &jsonObj) {
-    this->setId(jsonObj["id"].toInt());
-    this->setArticle(jsonObj["article"].toInt());
-    this->setOffenseSubject(jsonObj["offense_subject"].toInt());
-    this->setCol(jsonObj["col"].toInt());
+void RptColumnView::read(const QJsonObject &jsonObj) {
+    array<QString, RPT_COLUMN> fld = RptColumnView::getFields();
+    this->setId(jsonObj[fld[RptColumnView::Column::ID]].toInt());
+    this->setArticle(jsonObj[fld[RptColumnView::Column::ARTICLE]].toString());
+    this->setSubject(jsonObj[fld[RptColumnView::Column::SUBJECT]].toString());
+    this->setCol(jsonObj[fld[RptColumnView::Column::COL]].toInt());
 };
 
 ///-----------------------------------------------------------------------------
@@ -77,12 +84,13 @@ void RptColumn::read(const QJsonObject &jsonObj) {
 ///
 ///-----------------------------------------------------------------------------
 
-void RptColumn::write(QJsonObject &jsonObj) const {
+void RptColumnView::write(QJsonObject &jsonObj) const {
+    array<QString, RPT_COLUMN> fld = RptColumnView::getFields();
 
-    jsonObj["id"] = this->getId();
-    jsonObj["article"] = this->getArticle();
-    jsonObj["offense_subject"] = this->getOffenseSubject();
-    jsonObj["col"] = this->getCol();
+    jsonObj[fld[RptColumnView::Column::ID]] = this->getId();
+    jsonObj[fld[RptColumnView::Column::ARTICLE]] = this->getArticle();
+    jsonObj[fld[RptColumnView::Column::SUBJECT]] = this->getSubject();
+    jsonObj[fld[RptColumnView::Column::COL]] = this->getCol();
 
 };
 
@@ -93,16 +101,16 @@ void RptColumn::write(QJsonObject &jsonObj) const {
 ///
 ///-----------------------------------------------------------------------------
 
-const QVariant RptColumn::getData(const int& position) const {
+const QVariant RptColumnView::getData(const int& position) const {
 
     switch (position) {
-        case 0:
+        case RptColumnView::Column::ID:
             return this->getId();
-        case 1:
+        case RptColumnView::Column::ARTICLE:
             return this->getArticle();
-        case 2:
-            return this->getOffenseSubject();
-        case 3:
+        case RptColumnView::Column::SUBJECT:
+            return this->getSubject();
+        case RptColumnView::Column::COL:
             return this->getCol();
         default:
             return 0;
@@ -117,18 +125,18 @@ const QVariant RptColumn::getData(const int& position) const {
 ///
 ///-----------------------------------------------------------------------------
 
-void RptColumn::setData(const int& position, const QVariant& value) {
+void RptColumnView::setData(const int& position, const QVariant& value) {
     switch (position) {
-        case 0:
+        case RptColumnView::Column::ID:
             this->setId(value.toInt());
             break;
-        case 1:
-            this->setArticle(value.toInt());
+        case RptColumnView::Column::ARTICLE:
+            this->setArticle(value.toString());
             break;
-        case 2:
-            this->setOffenseSubject(value.toInt());
+        case RptColumnView::Column::SUBJECT:
+            this->setSubject(value.toString());
             break;
-        case 3:
+        case RptColumnView::Column::COL:
             this->setCol(value.toInt());
             break;
         default:

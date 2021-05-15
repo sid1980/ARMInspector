@@ -29,7 +29,7 @@
 #include "User/UserView.h"
 #include "Inspection/Inspection.h"
 #include "User/dialog.h"
-#include "Report/reportFrm.h"
+#include "RptColumn/RptColumnFrm.h"
 #include "Nsi/nsiFrm.h"
 #include "QMessageBoxEx.h"
 
@@ -88,7 +88,7 @@ signals:
 private:
     ///Командная обёртка в форме строки.
     QString m_aModelWrapperString;
-    reportFrm* reportDlg_;
+    //reportFrm* reportDlg_;
 };
 
 #endif /* WORKERCLIENT_H */

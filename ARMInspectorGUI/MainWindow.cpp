@@ -12,7 +12,6 @@
  */
 
 #include "MainWindow.h"
-#include "Report/reportFrm.h"
 #include <QStandardItemModel>
 #include <QScrollBar>
 #include "Functor.h"

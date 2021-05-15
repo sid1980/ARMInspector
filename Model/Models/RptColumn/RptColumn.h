@@ -28,15 +28,22 @@ using namespace std;
 class RptColumn : public JsonSerializable, Model {
 public:
     static ModelWrapper::Model model_;
+
+    enum Column {
+        ID = 0,
+        ARTICLE,
+        SUBJECT,
+        COL
+    };
     RptColumn();
     virtual ~RptColumn();
     void setId(const qint64& id);
     void setArticle(const qint64& article);
-    void setOffenseSubject(const qint64& offense_subject);
+    void setSubject(const qint64& offense_subject);
     void setCol(const qint64& col);
     const qint64& getId()const;
     const qint64& getArticle()const;
-    const qint64& getOffenseSubject()const;
+    const qint64& getSubject()const;
     const qint64& getCol()const;
     ///Функции сериализации объекта класса
     ///Считывание JSON объкта в поля класса
@@ -85,7 +92,7 @@ private:
     ///Статья КоАП
     qint64 article_;
     ///Тип нарушителя
-    qint64 offense_subject_;
+    qint64 subject_;
     ///Колонка отчёта
     qint64 col_;
 
