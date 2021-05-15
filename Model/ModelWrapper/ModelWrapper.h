@@ -74,8 +74,6 @@ public:
         {Command::SET_SESSION_ID, "Установить идентификатор сессии."},
         {Command::NOP, "Холостая операция."}
     };
-
-
     //Названия моделей
 
     static QHash<Model, QString> map() {

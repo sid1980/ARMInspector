@@ -183,7 +183,9 @@ void Inspection::bindData(QSqlQuery* asSqlQuery) {
 ///-----------------------------------------------------------------------------
 
 const QString& Inspection::insert() {
-    qInfo() << "Inspection::insert()";
+    qInfo() <<  query_.insert()->field(Inspection::Column::NAME)->
+            field(Inspection::Column::MRO)->
+            prepare();
     return query_.insert()->field(Inspection::Column::NAME)->
             field(Inspection::Column::MRO)->
             prepare();

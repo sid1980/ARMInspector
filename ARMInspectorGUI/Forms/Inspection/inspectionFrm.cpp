@@ -197,18 +197,18 @@ void inspectionFrm::on_pushButton_Add_clicked() {
     inspectionEditFrm_->getUI()->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Отменить"));
     if (inspectionEditFrm_->exec() == QDialog::Accepted) {
         //QMessageBox::information(this, "Добавление записи НСИ", "QDialog::Accepted");
-        Mro* mro = new Mro();
+        Inspection* inspection = new Inspection();
         //QMessageBox::information(this, "Добавление новой записи НСИ", Nsi::num_);
-        mro->setName(inspectionEditFrm_->getUI()->lineEdit->text());
-        mro->setInspection(inspectionEditFrm_->getListMro()[inspectionEditFrm_->getUI()->comboBox->currentIndex()].getId());
+        inspection->setName(inspectionEditFrm_->getUI()->lineEdit->text());
+        inspection->setMro(inspectionEditFrm_->getListMro()[inspectionEditFrm_->getUI()->comboBox->currentIndex()].getId());
 
         //QString mroAsString = JsonSerializer::serialize(*mro);
         //QJsonObject param;
         //param.insert(DATA, mroAsString);
-        emit runServerCmd(Functor<Mro>::produce(ModelWrapper::Command::ADD_NEW_MODEL, *mro));
+        emit runServerCmd(Functor<Inspection>::produce(ModelWrapper::Command::ADD_NEW_MODEL, *inspection));
         emit waitReady();
         //showNewRecordData(*mro);
-        delete mro;
+        delete inspection;
     }
 }
 
@@ -226,7 +226,7 @@ void inspectionFrm::on_pushButton_Edit_clicked() {
         auto id = inspectionV.getId();
         QJsonObject param;
         param.insert(ID_, id);
-        emit runServerCmd(Functor<Mro>::producePrm(ModelWrapper::Command::GET_MODEL, param));
+        emit runServerCmd(Functor<Inspection>::producePrm(ModelWrapper::Command::GET_MODEL, param));
         emit waitReady();
         inspectionEditFrm_->setWindowTitle("Редактирование");
         inspectionEditFrm_->getUI()->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Сохранить"));
