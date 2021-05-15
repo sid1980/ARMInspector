@@ -198,29 +198,53 @@ void DBManager::login() {
 ///-----------------------------------------------------------------------------
 
 void DBManager::deleteModel() {
+
     //Получаем модель.
     ModelWrapper::Model model = m_pModelWrapper->getEnumModel();
     //Выбрать модель, данные которой необходимо запросить. 
     switch (model) {
         case ModelWrapper::Model::User:
+        {
             deleteModel<User>();
+        }
             break;
         case ModelWrapper::Model::UserView:
+        {
             deleteModel<UserView>();
+        }
             break;
         case ModelWrapper::Model::Mro:
+        {
             deleteModel<Mro>();
+        }
             break;
         case ModelWrapper::Model::Inspection:
+        {
             deleteModel<Inspection>();
+        }
             break;
         case ModelWrapper::Model::Nsi:
+        {
             QJsonObject param;
             JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
             //ноиер НСИ
             Nsi::num_ = param[NSI_NUM].toString();
             //            m_pModelWrapper->setData(param[DATA].toString());
             deleteModel<Nsi>();
+        }
+            break;
+        default:
+        {
+            auto setResult = [this](Message msg, QString attach) {
+                //Установить сообщение и результат выполнения команды.
+                ServerMessage::Result result = ServerMessage::outPut(msg);
+                m_pModelWrapper->setMessage(QString(result.str).arg(attach));
+                m_pModelWrapper->setSuccess(result.success);
+            };
+            qDebug() << "Unknown model";
+            QString attach = "<a style='color:red'> deleteModel</a>";
+            setResult(Message::UNKMOWN_MODEL, attach);
+        }
             break;
     }
 }
@@ -255,7 +279,24 @@ void DBManager::addModel() {
             addModel<Mro>();
         }
             break;
+        case ModelWrapper::Model::Inspection:
+        {
+            //qInfo() << param[DATA].toString();
+            addModel<Inspection>();
+        }
+            break;
         default:
+        {
+            auto setResult = [this](Message msg, QString attach) {
+                //Установить сообщение и результат выполнения команды.
+                ServerMessage::Result result = ServerMessage::outPut(msg);
+                m_pModelWrapper->setMessage(QString(result.str).arg(attach));
+                m_pModelWrapper->setSuccess(result.success);
+            };
+            qDebug() << "Unknown model";
+            QString attach = "<a style='color:red'> addModel</a>";
+            setResult(Message::UNKMOWN_MODEL, attach);
+        }
             break;
     }
 }
@@ -287,6 +328,19 @@ void DBManager::updateModel() {
             updateModel<Mro>();
         }
             break;
+        default:
+        {
+            auto setResult = [this](Message msg, QString attach) {
+                //Установить сообщение и результат выполнения команды.
+                ServerMessage::Result result = ServerMessage::outPut(msg);
+                m_pModelWrapper->setMessage(QString(result.str).arg(attach));
+                m_pModelWrapper->setSuccess(result.success);
+            };
+            qDebug() << "Unknown model";
+            QString attach = "<a style='color:red'> updateModel</a>";
+            setResult(Message::UNKMOWN_MODEL, attach);
+        }
+            break;
     }
 }
 
@@ -303,28 +357,52 @@ void DBManager::getModel() {
     //Выбрать модель, данные которой необходимо запросить. 
     switch (model) {
         case ModelWrapper::Model::User:
+        {
             getModel<User>();
+        }
             break;
         case ModelWrapper::Model::UserView:
+        {
             getModel<UserView>();
+        }
             break;
         case ModelWrapper::Model::Inspection:
+        {
             getModel<Inspection>();
+        }
             break;
         case ModelWrapper::Model::Mro:
+        {
             getModel<Mro>();
+        }
             break;
         case ModelWrapper::Model::MroView:
+        {
             getModel<MroView>();
+        }
             break;
         case ModelWrapper::Model::Nsi:
+        {
             QJsonObject param;
             JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
             //ноиер НСИ
             Nsi::num_ = param[NSI_NUM].toString();
             getModel<Nsi>();
+        }
             break;
-
+        default:
+        {
+            auto setResult = [this](Message msg, QString attach) {
+                //Установить сообщение и результат выполнения команды.
+                ServerMessage::Result result = ServerMessage::outPut(msg);
+                m_pModelWrapper->setMessage(QString(result.str).arg(attach));
+                m_pModelWrapper->setSuccess(result.success);
+            };
+            qDebug() << "Unknown model";
+            QString attach = "<a style='color:red'> getModel</a>";
+            setResult(Message::UNKMOWN_MODEL, attach);
+        }
+            break;
     }
 }
 ///-----------------------------------------------------------------------------
@@ -339,34 +417,59 @@ void DBManager::getListModels() {
     //Выбрать модель, данные которой необходимо запросить. 
     switch (model) {
         case ModelWrapper::Model::User:
+        {
             getListModels<User>();
+        }
             break;
         case ModelWrapper::Model::Mro:
+        {
             getListModels<Mro>();
+        }
             break;
         case ModelWrapper::Model::MroView:
+        {
             getListModels<MroView>();
+        }
             break;
         case ModelWrapper::Model::UserView:
+        {
             getListModels<UserView>();
+        }
             break;
         case ModelWrapper::Model::Inspection:
+        {
             getListModels<Inspection>();
+        }
             break;
         case ModelWrapper::Model::InspectionView:
+        {
             getListModels<InspectionView>();
+        }
             break;
         case ModelWrapper::Model::Nsi:
+        {
             QJsonObject param;
             JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
             //ноиер НСИ
             Nsi::num_ = param[NSI_NUM].toString();
             //qDebug()<<"num_" << Nsi::num_;
             getListModels<Nsi>();
+        }
             break;
-
+        default:
+        {
+            auto setResult = [this](Message msg, QString attach) {
+                //Установить сообщение и результат выполнения команды.
+                ServerMessage::Result result = ServerMessage::outPut(msg);
+                m_pModelWrapper->setMessage(QString(result.str).arg(attach));
+                m_pModelWrapper->setSuccess(result.success);
+            };
+            qDebug() << "Unknown model";
+            QString attach = "<a style='color:red'> getListModels</a>";
+            setResult(Message::UNKMOWN_MODEL, attach);
+        }
+            break;
     }
-
 }
 
 
