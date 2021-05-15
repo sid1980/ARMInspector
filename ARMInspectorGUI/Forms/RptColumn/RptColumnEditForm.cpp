@@ -13,9 +13,86 @@
 
 #include "RptColumnEditForm.h"
 
-RptColumnEditForm::RptColumnEditForm() {
-    widget.setupUi(this);
+///-----------------------------------------------------------------------------
+///
+///         Конструктор.
+///          
+///-----------------------------------------------------------------------------
+
+RptColumnEditForm::RptColumnEditForm(QWidget *parent) :
+QDialog(parent), widget_(new Ui::RptColumnEditForm) {
+    widget_->setupUi(this);
 }
 
+///-----------------------------------------------------------------------------
+///
+///         Деструктор.
+///          
+///-----------------------------------------------------------------------------
+
 RptColumnEditForm::~RptColumnEditForm() {
+    delete widget_;
+}
+
+
+///-----------------------------------------------------------------------------
+///
+///         Получить ссылку на виджет.
+///          
+///-----------------------------------------------------------------------------
+
+Ui::RptColumnEditForm* RptColumnEditForm::getUI() {
+    return widget_;
+}
+
+///-----------------------------------------------------------------------------
+///
+///         Получить список статей.
+///          
+///-----------------------------------------------------------------------------
+
+const QList<Mro>& RptColumnEditForm::getListArticle()const {
+    return listarticle_;
+};
+
+///-----------------------------------------------------------------------------
+///
+///         Инициализировать список статей и
+///         добавить элементы выпадающего списка QCcomboBox      
+///          
+///-----------------------------------------------------------------------------
+
+void RptColumnEditForm::setListArticle(const QList<Nsi>& listarticle) {
+    listarticle_ =  listarticle;
+    this->getUI()->comboBox->clear();
+    for (auto& t : listarticle_) {
+        this->getUI()->comboBox->addItem(t.getName());
+    }
+
+}
+
+///-----------------------------------------------------------------------------
+///
+///         Получить список статей.
+///          
+///-----------------------------------------------------------------------------
+
+const QList<Mro>& RptColumnEditForm::getListSubject()const {
+    return listsubject_;
+};
+
+///-----------------------------------------------------------------------------
+///
+///         Инициализировать список статей и
+///         добавить элементы выпадающего списка QCcomboBox      
+///          
+///-----------------------------------------------------------------------------
+
+void RptColumnEditForm::setListSubject(const QList<Nsi>& listsubject) {
+    listsubject_ =  listsubject;
+    this->getUI()->comboBox->clear();
+    for (auto& t : listsubject_) {
+        this->getUI()->comboBox->addItem(t.getName());
+    }
+
 }

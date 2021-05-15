@@ -19,10 +19,27 @@
 class RptColumnEditForm : public QDialog {
     Q_OBJECT
 public:
-    RptColumnEditForm();
+    ///конструктор
+    explicit RptColumnEditForm(QWidget *parent = 0);
     virtual ~RptColumnEditForm();
+    ///Получить ссылку на виджет
+    Ui::RptColumnEditForm* getUI();
+    ///получить список статей
+    const QList<Nsi>& getListArticle() const;
+    /// инициализировать список статей
+    void setListArticle(const QList<Nsi>&);
+    ///получить список субъектов АП
+    const QList<Nsi>& getListSubject() const;
+    /// инициализировать список субъектов АП
+    void setListSubject(const QList<Nsi>&);
+
+
 private:
-    Ui::RptColumnEditForm widget;
+    Ui::inspectionEditForm* widget_;
+    ///список статей
+    QList<Nsi> listarticle_;
+    ///список  субъектов АП
+    QList<Nsi> listsubject_;
 };
 
 #endif /* _RPTCOLUMNEDITFORM_H */

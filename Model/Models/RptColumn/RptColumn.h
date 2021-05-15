@@ -68,7 +68,7 @@ public:
         return array<QString, RPT_COLUMN>{
             "id",
             "article",
-            "offense_subject",
+            "subject",
             "col"};
     }
     ///название модели
@@ -81,6 +81,13 @@ public:
     virtual const QVariant getData(const int&) const;
     ///Установить  данные  модели.
     virtual void setData(const int&, const QVariant&);
+    ///привязать парвметры sql запроса к данным
+    void bindData(QSqlQuery* asSqlQuery);
+    ///сформировать sql запрос вставки новой записи
+
+    ///SQL запросы
+    const QString& insert();
+    const QString& update();
 
 
 

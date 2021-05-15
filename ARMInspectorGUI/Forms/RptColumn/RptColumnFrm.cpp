@@ -13,6 +13,7 @@
 
 #include "RptColumnFrm.h"
 #include "ItemContainer.h"
+#include "Nsi/Nsi.h"
 
 ///-----------------------------------------------------------------------------
 ///
@@ -145,7 +146,7 @@ void RptColumnFrm::worker(const QString& asWrapper) {
             JsonSerializer::parse(wrapper.getData(), rptcolumn);
             //emit dialog_->showUserData(user);
             QMessageBoxEx::information(0, wrapper.getHead(), wrapper.getMessage() +
-                    "МРО  <a style='color:royalblue'> " + rptcolumn.getName() + "</a>");
+                    "МРО  <a style='color:royalblue'> " + rptcolumn.getArticle() + "</a>");
 
             emit ready();
         }
@@ -199,8 +200,9 @@ void RptColumnFrm::on_pushButton_Add_clicked() {
         //QMessageBox::information(this, "Добавление записи НСИ", "QDialog::Accepted");
         RptColumn* rptcolumn = new RptColumn();
         //QMessageBox::information(this, "Добавление новой записи НСИ", Nsi::num_);
-        rptcolumn->setName(rptcolumnEditFrm_->getUI()->lineEdit->text());
-        rptcolumn->setMro(rptcolumnEditFrm_->getListMro()[rptcolumnEditFrm_->getUI()->comboBox->currentIndex()].getId());
+        rptcolumn->setCol(rptcolumnEditFrm_->getUI()->lineEdit->text());
+        rptcolumn->setArticle(rptcolumnEditFrm_->getListArticle()[rptcolumnEditFrm_->getUI()->comboBoxArticle->currentIndex()].getId());
+        rptcolumn->setSubject(rptcolumnEditFrm_->getListSubject()[rptcolumnEditFrm_->getUI()->comboBoxSubject->currentIndex()].getId());
 
         //QString mroAsString = JsonSerializer::serialize(*mro);
         //QJsonObject param;
@@ -294,45 +296,57 @@ void RptColumnFrm::showData(const RptColumn& asRptColumn) {
 
 ///-----------------------------------------------------------------------------
 ///
-///         показать отредактированные данные 
+///         показать данные выбранной записи 
 ///          
 ///-----------------------------------------------------------------------------
 
 void RptColumnFrm::showEditData(const RptColumn& rptcolumn) {
     rptcolumnview_->setId(rptcolumn.getId());
-    rptcolumnview_->setName(rptcolumn.getName());
-    rptcolumnview_->setMro(rptcolumnEditFrm_->getListMro()[rptcolumn.getMro() - 1].getName());
+    rptcolumnview_->setCol(rptcolumn.getCol());
+    rptcolumnview_->setArticle(rptcolumnEditFrm_->getListArticle()[rptcolumn.getArticle() - 1].getName());
+    rptcolumnview_->setSubject(rptcolumnEditFrm_->getListSubject()[rptcolumn.getSubject() - 1].getName());
     QItemSelectionModel *select = this->getUI()->tableView->selectionModel();
     int rowidx = select->currentIndex().row();
     this->getUI()->tableView->scrollTo(select->currentIndex());
     select->model()->setData(select->model()->index(rowidx, 0), rptcolumnview_->getId(), Qt::EditRole);
-    select->model()->setData(select->model()->index(rowidx, 1), rptcolumnview_->getName(), Qt::EditRole);
-    select->model()->setData(select->model()->index(rowidx, 2), rptcolumnview_->getMro(), Qt::EditRole);
+    select->model()->setData(select->model()->index(rowidx, 1), rptcolumnview_->getArticle(), Qt::EditRole);
+    select->model()->setData(select->model()->index(rowidx, 2), rptcolumnview_->getSubject(), Qt::EditRole);
+    select->model()->setData(select->model()->index(rowidx, 3), rptcolumnview_->getCol(), Qt::EditRole);
 }
 
 ///-----------------------------------------------------------------------------
 ///
-///         Инициализировать список инспекций  в окнах ввода и 
-///         редактированиядля пользователя  
+///         Инициализировать список статей или субъектов АП  в окнах ввода и 
+///         редактирования
 ///          
 ///-----------------------------------------------------------------------------
 
 void RptColumnFrm::setListNsi(const QList<Nsi>& listnsi) {
     //QMessageBox::information(0, "Information Box", rptcolumns[1].getName());
-    rptcolumnEditFrm_->setListNsi(listnsi);
+    if (Nsi::num_ == 7) {
+        rptcolumnEditFrm_->setListArticle(listnsi);
+    } else if (Nsi::num_ == 5) {
+        rptcolumnEditFrm_->setListSubject(listnsi);
+    }
 }
 
 ///-----------------------------------------------------------------------------
 ///
-///         заполнить форму редактирования МРО
+///         заполнить форму редактирования
 ///          
 ///-----------------------------------------------------------------------------
 
 void RptColumnFrm::fillEditFrm(const RptColumn& rptcolumn) {
-    rptcolumnEditFrm_->getUI()->lineEdit->setText(rptcolumn.getName());
-    for (int i = 0; i < rptcolumnEditFrm_->getListMro().size(); i++) {
-        if (rptcolumnEditFrm_->getListMro()[i].getId() == rptcolumn.getMro()) {
-            rptcolumnEditFrm_->getUI()->comboBox->setCurrentIndex(i);
+    rptcolumnEditFrm_->getUI()->lineEdit->setText(rptcolumn.getCol());
+    for (int i = 0; i < rptcolumnEditFrm_->getListArticle().size(); i++) {
+        if (rptcolumnEditFrm_->getListArticle()[i].getId() == rptcolumn.getArticle()) {
+            rptcolumnEditFrm_->getUI()->comboBoxArticle->setCurrentIndex(i);
+            break;
+        }
+    }
+    for (int i = 0; i < rptcolumnEditFrm_->getListSubject().size(); i++) {
+        if (rptcolumnEditFrm_->getListSubject()[i].getId() == rptcolumn.getSubject()) {
+            rptcolumnEditFrm_->getUI()->comboBoxSubject->setCurrentIndex(i);
             break;
         }
     }

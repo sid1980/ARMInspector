@@ -131,7 +131,7 @@ QComboBox QListView::item {
     <rect>
      <x>30</x>
      <y>170</y>
-     <width>81</width>
+     <width>111</width>
      <height>16</height>
     </rect>
    </property>
@@ -139,22 +139,22 @@ QComboBox QListView::item {
     <string>Номер колонки</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="comboBox">
+  <widget class="QComboBox" name="comboBoxArticle">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>170</x>
      <y>50</y>
-     <width>501</width>
+     <width>461</width>
      <height>32</height>
     </rect>
    </property>
   </widget>
-  <widget class="QComboBox" name="comboBox_2">
+  <widget class="QComboBox" name="comboBoxSubject">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>170</x>
      <y>110</y>
-     <width>501</width>
+     <width>461</width>
      <height>32</height>
     </rect>
    </property>
@@ -162,9 +162,9 @@ QComboBox QListView::item {
   <widget class="QLineEdit" name="lineEdit">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>170</x>
      <y>170</y>
-     <width>501</width>
+     <width>461</width>
      <height>34</height>
     </rect>
    </property>

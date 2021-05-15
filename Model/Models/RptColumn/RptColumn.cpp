@@ -144,3 +144,69 @@ void RptColumn::setData(const int& position, const QVariant& value) {
 
 };
 
+///-----------------------------------------------------------------------------
+///
+///
+///         Привязать данные к запросу. 
+///
+///
+///-----------------------------------------------------------------------------
+
+void RptColumn::bindData(QSqlQuery* asSqlQuery) {
+    qInfo() << "Mro::bindData";
+    QList<int> list = query_.getBindColumnList();
+    if (!list.isEmpty()) {
+        array<QString, RPT_COLUMN> fld = RptColumn::getFields();
+        for (int i = 0; i < list.size(); i++) {
+            qInfo() << QString::number(list.at(i));
+            switch (list.at(i)) {
+                case RptColumn::Column::ID:
+                    asSqlQuery->bindValue(":" + fld[RptColumn::Column::ID], this->getId());
+                    break;
+                case RptColumn::Column::ARTICLE:
+                    asSqlQuery->bindValue(":" + fld[RptColumn::Column::ARTICLE], this->getArticle());
+                    break;
+                case RptColumn::Column::SUBJECT:
+                    asSqlQuery->bindValue(":" + fld[RptColumn::Column::SUBJECT], this->getSubject());
+                    break;
+                case RptColumn::Column::COL:
+                    asSqlQuery->bindValue(":" + fld[RptColumn::Column::COL], this->getCol());
+                    break;
+            }
+        }
+        //QMessageBox::information(0, "Information Box", this->getName());
+    }
+}
+
+///-----------------------------------------------------------------------------
+///
+///         Добавить запись в справочник . 
+///
+///
+///-----------------------------------------------------------------------------
+
+const QString& RptColumn::insert() {
+    return query_.insert()->field(RptColumn::Column::ARTICLE)->
+            field(RptColumn::Column::SUBJECT)->
+            field(RptColumn::Column::COL)->
+            prepare();
+}
+
+///-----------------------------------------------------------------------------
+///
+///         Изменить данные инспекции. 
+///
+///
+///-----------------------------------------------------------------------------
+
+const QString& RptColumn::update() {
+    qInfo() << "RptColumn::update()";
+    return query_.update()->set()->
+            //            field(User::Column::ID)->equally()->bind(User::Column::ID)->
+            field(RptColumn::Column::ARTICLE)->equally()->bind(RptColumn::Column::ARTICLE)->
+            field(RptColumn::Column::SUBJECT)->equally()->bind(RptColumn::Column::SUBJECT)->
+            field(RptColumn::Column::COL)->equally()->bind(RptColumn::Column::COL)->
+            where()->field(RptColumn::Column::ID)->equally()->bind(RptColumn::Column::ID)->
+            prepare();
+
+}

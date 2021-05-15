@@ -34,7 +34,7 @@ public:
     ///Установить размер таблицы
     void setSizeTbl(const int& width, const int& height);
     ///определить модель вывода данных
-    void setModel(const QList<RptColumnView>& mro);
+    void setModel(const QList<RptColumnView>& );
     ///показать данные МРО
     void showData(const RptColumn& );
     ///показать отредактированные данные 
