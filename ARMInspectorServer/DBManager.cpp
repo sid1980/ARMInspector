@@ -223,6 +223,11 @@ void DBManager::deleteModel() {
             deleteModel<Inspection>();
         }
             break;
+        case ModelWrapper::Model::RptColumn:
+        {
+            deleteModel<RptColumn>();
+        }
+            break;
         case ModelWrapper::Model::Nsi:
         {
             QJsonObject param;
@@ -285,6 +290,12 @@ void DBManager::addModel() {
             addModel<Inspection>();
         }
             break;
+        case ModelWrapper::Model::RptColumn:
+        {
+            //qInfo() << param[DATA].toString();
+            addModel<RptColumn>();
+        }
+            break;
         default:
         {
             auto setResult = [this](Message msg, QString attach) {
@@ -333,6 +344,11 @@ void DBManager::updateModel() {
             updateModel<Inspection>();
         }
             break;
+        case ModelWrapper::Model::RptColumn:
+        {
+            updateModel<RptColumn>();
+        }
+            break;
         default:
         {
             auto setResult = [this](Message msg, QString attach) {
@@ -374,6 +390,11 @@ void DBManager::getModel() {
         case ModelWrapper::Model::Inspection:
         {
             getModel<Inspection>();
+        }
+            break;
+        case ModelWrapper::Model::RptColumn:
+        {
+            getModel<RptColumn>();
         }
             break;
         case ModelWrapper::Model::Mro:
@@ -449,6 +470,16 @@ void DBManager::getListModels() {
         case ModelWrapper::Model::InspectionView:
         {
             getListModels<InspectionView>();
+        }
+            break;
+        case ModelWrapper::Model::RptColumn:
+        {
+            getListModels<RptColumn>();
+        }
+            break;
+        case ModelWrapper::Model::RptColumnView:
+        {
+            getListModels<RptColumnView>();
         }
             break;
         case ModelWrapper::Model::Nsi:
