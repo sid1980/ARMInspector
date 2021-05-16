@@ -55,6 +55,10 @@ const QList<Nsi>& RptColumnEditForm::getListArticle()const {
     return listarticle_;
 };
 
+const map <qint64, QString>& RptColumnEditForm::getMapArticle() const {
+    return maparticle_;
+};
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Инициализировать список статей и
@@ -64,11 +68,12 @@ const QList<Nsi>& RptColumnEditForm::getListArticle()const {
 
 void RptColumnEditForm::setListArticle(const QList<Nsi>& listarticle) {
     listarticle_ =  listarticle;
+    maparticle_.clear();
     this->getUI()->comboBoxArticle->clear();
     for (auto& t : listarticle_) {
+        maparticle_.insert(make_pair(t.getId(), t.getName()));
         this->getUI()->comboBoxArticle->addItem(t.getName());
     }
-
 }
 
 ///-----------------------------------------------------------------------------
@@ -77,8 +82,11 @@ void RptColumnEditForm::setListArticle(const QList<Nsi>& listarticle) {
 ///          
 ///-----------------------------------------------------------------------------
 
-const QList<Nsi>& RptColumnEditForm::getListSubject()const {
+const QList<Nsi>& RptColumnEditForm::getListSubject() const {
     return listsubject_;
+};
+const map <qint64, QString>& RptColumnEditForm::getMapSubject() const {
+    return mapsubject_;
 };
 
 ///-----------------------------------------------------------------------------
@@ -90,8 +98,10 @@ const QList<Nsi>& RptColumnEditForm::getListSubject()const {
 
 void RptColumnEditForm::setListSubject(const QList<Nsi>& listsubject) {
     listsubject_ =  listsubject;
+    mapsubject_.clear();
     this->getUI()->comboBoxSubject->clear();
     for (auto& t : listsubject_) {
+        mapsubject_.insert(make_pair(t.getId(), t.getName()));
         this->getUI()->comboBoxSubject->addItem(t.getName());
     }
 

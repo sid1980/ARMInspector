@@ -24,8 +24,8 @@
 RptColumnFrm::RptColumnFrm(QWidget *parent) :
 QDialog(parent), widget_(new Ui::RptColumnFrm) {
     widget_->setupUi(this);
-    listrptcolumn_ = new ModelList<RptColumnView>();
-    proxyModel_ = new QSortFilterProxyModel(listrptcolumn_);
+    listrptcolumnview_ = new ModelList<RptColumnView>();
+    proxyModel_ = new QSortFilterProxyModel(listrptcolumnview_);
     rptcolumnview_ = new RptColumnView();
     rptcolumnEditFrm_ = new RptColumnEditForm(this);
 
@@ -38,7 +38,7 @@ QDialog(parent), widget_(new Ui::RptColumnFrm) {
 
 RptColumnFrm::~RptColumnFrm() {
     delete widget_;
-    delete listrptcolumn_;
+    delete listrptcolumnview_;
     delete proxyModel_;
     delete rptcolumnview_;
     delete rptcolumnEditFrm_;
@@ -63,12 +63,12 @@ Ui::RptColumnFrm* RptColumnFrm::getUI() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void RptColumnFrm::setModel(const QList<RptColumnView>& rptcolumn) {
-    listrptcolumn_->setListModel(rptcolumn);
-    proxyModel_->setSourceModel(listrptcolumn_);
+void RptColumnFrm::setModel(const QList<RptColumnView>& rptcolumnview) {
+    listrptcolumnview_->setListModel(rptcolumnview);
+    proxyModel_->setSourceModel(listrptcolumnview_);
     this->getUI()->tableView->setSortingEnabled(true); // enable sortingEnabled
     this->getUI()->tableView->setModel(proxyModel_);
-    emit ready();
+    //emit ready();
     //this->getUI()->tableView_Mro->setSpan(0,1,2,2);
 }
 
@@ -103,9 +103,9 @@ void RptColumnFrm::worker(const QString& asWrapper) {
                 {
                     ItemContainer<RptColumnView> rptcolumnContainer;
                     JsonSerializer::parse(wrapper.getData(), rptcolumnContainer);
-                    QList<RptColumnView> listrptcolumn = rptcolumnContainer.getItemsList();
-                    //QMessageBox::information(this, "RptColumnFrm::worker", listmro[0].getName());
-                    setModel(listrptcolumn);
+                    QList<RptColumnView> listrptcolumnview = rptcolumnContainer.getItemsList();
+                    //QMessageBox::information(this, "RptColumnFrm::worker", listrptcolumnview[0].getArticle());
+                    setModel(listrptcolumnview);
                     emit ready();
                 }
                     break;
@@ -225,7 +225,7 @@ void RptColumnFrm::on_pushButton_Edit_clicked() {
     //QMessageBox::information(this, "АРМ Юриста", "on_pushButton_editMro_clicked()");
     int rowidx = proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()).row();
     if (rowidx >= 0) {
-        RptColumnView rptcolumnV = listrptcolumn_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
+        RptColumnView rptcolumnV = listrptcolumnview_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
         auto id = rptcolumnV.getId();
         QJsonObject param;
         param.insert(ID_, id);
@@ -258,7 +258,7 @@ void RptColumnFrm::on_pushButton_Remove_clicked() {
     //Question MessageBox
     int rowidx = proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()).row();
     if (rowidx >= 0) {
-        RptColumnView rptcolumnview = listrptcolumn_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
+        RptColumnView rptcolumnview = listrptcolumnview_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
         auto id = rptcolumnview.getId();
         QMessageBoxEx::StandardButton reply;
         reply = QMessageBoxEx::question(this, "Удаление записи",
@@ -272,7 +272,7 @@ void RptColumnFrm::on_pushButton_Remove_clicked() {
             //emit deleteUser(id);
             emit runServerCmd(Functor<RptColumn>::producePrm(ModelWrapper::DEL_MODEL, param));
             emit waitReady();
-            listrptcolumn_->delModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
+            listrptcolumnview_->delModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
         } else {
             qDebug() << "Yes was *not* clicked";
         }
@@ -287,13 +287,15 @@ void RptColumnFrm::on_pushButton_Remove_clicked() {
 
 void RptColumnFrm::showData(const RptColumn& asRptColumn) {
     RptColumn rptcolumn = asRptColumn;
+    map <qint64, QString> art=rptcolumnEditFrm_->getMapArticle();
+    map <qint64, QString> sub=rptcolumnEditFrm_->getMapArticle();
     rptcolumnview_->setId(rptcolumn.getId());
-    //rptcolumnview_->setName(rptcolumn.getName());
-    rptcolumnview_->setArticle(rptcolumnEditFrm_->getListArticle()[rptcolumn.getArticle() - 1].getName());
-    rptcolumnview_->setSubject(rptcolumnEditFrm_->getListSubject()[rptcolumn.getSubject() - 1].getName());
+    rptcolumnview_->setCol(rptcolumn.getCol());
+    rptcolumnview_->setArticle(art[rptcolumn.getArticle()]);
+    rptcolumnview_->setSubject(sub[rptcolumn.getSubject()]);
 
-    listrptcolumn_->addModel(*rptcolumnview_);
-    this->getUI()->tableView->selectRow(listrptcolumn_->rowCount() - 1);
+    listrptcolumnview_->addModel(*rptcolumnview_);
+    this->getUI()->tableView->selectRow(listrptcolumnview_->rowCount() - 1);
     this->getUI()->tableView->scrollToBottom();
 }
 

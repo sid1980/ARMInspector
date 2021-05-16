@@ -64,7 +64,7 @@ signals:
 private:
     Ui::RptColumnFrm *widget_;
     ///ссылка на модель  данных 
-    ModelList<RptColumnView>* listrptcolumn_;
+    ModelList<RptColumnView>* listrptcolumnview_;
     ///ссылк на экземпляр модели вывода данных
     RptColumnView *rptcolumnview_;
     ///ссылка на окно ввоода новой записи

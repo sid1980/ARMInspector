@@ -16,6 +16,8 @@
 
 #include "ui_RptColumnEditForm.h"
 #include "Nsi/Nsi.h"
+#include <map>
+using namespace std;
 class RptColumnEditForm : public QDialog {
     Q_OBJECT
 public:
@@ -26,10 +28,12 @@ public:
     Ui::RptColumnEditForm* getUI();
     ///получить список статей
     const QList<Nsi>& getListArticle() const;
+    const map <qint64, QString>& getMapArticle() const;
     /// инициализировать список статей
     void setListArticle(const QList<Nsi>&);
     ///получить список субъектов АП
     const QList<Nsi>& getListSubject() const;
+    const map <qint64, QString>& getMapSubject() const;
     /// инициализировать список субъектов АП
     void setListSubject(const QList<Nsi>&);
 
@@ -38,8 +42,10 @@ private:
     Ui::RptColumnEditForm* widget_;
     ///список статей
     QList<Nsi> listarticle_;
+     map <qint64, QString> maparticle_;
     ///список  субъектов АП
     QList<Nsi> listsubject_;
+     map <qint64, QString> mapsubject_;
 };
 
 #endif /* _RPTCOLUMNEDITFORM_H */

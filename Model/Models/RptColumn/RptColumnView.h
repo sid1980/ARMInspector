@@ -21,7 +21,7 @@
 #include "ModelWrapper.h"
 #include <MQuery.h>
 #include <array>
-#define RPT_COLUMN 4
+#define RPTVIEW_COLUMN 4
 using namespace std;
 class RptColumnView: public JsonSerializable, Model {
 public:
@@ -32,8 +32,9 @@ static ModelWrapper::Model model_;
         SUBJECT,
         COL
     };
+    ///Кострктор
     RptColumnView();
-    RptColumnView(const RptColumnView& orig);
+    ///Деструктор
     virtual ~RptColumnView();
  void setId(const qint64& id);
     void setArticle(const QString& article);
@@ -62,8 +63,8 @@ static ModelWrapper::Model model_;
     }
     ///Список названий полей базы
 
-    static array<QString, RPT_COLUMN> getFields() {
-        return array<QString, RPT_COLUMN>{
+    static array<QString, RPTVIEW_COLUMN> getFields() {
+        return array<QString, RPTVIEW_COLUMN>{
             "id",
             "article",
             "subject",

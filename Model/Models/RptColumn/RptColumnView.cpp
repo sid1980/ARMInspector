@@ -13,13 +13,19 @@
 
 #include "RptColumnView.h"
 ModelWrapper::Model RptColumnView::model_ = {ModelWrapper::Model::RptColumnView};
+///-----------------------------------------------------------------------------
+///
+///         Конструктор.
+///          
+///-----------------------------------------------------------------------------
 
 RptColumnView::RptColumnView() {
 }
-
-RptColumnView::RptColumnView(const RptColumnView& orig) {
-}
-
+///-----------------------------------------------------------------------------
+///
+///         Деструктор.
+///          
+///-----------------------------------------------------------------------------
 RptColumnView::~RptColumnView() {
 }
 
@@ -71,7 +77,7 @@ const qint64& RptColumnView::getCol() const {
 ///-----------------------------------------------------------------------------
 
 void RptColumnView::read(const QJsonObject &jsonObj) {
-    array<QString, RPT_COLUMN> fld = RptColumnView::getFields();
+    array<QString, RPTVIEW_COLUMN> fld = RptColumnView::getFields();
     this->setId(jsonObj[fld[RptColumnView::Column::ID]].toInt());
     this->setArticle(jsonObj[fld[RptColumnView::Column::ARTICLE]].toString());
     this->setSubject(jsonObj[fld[RptColumnView::Column::SUBJECT]].toString());
@@ -86,7 +92,7 @@ void RptColumnView::read(const QJsonObject &jsonObj) {
 ///-----------------------------------------------------------------------------
 
 void RptColumnView::write(QJsonObject &jsonObj) const {
-    array<QString, RPT_COLUMN> fld = RptColumnView::getFields();
+    array<QString, RPTVIEW_COLUMN> fld = RptColumnView::getFields();
 
     jsonObj[fld[RptColumnView::Column::ID]] = this->getId();
     jsonObj[fld[RptColumnView::Column::ARTICLE]] = this->getArticle();

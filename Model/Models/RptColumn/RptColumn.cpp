@@ -153,7 +153,7 @@ void RptColumn::setData(const int& position, const QVariant& value) {
 ///-----------------------------------------------------------------------------
 
 void RptColumn::bindData(QSqlQuery* asSqlQuery) {
-    qInfo() << "Mro::bindData";
+    qInfo() << "RptColumn::bindData";
     QList<int> list = query_.getBindColumnList();
     if (!list.isEmpty()) {
         array<QString, RPT_COLUMN> fld = RptColumn::getFields();
@@ -186,6 +186,7 @@ void RptColumn::bindData(QSqlQuery* asSqlQuery) {
 ///-----------------------------------------------------------------------------
 
 const QString& RptColumn::insert() {
+    qInfo() << "RptColumn::insert()";
     return query_.insert()->field(RptColumn::Column::ARTICLE)->
             field(RptColumn::Column::SUBJECT)->
             field(RptColumn::Column::COL)->
