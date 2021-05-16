@@ -286,6 +286,7 @@ template<typename T> ItemContainer<T> DBManager::getAllRecordS() {
     auto setResult = [this](ItemContainer<T> container, Message msg) {
         //Подготовить данные.
         QString json = JsonSerializer::serialize(container);
+        qDebug()<<json;
         m_pModelWrapper->setData(json);
         //Установить сообщение и результат выполнения команды.
         ServerMessage::Result result = ServerMessage::outPut(msg);
@@ -308,11 +309,14 @@ template<typename T> ItemContainer<T> DBManager::getAllRecordS() {
         T model;
         for (int x = 0; x < query.record().count(); x++) {
             recordObject.insert(query.record().fieldName(x), QJsonValue::fromVariant(query.value(x)));
-            //qDebug() << query.record().fieldName(x) << "   " << QString::fromLocal8Bit(QJsonValue::fromVariant(query.value(x)).toString().toStdString().c_str());
+            qDebug() << query.record().fieldName(x) << "   " << QString::fromLocal8Bit(QJsonValue::fromVariant(query.value(x)).toString().toStdString().c_str());
         }
         ///Считать запись базы данных  в объект класса T.  
         model.read(recordObject);
+        //qDebug()<<":  " << model.getFields()[0];
         //qDebug()<<":  " << model.getFields()[1];
+        //qDebug()<<":  " << model.getFields()[2];
+        //qDebug()<<":  " << model.getFields()[3];
         ///Добавить объект класса T в контейнер сериализации.
         container.add(model);
     }
