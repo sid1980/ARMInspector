@@ -57,6 +57,9 @@ juristFrm::juristFrm() {
     action = new QAction("&Субъекты АП", this);
     connect(action, &QAction::triggered, this, &juristFrm::OnSubject);
     menu2->addAction(action);
+    action = new QAction("&Справочник колонок отчёта", this);
+    connect(action, &QAction::triggered, this, &juristFrm::OnRptColumn);
+    menu2->addAction(action);
 
     //qApp->setStyleSheet("QMainWindow { background-color: yellow; border: 1px solid #424242 }"
     //        "QLCDNumber { background-color: red }"
@@ -169,6 +172,34 @@ void juristFrm::OnInspection() {
     emit runServerCmd(Functor<Mro>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
     emit waitReady();
     frm->setWindowTitle("Список инспекций");
+    frm->setSizeTbl(853, 550);
+    frm->exec();
+
+
+}
+///-----------------------------------------------------------------------------
+///
+///         Меню.Справочник колонок отчёта.
+///          
+///-----------------------------------------------------------------------------
+
+void juristFrm::OnRptColumn() {
+    //QMessageBox::information(this, "АРМ Юриста", "OnRptColumn()");
+    RptColumnFrm* frm = new RptColumnFrm();
+    createFrmConnector(*frm);
+    //frm->initClient(this->m_pClientController);
+    QJsonObject param;
+    emit runServerCmd(Functor<RptColumnView>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
+    emit waitReady();
+    Nsi::num_ = NSI_ARTICLE;
+    param.insert(NSI_NUM, Nsi::num_);
+    emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
+    emit waitReady();
+    Nsi::num_ = NSI_SUBJECT;
+    param[NSI_NUM]=Nsi::num_;
+    emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
+    emit waitReady();
+    frm->setWindowTitle("Справочник колонок отчёта");
     frm->setSizeTbl(853, 550);
     frm->exec();
 

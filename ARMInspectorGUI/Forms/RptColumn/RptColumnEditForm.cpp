@@ -51,7 +51,7 @@ Ui::RptColumnEditForm* RptColumnEditForm::getUI() {
 ///          
 ///-----------------------------------------------------------------------------
 
-const QList<Mro>& RptColumnEditForm::getListArticle()const {
+const QList<Nsi>& RptColumnEditForm::getListArticle()const {
     return listarticle_;
 };
 
@@ -64,9 +64,9 @@ const QList<Mro>& RptColumnEditForm::getListArticle()const {
 
 void RptColumnEditForm::setListArticle(const QList<Nsi>& listarticle) {
     listarticle_ =  listarticle;
-    this->getUI()->comboBox->clear();
+    this->getUI()->comboBoxArticle->clear();
     for (auto& t : listarticle_) {
-        this->getUI()->comboBox->addItem(t.getName());
+        this->getUI()->comboBoxArticle->addItem(t.getName());
     }
 
 }
@@ -77,7 +77,7 @@ void RptColumnEditForm::setListArticle(const QList<Nsi>& listarticle) {
 ///          
 ///-----------------------------------------------------------------------------
 
-const QList<Mro>& RptColumnEditForm::getListSubject()const {
+const QList<Nsi>& RptColumnEditForm::getListSubject()const {
     return listsubject_;
 };
 
@@ -90,9 +90,9 @@ const QList<Mro>& RptColumnEditForm::getListSubject()const {
 
 void RptColumnEditForm::setListSubject(const QList<Nsi>& listsubject) {
     listsubject_ =  listsubject;
-    this->getUI()->comboBox->clear();
+    this->getUI()->comboBoxSubject->clear();
     for (auto& t : listsubject_) {
-        this->getUI()->comboBox->addItem(t.getName());
+        this->getUI()->comboBoxSubject->addItem(t.getName());
     }
 
 }

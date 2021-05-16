@@ -15,7 +15,7 @@
 #define _RPTCOLUMNEDITFORM_H
 
 #include "ui_RptColumnEditForm.h"
-
+#include "Nsi/Nsi.h"
 class RptColumnEditForm : public QDialog {
     Q_OBJECT
 public:
@@ -35,7 +35,7 @@ public:
 
 
 private:
-    Ui::inspectionEditForm* widget_;
+    Ui::RptColumnEditForm* widget_;
     ///список статей
     QList<Nsi> listarticle_;
     ///список  субъектов АП

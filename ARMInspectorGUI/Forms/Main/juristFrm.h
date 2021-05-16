@@ -34,18 +34,32 @@ public:
     virtual ~juristFrm();
     ///Инициализация ссылки на контроллер клинта
     void initClient(ClientController *clientController);
+    ///Скрыть элементы управления 
     void hideControlsFrm();
+    ///Показать элементы управления 
     void showControlsFrm();
+    ///Сформировать отчёт
     void report();
+    ///Объединить ячейки таблицы
     void spanTbl();
+    ///Получить указатель на меню
     QMenuBar * getMenuBar();
+    ///Меню.Сформировать отчёт
     void OnGenerateReport();
+    ///Меню.Выйти из программы 
     void OnExit();
+    ///Меню.Сформировать отчёт.Приложение 2
     void OnGenerateReprt2();
+    ///Меню. Управление справочником инспекций. 
     void OnInspection();
+    ///Меню. Управление справочником МРО
     void OnMro();
+    ///Меню. Управление справочником стаьей КоАП
     void OnArticle();
+    ///Меню. Управление справочником справочником субъектов АП
     void OnSubject();
+    ///Меню. Управление справочником справочником колонок отчёта 
+    void OnRptColumn();
     ///создать сигнально-слотовые соединения
     ///между основноё формой и формой ввода-редактирования 
     void createFrmConnector(const QDialog&);

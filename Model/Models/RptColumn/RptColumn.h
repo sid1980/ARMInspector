@@ -21,6 +21,7 @@
 #include "ModelWrapper.h"
 #include <MQuery.h>
 #include <array>
+#include <QSqlQuery>
 #define RPT_COLUMN 4
 
 using namespace std;

@@ -12,6 +12,7 @@
  */
 
 #include "RptColumnView.h"
+ModelWrapper::Model RptColumnView::model_ = {ModelWrapper::Model::RptColumnView};
 
 RptColumnView::RptColumnView() {
 }
