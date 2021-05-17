@@ -24,7 +24,7 @@
 #include "ModelWrapper.h"
 
 #define NSI_COLUMN 2
-#define NSI_ARTICLE "7"
+#define NSI_ARTICLE "71"
 #define NSI_SUBJECT "5"
 #define NSI_NUM    "numNSI"
 #define DATA    "data"

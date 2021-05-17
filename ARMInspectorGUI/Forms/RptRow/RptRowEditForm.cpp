@@ -5,13 +5,13 @@
  */
 
 /*
- * File:   RptColumnEditForm.cpp
+ * File:   RptRowEditForm.cpp
  * Author: kazun_as
  *
  * Created on 15 мая 2021 г., 15:25
  */
 
-#include "RptColumnEditForm.h"
+#include "RptRowEditForm.h"
 
 ///-----------------------------------------------------------------------------
 ///
@@ -19,8 +19,8 @@
 ///          
 ///-----------------------------------------------------------------------------
 
-RptColumnEditForm::RptColumnEditForm(QWidget *parent) :
-QDialog(parent), widget_(new Ui::RptColumnEditForm) {
+RptRowEditForm::RptRowEditForm(QWidget *parent) :
+QDialog(parent), widget_(new Ui::RptRowEditForm) {
     widget_->setupUi(this);
 }
 
@@ -30,7 +30,7 @@ QDialog(parent), widget_(new Ui::RptColumnEditForm) {
 ///          
 ///-----------------------------------------------------------------------------
 
-RptColumnEditForm::~RptColumnEditForm() {
+RptRowEditForm::~RptRowEditForm() {
     delete widget_;
 }
 
@@ -41,7 +41,7 @@ RptColumnEditForm::~RptColumnEditForm() {
 ///          
 ///-----------------------------------------------------------------------------
 
-Ui::RptColumnEditForm* RptColumnEditForm::getUI() {
+Ui::RptRowEditForm* RptRowEditForm::getUI() {
     return widget_;
 }
 
@@ -51,11 +51,11 @@ Ui::RptColumnEditForm* RptColumnEditForm::getUI() {
 ///          
 ///-----------------------------------------------------------------------------
 
-//const QList<Nsi>& RptColumnEditForm::getListArticle()const {
+//const QList<Nsi>& RptRowEditForm::getListArticle()const {
 //    return listarticle_;
 //};
 
-const QHash <qint64, QString>& RptColumnEditForm::getMapArticle() const {
+const QHash <qint64, QString>& RptRowEditForm::getMapArticle() const {
     return maparticle_;
 };
 
@@ -66,7 +66,7 @@ const QHash <qint64, QString>& RptColumnEditForm::getMapArticle() const {
 ///          
 ///-----------------------------------------------------------------------------
 
-void RptColumnEditForm::setMapArticle(const QList<Nsi>& listarticle) {
+void RptRowEditForm::setMapArticle(const QList<Nsi>& listarticle) {
 //    listarticle_ =  listarticle;
     maparticle_.clear();
     this->getUI()->comboBoxArticle->clear();
@@ -82,10 +82,10 @@ void RptColumnEditForm::setMapArticle(const QList<Nsi>& listarticle) {
 ///          
 ///-----------------------------------------------------------------------------
 
-//const QList<Nsi>& RptColumnEditForm::getListSubject() const {
+//const QList<Nsi>& RptRowEditForm::getListSubject() const {
 //    return listsubject_;
 //};
-const QHash <qint64, QString>& RptColumnEditForm::getMapSubject() const {
+const QHash <qint64, QString>& RptRowEditForm::getMapSubject() const {
     return mapsubject_;
 };
 
@@ -96,7 +96,7 @@ const QHash <qint64, QString>& RptColumnEditForm::getMapSubject() const {
 ///          
 ///-----------------------------------------------------------------------------
 
-void RptColumnEditForm::setMapSubject(const QList<Nsi>& listsubject) {
+void RptRowEditForm::setMapSubject(const QList<Nsi>& listsubject) {
 //    listsubject_ =  listsubject;
     mapsubject_.clear();
     this->getUI()->comboBoxSubject->clear();

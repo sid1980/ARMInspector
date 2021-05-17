@@ -68,3 +68,18 @@ void mroEditForm::setInspections(const QList<Inspection>& inspections) {
     }
 
 }
+
+///-----------------------------------------------------------------------------
+/// 
+///         преобразовать список инспекция        
+///
+///-----------------------------------------------------------------------------
+
+QHash <qint64, QString> mroEditForm::mapInspections() {
+    QHash <qint64, QString> mapinspections;
+    for (auto& t : inspections_) {
+        mapinspections.insert(t.getId(), t.getName());
+    }
+    return mapinspections;
+}
+

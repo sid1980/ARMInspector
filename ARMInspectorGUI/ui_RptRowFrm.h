@@ -1,13 +1,13 @@
 /********************************************************************************
-** Form generated from reading UI file 'inspectionFrm.ui'
+** Form generated from reading UI file 'RptRowFrm.ui'
 **
 ** Created by: Qt User Interface Compiler version 5.13.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
-#ifndef UI_INSPECTIONFRM_H
-#define UI_INSPECTIONFRM_H
+#ifndef UI_RPTROWFRM_H
+#define UI_RPTROWFRM_H
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
@@ -19,7 +19,7 @@
 
 QT_BEGIN_NAMESPACE
 
-class Ui_inspectionFrm
+class Ui_RptRowFrm
 {
 public:
     QGridLayout *gridLayout;
@@ -28,12 +28,12 @@ public:
     QPushButton *pushButton_Edit;
     QPushButton *pushButton_Remove;
 
-    void setupUi(QDialog *inspectionFrm)
+    void setupUi(QDialog *RptRowFrm)
     {
-        if (inspectionFrm->objectName().isEmpty())
-            inspectionFrm->setObjectName(QString::fromUtf8("inspectionFrm"));
-        inspectionFrm->resize(400, 300);
-        inspectionFrm->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        if (RptRowFrm->objectName().isEmpty())
+            RptRowFrm->setObjectName(QString::fromUtf8("RptRowFrm"));
+        RptRowFrm->resize(502, 375);
+        RptRowFrm->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "color: white;\n"
 "background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #88d, stop: 0.1 #99e, stop: 0.49 #77c, stop: 0.5 #66b, stop: 1 #77c);\n"
 "border-width: 1px;\n"
@@ -117,48 +117,48 @@ public:
 "max-height: 13px;\n"
 "}\n"
 ""));
-        gridLayout = new QGridLayout(inspectionFrm);
+        gridLayout = new QGridLayout(RptRowFrm);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        tableView = new QTableView(inspectionFrm);
+        tableView = new QTableView(RptRowFrm);
         tableView->setObjectName(QString::fromUtf8("tableView"));
 
         gridLayout->addWidget(tableView, 0, 0, 1, 3);
 
-        pushButton_Add = new QPushButton(inspectionFrm);
+        pushButton_Add = new QPushButton(RptRowFrm);
         pushButton_Add->setObjectName(QString::fromUtf8("pushButton_Add"));
 
         gridLayout->addWidget(pushButton_Add, 1, 0, 1, 1);
 
-        pushButton_Edit = new QPushButton(inspectionFrm);
+        pushButton_Edit = new QPushButton(RptRowFrm);
         pushButton_Edit->setObjectName(QString::fromUtf8("pushButton_Edit"));
 
         gridLayout->addWidget(pushButton_Edit, 1, 1, 1, 1);
 
-        pushButton_Remove = new QPushButton(inspectionFrm);
+        pushButton_Remove = new QPushButton(RptRowFrm);
         pushButton_Remove->setObjectName(QString::fromUtf8("pushButton_Remove"));
 
         gridLayout->addWidget(pushButton_Remove, 1, 2, 1, 1);
 
 
-        retranslateUi(inspectionFrm);
+        retranslateUi(RptRowFrm);
 
-        QMetaObject::connectSlotsByName(inspectionFrm);
+        QMetaObject::connectSlotsByName(RptRowFrm);
     } // setupUi
 
-    void retranslateUi(QDialog *inspectionFrm)
+    void retranslateUi(QDialog *RptRowFrm)
     {
-        inspectionFrm->setWindowTitle(QCoreApplication::translate("inspectionFrm", "inspectionFrm", nullptr));
-        pushButton_Add->setText(QCoreApplication::translate("inspectionFrm", "\320\224\320\276\320\261\320\260\320\262\320\270\321\202\321\214 ", nullptr));
-        pushButton_Edit->setText(QCoreApplication::translate("inspectionFrm", "\320\240\320\265\320\264\320\260\320\272\321\202\320\270\321\200\320\276\320\262\320\260\321\202\321\214 ", nullptr));
-        pushButton_Remove->setText(QCoreApplication::translate("inspectionFrm", "\320\243\320\264\320\260\320\273\320\270\321\202\321\214", nullptr));
+        RptRowFrm->setWindowTitle(QCoreApplication::translate("RptRowFrm", "RptColumnFrm", nullptr));
+        pushButton_Add->setText(QCoreApplication::translate("RptRowFrm", "\320\224\320\276\320\261\320\260\320\262\320\270\321\202\321\214 ", nullptr));
+        pushButton_Edit->setText(QCoreApplication::translate("RptRowFrm", "\320\240\320\265\320\264\320\260\320\272\321\202\320\270\321\200\320\276\320\262\320\260\321\202\321\214 ", nullptr));
+        pushButton_Remove->setText(QCoreApplication::translate("RptRowFrm", "\320\243\320\264\320\260\320\273\320\270\321\202\321\214", nullptr));
     } // retranslateUi
 
 };
 
 namespace Ui {
-    class inspectionFrm: public Ui_inspectionFrm {};
+    class RptRowFrm: public Ui_RptRowFrm {};
 } // namespace Ui
 
 QT_END_NAMESPACE
 
-#endif // UI_INSPECTIONFRM_H
+#endif // UI_RPTROWFRM_H

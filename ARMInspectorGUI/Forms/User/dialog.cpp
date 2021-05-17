@@ -96,7 +96,8 @@ void Dialog::showNewUserData(const User& asUser) {
     userview_->setId(user.getId());
     userview_->setFio(user.getFio());
     userview_->setName(user.getName());
-    userview_->setInspection(usrFrm_->getInspections()[user.getInspection() - 1].getName());
+    //QMessageBox::information(0, "Information Box", usrFrm_->mapInspections()[user.getId()]);
+    userview_->setInspection(usrFrm_->mapInspections()[user.getInspection()]);
     listusers_->addModel(*userview_);
     this->getUI()->tableView->selectRow(listusers_->rowCount() - 1);
     this->getUI()->tableView->scrollToBottom();
@@ -114,7 +115,7 @@ void Dialog::showEditUserData(const User& user) {
     userview_->setId(user.getId());
     userview_->setFio(user.getFio());
     userview_->setName(user.getName());
-    userview_->setInspection(usrFrm_->getInspections()[user.getInspection() - 1].getName());
+    userview_->setInspection(usrFrm_->mapInspections()[user.getInspection()]);
     QItemSelectionModel *select = this->getUI()->tableView->selectionModel();
     int rowidx = select->currentIndex().row();
     this->getUI()->tableView->scrollTo(select->currentIndex());
@@ -265,12 +266,7 @@ void Dialog::worker(const QString& asWrapper) {
 
 void Dialog::fillUserEditFrm(const User& user) {
     usrEdtFrm_->getWidget()->lineEditFio->setText(user.getFio());
-    for (int i = 0; i < usrEdtFrm_->getInspections().size(); i++) {
-        if (usrEdtFrm_->getInspections()[i].getId() == user.getInspection()) {
-            usrEdtFrm_->getWidget()->comboBoxInspection->setCurrentIndex(i);
-            break;
-        }
-    }
+    usrEdtFrm_->getWidget()->comboBoxInspection->setCurrentText(usrFrm_->mapInspections()[user.getInspection()]);
     usrEdtFrm_->getWidget()->lineEditName->setText(user.getName());
     QList<QRadioButton *> allButtons;
     allButtons = usrEdtFrm_->getWidget()->groupBoxStatus->findChildren<QRadioButton *>();

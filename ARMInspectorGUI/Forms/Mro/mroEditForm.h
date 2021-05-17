@@ -29,6 +29,8 @@ public:
     const QList<Inspection>& getInspections() const;
     /// инициализировать список инспекций
     void setInspections(const QList<Inspection>&);
+    /// преобразовать список  в Hash
+    QHash <qint64, QString>  mapInspections();
 
 
 private:

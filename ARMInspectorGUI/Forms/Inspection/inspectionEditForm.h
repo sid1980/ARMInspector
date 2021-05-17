@@ -16,6 +16,7 @@
 
 #include "ui_inspectionEditForm.h"
 #include "Mro/Mro.h"
+
 class inspectionEditForm : public QDialog {
     Q_OBJECT
 public:
@@ -28,6 +29,8 @@ public:
     const QList<Mro>& getListMro() const;
     /// инициализировать список инспекций
     void setListMro(const QList<Mro>&);
+    /// преобразовать список  в Hash
+    QHash <qint64, QString> mapMro();
 
 
 private:

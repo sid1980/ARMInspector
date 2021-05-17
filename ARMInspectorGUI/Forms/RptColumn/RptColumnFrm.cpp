@@ -142,11 +142,11 @@ void RptColumnFrm::worker(const QString& asWrapper) {
         case ModelWrapper::Command::DEL_MODEL:
         {
             //Сервер вернул результат команды "DEL_MODEL"     
-            RptColumn rptcolumn;
-            JsonSerializer::parse(wrapper.getData(), rptcolumn);
+            //RptColumn rptcolumn;
+            //JsonSerializer::parse(wrapper.getData(), rptcolumn);
             //emit dialog_->showUserData(user);
-            QMessageBoxEx::information(0, wrapper.getHead(), wrapper.getMessage() +
-                    "МРО  <a style='color:royalblue'> " + rptcolumn.getArticle() + "</a>");
+            //QMessageBoxEx::information(Q_NULLPTR, wrapper.getHead(), wrapper.getMessage() +
+            //        " <a style='color:royalblue'> " + rptcolumn.getArticle() + "</a>");
 
             emit ready();
         }
@@ -202,8 +202,10 @@ void RptColumnFrm::on_pushButton_Add_clicked() {
         RptColumn* rptcolumn = new RptColumn();
         //QMessageBox::information(this, "Добавление новой записи НСИ", Nsi::num_);
         rptcolumn->setCol(rptcolumnEditFrm_->getUI()->lineEdit->text().toInt());
-        rptcolumn->setArticle(rptcolumnEditFrm_->getListArticle()[rptcolumnEditFrm_->getUI()->comboBoxArticle->currentIndex()].getId());
-        rptcolumn->setSubject(rptcolumnEditFrm_->getListSubject()[rptcolumnEditFrm_->getUI()->comboBoxSubject->currentIndex()].getId());
+        //        rptcolumn->setArticle(rptcolumnEditFrm_->getListArticle()[rptcolumnEditFrm_->getUI()->comboBoxArticle->currentIndex()].getId());
+        //        rptcolumn->setSubject(rptcolumnEditFrm_->getListSubject()[rptcolumnEditFrm_->getUI()->comboBoxSubject->currentIndex()].getId());
+        rptcolumn->setArticle(rptcolumnEditFrm_->getMapArticle().key(rptcolumnEditFrm_->getUI()->comboBoxArticle->currentText()));
+        rptcolumn->setSubject(rptcolumnEditFrm_->getMapSubject().key(rptcolumnEditFrm_->getUI()->comboBoxSubject->currentText()));
 
         //QString mroAsString = JsonSerializer::serialize(*mro);
         //QJsonObject param;
@@ -238,8 +240,8 @@ void RptColumnFrm::on_pushButton_Edit_clicked() {
             RptColumn* rptcolumn = new RptColumn();
             rptcolumn->setId(id);
             rptcolumn->setCol(rptcolumnEditFrm_->getUI()->lineEdit->text().toInt());
-            rptcolumn->setArticle(rptcolumnEditFrm_->getListArticle()[rptcolumnEditFrm_->getUI()->comboBoxArticle->currentIndex()].getId());
-            rptcolumn->setSubject(rptcolumnEditFrm_->getListSubject()[rptcolumnEditFrm_->getUI()->comboBoxSubject->currentIndex()].getId());
+            rptcolumn->setArticle(rptcolumnEditFrm_->getMapArticle().key(rptcolumnEditFrm_->getUI()->comboBoxArticle->currentText()));
+            rptcolumn->setSubject(rptcolumnEditFrm_->getMapSubject().key(rptcolumnEditFrm_->getUI()->comboBoxSubject->currentText()));
             emit runServerCmd(Functor<RptColumn>::produce(ModelWrapper::Command::UPDATE_MODEL, *rptcolumn));
             emit waitReady();
             delete rptcolumn;
@@ -254,7 +256,6 @@ void RptColumnFrm::on_pushButton_Edit_clicked() {
 ///-----------------------------------------------------------------------------
 
 void RptColumnFrm::on_pushButton_Remove_clicked() {
-    //QMessageBox::information(this, "АРМ Юриста", "on_pushButton_removeMro_clicked()");
     //Question MessageBox
     int rowidx = proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()).row();
     if (rowidx >= 0) {
@@ -269,10 +270,10 @@ void RptColumnFrm::on_pushButton_Remove_clicked() {
             qDebug() << "Yes was clicked";
             QJsonObject param;
             param.insert(ID_, id);
-            //emit deleteUser(id);
             emit runServerCmd(Functor<RptColumn>::producePrm(ModelWrapper::DEL_MODEL, param));
             emit waitReady();
             listrptcolumnview_->delModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
+            //QMessageBox::information(this, "АРМ Юриста", "on_pushButton_removeMro_clicked()");
         } else {
             qDebug() << "Yes was *not* clicked";
         }
@@ -287,12 +288,10 @@ void RptColumnFrm::on_pushButton_Remove_clicked() {
 
 void RptColumnFrm::showData(const RptColumn& asRptColumn) {
     RptColumn rptcolumn = asRptColumn;
-    map <qint64, QString> art=rptcolumnEditFrm_->getMapArticle();
-    map <qint64, QString> sub=rptcolumnEditFrm_->getMapArticle();
     rptcolumnview_->setId(rptcolumn.getId());
     rptcolumnview_->setCol(rptcolumn.getCol());
-    rptcolumnview_->setArticle(art[rptcolumn.getArticle()]);
-    rptcolumnview_->setSubject(sub[rptcolumn.getSubject()]);
+    rptcolumnview_->setArticle(rptcolumnEditFrm_->getMapArticle()[rptcolumn.getArticle()]);
+    rptcolumnview_->setSubject(rptcolumnEditFrm_->getMapSubject()[rptcolumn.getSubject()]);
 
     listrptcolumnview_->addModel(*rptcolumnview_);
     this->getUI()->tableView->selectRow(listrptcolumnview_->rowCount() - 1);
@@ -308,8 +307,8 @@ void RptColumnFrm::showData(const RptColumn& asRptColumn) {
 void RptColumnFrm::showEditData(const RptColumn& rptcolumn) {
     rptcolumnview_->setId(rptcolumn.getId());
     rptcolumnview_->setCol(rptcolumn.getCol());
-    rptcolumnview_->setArticle(rptcolumnEditFrm_->getListArticle()[rptcolumn.getArticle() - 1].getName());
-    rptcolumnview_->setSubject(rptcolumnEditFrm_->getListSubject()[rptcolumn.getSubject() - 1].getName());
+    rptcolumnview_->setArticle(rptcolumnEditFrm_->getMapArticle()[rptcolumn.getArticle()]);
+    rptcolumnview_->setSubject(rptcolumnEditFrm_->getMapSubject()[rptcolumn.getSubject()]);
     QItemSelectionModel *select = this->getUI()->tableView->selectionModel();
     int rowidx = select->currentIndex().row();
     this->getUI()->tableView->scrollTo(select->currentIndex());
@@ -329,9 +328,9 @@ void RptColumnFrm::showEditData(const RptColumn& rptcolumn) {
 void RptColumnFrm::setListNsi(const QList<Nsi>& listnsi) {
     //QMessageBox::information(0, "Information Box", rptcolumns[1].getName());
     if (Nsi::num_ == NSI_ARTICLE) {
-        rptcolumnEditFrm_->setListArticle(listnsi);
+        rptcolumnEditFrm_->setMapArticle(listnsi);
     } else if (Nsi::num_ == NSI_SUBJECT) {
-        rptcolumnEditFrm_->setListSubject(listnsi);
+        rptcolumnEditFrm_->setMapSubject(listnsi);
     }
 }
 
@@ -343,17 +342,7 @@ void RptColumnFrm::setListNsi(const QList<Nsi>& listnsi) {
 
 void RptColumnFrm::fillEditFrm(const RptColumn& rptcolumn) {
     rptcolumnEditFrm_->getUI()->lineEdit->setText(QString::number(rptcolumn.getCol()));
-    for (int i = 0; i < rptcolumnEditFrm_->getListArticle().size(); i++) {
-        if (rptcolumnEditFrm_->getListArticle()[i].getId() == rptcolumn.getArticle()) {
-            rptcolumnEditFrm_->getUI()->comboBoxArticle->setCurrentIndex(i);
-            break;
-        }
-    }
-    for (int i = 0; i < rptcolumnEditFrm_->getListSubject().size(); i++) {
-        if (rptcolumnEditFrm_->getListSubject()[i].getId() == rptcolumn.getSubject()) {
-            rptcolumnEditFrm_->getUI()->comboBoxSubject->setCurrentIndex(i);
-            break;
-        }
-    }
-}
+    rptcolumnEditFrm_->getUI()->comboBoxArticle->setCurrentText(rptcolumnEditFrm_->getMapArticle()[rptcolumn.getArticle()]);
+    rptcolumnEditFrm_->getUI()->comboBoxSubject->setCurrentText(rptcolumnEditFrm_->getMapSubject()[rptcolumn.getSubject()]);
+};
 

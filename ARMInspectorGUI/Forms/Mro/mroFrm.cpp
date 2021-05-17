@@ -286,7 +286,7 @@ void mroFrm::showData(const Mro& asMro) {
     Mro mro = asMro;
     mroview_->setId(mro.getId());
     mroview_->setName(mro.getName());
-    mroview_->setInspection(mroFrm_->getInspections()[mro.getInspection() - 1].getName());
+    mroview_->setInspection(mroFrm_->mapInspections()[mro.getInspection()]);
 
     listmro_->addModel(*mroview_);
     this->getUI()->tableView_Mro->selectRow(listmro_->rowCount() - 1);
@@ -302,7 +302,7 @@ void mroFrm::showData(const Mro& asMro) {
 void mroFrm::showEditData(const Mro& mro) {
     mroview_->setId(mro.getId());
     mroview_->setName(mro.getName());
-    mroview_->setInspection(mroFrm_->getInspections()[mro.getInspection() - 1].getName());
+    mroview_->setInspection(mroFrm_->mapInspections()[mro.getInspection()]);
     QItemSelectionModel *select = this->getUI()->tableView_Mro->selectionModel();
     int rowidx = select->currentIndex().row();
     this->getUI()->tableView_Mro->scrollTo(select->currentIndex());

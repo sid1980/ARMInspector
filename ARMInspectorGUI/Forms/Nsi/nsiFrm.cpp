@@ -93,10 +93,10 @@ void nsiFrm::worker(const QString& asWrapper) {
             break;
         case ModelWrapper::Command::DEL_MODEL:
         {
-            Nsi nsi;
-            JsonSerializer::parse(wrapper.getData(), nsi);
-            QMessageBoxEx::information(Q_NULLPTR, wrapper.getHead(), wrapper.getMessage() +
-                    " <a style='color:royalblue'> " + nsi.getName() + "</a>");
+            //Nsi nsi;
+            //JsonSerializer::parse(wrapper.getData(), nsi);
+            //QMessageBoxEx::information(Q_NULLPTR, wrapper.getHead(), wrapper.getMessage() +
+            //        " <a style='color:royalblue'> " + nsi.getName() + "</a>");
             emit ready();
         }
             break;

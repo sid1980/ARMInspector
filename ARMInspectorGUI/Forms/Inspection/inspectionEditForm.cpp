@@ -62,10 +62,23 @@ const QList<Mro>& inspectionEditForm::getListMro()const {
 ///-----------------------------------------------------------------------------
 
 void inspectionEditForm::setListMro(const QList<Mro>& listmro) {
-    listmro_ =  listmro;
+    listmro_ = listmro;
     this->getUI()->comboBox->clear();
     for (auto& t : listmro_) {
         this->getUI()->comboBox->addItem(t.getName());
     }
+}
 
+///-----------------------------------------------------------------------------
+/// 
+///         преобразовать список инспекция        
+///
+///-----------------------------------------------------------------------------
+
+QHash <qint64, QString> inspectionEditForm::mapMro() {
+    QHash <qint64, QString> mapmro;
+    for (auto& t : listmro_) {
+        mapmro.insert(t.getId(), t.getName());
+    }
+    return mapmro;
 }

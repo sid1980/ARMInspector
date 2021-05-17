@@ -5,7 +5,7 @@
  */
 
 /* 
- * File:   RptColumnEditForm.h
+ * File:   RptRowEditForm.h
  * Author: kazun_as
  *
  * Created on 15 мая 2021 г., 15:25
@@ -14,19 +14,19 @@
 #ifndef _RPTCOLUMNEDITFORM_H
 #define _RPTCOLUMNEDITFORM_H
 
-#include "ui_RptColumnEditForm.h"
+#include "ui_RptRowEditForm.h"
 #include "Nsi/Nsi.h"
 #include <QHash>
 //using namespace std;
 
-class RptColumnEditForm : public QDialog {
+class RptRowEditForm : public QDialog {
     Q_OBJECT
 public:
     ///конструктор
-    explicit RptColumnEditForm(QWidget *parent = 0);
-    virtual ~RptColumnEditForm();
+    explicit RptRowEditForm(QWidget *parent = 0);
+    virtual ~RptRowEditForm();
     ///Получить ссылку на виджет
-    Ui::RptColumnEditForm* getUI();
+    Ui::RptRowEditForm* getUI();
     ///получить список статей
     //const QList<Nsi>& getListArticle() const;
     const QHash <qint64, QString>& getMapArticle() const;
@@ -40,7 +40,7 @@ public:
 
 
 private:
-    Ui::RptColumnEditForm* widget_;
+    Ui::RptRowEditForm* widget_;
     ///список статей
     //QList<Nsi> listarticle_;
     QHash <qint64, QString> maparticle_;

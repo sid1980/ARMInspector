@@ -25,9 +25,9 @@
 ///-----------------------------------------------------------------------------
 
 userForm::userForm(QWidget *parent) :
-QDialog(parent), widget_(new Ui::userForm) {  
+QDialog(parent), widget_(new Ui::userForm) {
     widget_->setupUi(this);
-    
+
 
 }
 ///-----------------------------------------------------------------------------
@@ -74,6 +74,20 @@ void userForm::setInspections(const QList<Inspection>& inspections) {
         this->getWidget()->comboBoxInspection->addItem(t.getName());
     }
 
+}
+
+///-----------------------------------------------------------------------------
+/// 
+///         преобразовать список инспекция        
+///
+///-----------------------------------------------------------------------------
+
+QHash <qint64, QString> userForm::mapInspections() {
+    QHash <qint64, QString> mapinspections;
+    for (auto& t : inspections_) {
+        mapinspections.insert(t.getId(), t.getName());
+    }
+    return mapinspections;
 }
 
 
