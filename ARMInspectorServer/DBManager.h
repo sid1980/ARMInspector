@@ -23,6 +23,7 @@
 #include "User/User.h"
 #include "Mro/Mro.h"
 #include "Mro/MroView.h"
+#include "RptRow/RptRow.h"
 #include "RptColumn/RptColumn.h"
 #include "RptColumn/RptColumnView.h"
 #include "User/UserView.h"
