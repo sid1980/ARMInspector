@@ -24,6 +24,7 @@
 #include "Mro/Mro.h"
 #include "Mro/mroFrm.h"
 #include "Nsi/nsiFrm.h"
+#include "RptRow/RptRowFrm.h"
 #include "DialogDestroyer.h"
 #include "Inspection/inspectionFrm.h"
 
@@ -56,10 +57,12 @@ public:
     void OnMro();
     ///Меню. Управление справочником стаьей КоАП
     void OnArticle();
-    ///Меню. Управление справочником справочником субъектов АП
+    ///Меню. Управление справочником  субъектов АП
     void OnSubject();
-    ///Меню. Управление справочником справочником колонок отчёта 
+    ///Меню. Управление справочником  колонок отчёта 
     void OnRptColumn();
+    ///Меню. Управление справочником  строк отчёта 
+    void OnRptRow();
     ///создать сигнально-слотовые соединения
     ///между основноё формой и формой ввода-редактирования 
     void createFrmConnector(const QDialog&);

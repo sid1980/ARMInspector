@@ -15,8 +15,6 @@
 #define _RPTCOLUMNEDITFORM_H
 
 #include "ui_RptRowEditForm.h"
-#include "Nsi/Nsi.h"
-#include <QHash>
 //using namespace std;
 
 class RptRowEditForm : public QDialog {
@@ -27,26 +25,10 @@ public:
     virtual ~RptRowEditForm();
     ///Получить ссылку на виджет
     Ui::RptRowEditForm* getUI();
-    ///получить список статей
-    //const QList<Nsi>& getListArticle() const;
-    const QHash <qint64, QString>& getMapArticle() const;
-    /// инициализировать список статей
-    void setMapArticle(const QList<Nsi>&);
-    ///получить список субъектов АП
-    //const QList<Nsi>& getListSubject() const;
-    const QHash <qint64, QString>& getMapSubject() const;
-    /// инициализировать список субъектов АП
-    void setMapSubject(const QList<Nsi>&);
 
 
 private:
     Ui::RptRowEditForm* widget_;
-    ///список статей
-    //QList<Nsi> listarticle_;
-    QHash <qint64, QString> maparticle_;
-    ///список  субъектов АП
-    //QList<Nsi> listsubject_;
-    QHash <qint64, QString> mapsubject_;
 };
 
 #endif /* _RPTCOLUMNEDITFORM_H */

@@ -21,7 +21,7 @@
 #include "MQuery.h"
 #include "QMessageBoxEx.h"
 
-class RptRow;
+class RptRowEditForm;
 
 class RptRowFrm : public QDialog {
     Q_OBJECT
@@ -39,8 +39,6 @@ public:
     void showData(const RptRow&);
     ///показать отредактированные данные 
     void showEditData(const RptRow&);
-    //установить список инспекций
-    void setListNsi(const QList<Nsi>&);
     //Данные 
     void fillEditFrm(const RptRow&);
 

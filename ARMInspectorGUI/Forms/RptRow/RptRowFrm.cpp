@@ -87,31 +87,12 @@ void RptRowFrm::worker(const QString& asWrapper) {
     switch (command) {
         case ModelWrapper::Command::GET_LIST_MODELS:
         {
-            switch (model) {
-                case ModelWrapper::Model::Nsi:
-                {
-                    ItemContainer<Nsi> nsiContainer;
-                    JsonSerializer::parse(wrapper.getData(), nsiContainer);
-                    QList<Nsi> listnsi = nsiContainer.getItemsList();
-                    setListNsi(listnsi);
-                    //QMessageBox::information(this, "RptRowFrm::worker", listmro[0].getName());
-                    //setModel(listmro);
-                    emit ready();
-                }
-                    break;
-                case ModelWrapper::Model::RptRow:
-                {
-                    ItemContainer<RptRow> rptrowContainer;
-                    JsonSerializer::parse(wrapper.getData(), rptrowContainer);
-                    QList<RptRow> listrptrowview = rptrowContainer.getItemsList();
-                    //QMessageBox::information(this, "RptRowFrm::worker", listrptrowview[0].getArticle());
-                    setModel(listrptrowview);
-                    emit ready();
-                }
-                    break;
-                default:
-                    break;
-            }
+            ItemContainer<RptRow> rptrowContainer;
+            JsonSerializer::parse(wrapper.getData(), rptrowContainer);
+            QList<RptRow> listrptrow = rptrowContainer.getItemsList();
+            //QMessageBox::information(this, "RptRowFrm::worker", listrptrowview[0].getArticle());
+            setModel(listrptrow);
+            emit ready();
         }
             break;
         case ModelWrapper::Command::GET_MODEL:
@@ -180,9 +161,10 @@ void RptRowFrm::setSizeTbl(const int& width, const int& height) {
     this->getUI()->tableView->setMinimumWidth(width);
     this->getUI()->tableView->setMinimumHeight(height);
     this->getUI()->tableView->setColumnWidth(0, 85);
-    this->getUI()->tableView->setColumnWidth(1, (width - 85) / 3);
-    this->getUI()->tableView->setColumnWidth(2, (width - 85) / 3);
-    this->getUI()->tableView->setColumnWidth(3, (width - 85) / 3);
+    this->getUI()->tableView->setColumnWidth(1, 35);
+    this->getUI()->tableView->setColumnWidth(2, ((width - 160)* 3) / 4);
+    this->getUI()->tableView->setColumnWidth(3, (width - 160) / 4);
+    this->getUI()->tableView->setColumnWidth(4, 40);
 }
 ///-----------------------------------------------------------------------------
 ///
@@ -201,11 +183,10 @@ void RptRowFrm::on_pushButton_Add_clicked() {
         //QMessageBox::information(this, "Добавление записи НСИ", "QDialog::Accepted");
         RptRow* rptrow = new RptRow();
         //QMessageBox::information(this, "Добавление новой записи НСИ", Nsi::num_);
-        rptrow->setCol(rptrowEditFrm_->getUI()->lineEdit->text().toInt());
-        //        rptrow->setArticle(rptrowEditFrm_->getListArticle()[rptrowEditFrm_->getUI()->comboBoxArticle->currentIndex()].getId());
-        //        rptrow->setSubject(rptrowEditFrm_->getListSubject()[rptrowEditFrm_->getUI()->comboBoxSubject->currentIndex()].getId());
-        rptrow->setArticle(rptrowEditFrm_->getMapArticle().key(rptrowEditFrm_->getUI()->comboBoxArticle->currentText()));
-        rptrow->setSubject(rptrowEditFrm_->getMapSubject().key(rptrowEditFrm_->getUI()->comboBoxSubject->currentText()));
+        rptrow->setNpp(rptrowEditFrm_->getUI()->lineEdit_Npp->text());
+        rptrow->setName(rptrowEditFrm_->getUI()->textEdit_Name->toPlainText());
+        rptrow->setFormula(rptrowEditFrm_->getUI()->lineEdit_Formula->text());
+        rptrow->setRow(rptrowEditFrm_->getUI()->lineEdit_Row->text().toInt());
 
         //QString mroAsString = JsonSerializer::serialize(*mro);
         //QJsonObject param;
@@ -239,9 +220,10 @@ void RptRowFrm::on_pushButton_Edit_clicked() {
         if (rptrowEditFrm_->exec() == QDialog::Accepted) {
             RptRow* rptrow = new RptRow();
             rptrow->setId(id);
-            rptrow->setCol(rptrowEditFrm_->getUI()->lineEdit->text().toInt());
-            rptrow->setArticle(rptrowEditFrm_->getMapArticle().key(rptrowEditFrm_->getUI()->comboBoxArticle->currentText()));
-            rptrow->setSubject(rptrowEditFrm_->getMapSubject().key(rptrowEditFrm_->getUI()->comboBoxSubject->currentText()));
+            rptrow->setNpp(rptrowEditFrm_->getUI()->lineEdit_Npp->text());
+            rptrow->setName(rptrowEditFrm_->getUI()->textEdit_Name->toPlainText());
+            rptrow->setFormula(rptrowEditFrm_->getUI()->lineEdit_Formula->text());
+            rptrow->setRow(rptrowEditFrm_->getUI()->lineEdit_Row->text().toInt());
             emit runServerCmd(Functor<RptRow>::produce(ModelWrapper::Command::UPDATE_MODEL, *rptrow));
             emit waitReady();
             delete rptrow;
@@ -259,12 +241,12 @@ void RptRowFrm::on_pushButton_Remove_clicked() {
     //Question MessageBox
     int rowidx = proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()).row();
     if (rowidx >= 0) {
-        RptRow rptrowview = listrptrow_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
-        auto id = rptrowview.getId();
+        RptRow rptrow = listrptrow_->getModel(proxyModel_->mapToSource(this->getUI()->tableView->currentIndex()));
+        auto id = rptrow.getId();
         QMessageBoxEx::StandardButton reply;
         reply = QMessageBoxEx::question(this, "Удаление записи",
                 "Вы действительно хотите удалить запись<br><br><a style='font-size:14px;color:red;'> " +
-                rptrowview.getArticle() + "</a> ?<br>",
+                rptrow.getName() + "</a> ?<br>",
                 QMessageBox::Yes | QMessageBox::No);
         if (reply == QMessageBox::Yes) {
             qDebug() << "Yes was clicked";
@@ -303,28 +285,13 @@ void RptRowFrm::showEditData(const RptRow& rptrow) {
     QItemSelectionModel *select = this->getUI()->tableView->selectionModel();
     int rowidx = select->currentIndex().row();
     this->getUI()->tableView->scrollTo(select->currentIndex());
-    select->model()->setData(select->model()->index(rowidx, 0), rptrow->getId(), Qt::EditRole);
-    select->model()->setData(select->model()->index(rowidx, 1), rptrow->getNpp(), Qt::EditRole);
-    select->model()->setData(select->model()->index(rowidx, 2), rptrow->getName(), Qt::EditRole);
-    select->model()->setData(select->model()->index(rowidx, 3), rptrow->getFormula(), Qt::EditRole);
-    select->model()->setData(select->model()->index(rowidx, 4), rptrow->getRow(), Qt::EditRole);
+    select->model()->setData(select->model()->index(rowidx, 0), rptrow.getId(), Qt::EditRole);
+    select->model()->setData(select->model()->index(rowidx, 1), rptrow.getNpp(), Qt::EditRole);
+    select->model()->setData(select->model()->index(rowidx, 2), rptrow.getName(), Qt::EditRole);
+    select->model()->setData(select->model()->index(rowidx, 3), rptrow.getFormula(), Qt::EditRole);
+    select->model()->setData(select->model()->index(rowidx, 4), rptrow.getRow(), Qt::EditRole);
 }
 
-///-----------------------------------------------------------------------------
-///
-///         Инициализировать список статей или субъектов АП  в окнах ввода и 
-///         редактирования
-///          
-///-----------------------------------------------------------------------------
-
-void RptRowFrm::setListNsi(const QList<Nsi>& listnsi) {
-    //QMessageBox::information(0, "Information Box", rptrows[1].getName());
-    if (Nsi::num_ == NSI_ARTICLE) {
-        rptrowEditFrm_->setMapArticle(listnsi);
-    } else if (Nsi::num_ == NSI_SUBJECT) {
-        rptrowEditFrm_->setMapSubject(listnsi);
-    }
-}
 
 ///-----------------------------------------------------------------------------
 ///

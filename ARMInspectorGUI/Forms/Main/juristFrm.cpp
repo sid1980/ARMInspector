@@ -15,6 +15,7 @@
 #include "QMessageBoxEx.h"
 #include <QFile>
 #include <QTextStream>
+#include <QFont.h>
 ///-----------------------------------------------------------------------------
 ///
 ///         Конструктор.
@@ -59,6 +60,9 @@ juristFrm::juristFrm() {
     menu2->addAction(action);
     action = new QAction("&Справочник колонок отчёта", this);
     connect(action, &QAction::triggered, this, &juristFrm::OnRptColumn);
+    menu2->addAction(action);
+    action = new QAction("&Справочник строк отчёта", this);
+    connect(action, &QAction::triggered, this, &juristFrm::OnRptRow);
     menu2->addAction(action);
 
     //qApp->setStyleSheet("QMainWindow { background-color: yellow; border: 1px solid #424242 }"
@@ -196,10 +200,31 @@ void juristFrm::OnRptColumn() {
     emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
     emit waitReady();
     Nsi::num_ = NSI_SUBJECT;
-    param[NSI_NUM]=Nsi::num_;
+    param[NSI_NUM] = Nsi::num_;
     emit runServerCmd(Functor<Nsi>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
     emit waitReady();
     frm->setWindowTitle("Справочник колонок отчёта");
+    frm->setSizeTbl(853, 550);
+    frm->exec();
+
+
+}
+
+///-----------------------------------------------------------------------------
+///
+///         Меню.Справочник строк отчёта.
+///          
+///-----------------------------------------------------------------------------
+
+void juristFrm::OnRptRow() {
+    //QMessageBox::information(this, "АРМ Юриста", "OnRptColumn()");
+    RptRowFrm* frm = new RptRowFrm();
+    createFrmConnector(*frm);
+    //frm->initClient(this->m_pClientController);
+    QJsonObject param;
+    emit runServerCmd(Functor<RptRow>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
+    emit waitReady();
+    frm->setWindowTitle("Справочник строк отчёта");
     frm->setSizeTbl(853, 550);
     frm->exec();
 
@@ -393,11 +418,26 @@ void juristFrm::report() {
                 QStandardItem *item = new QStandardItem(value);
                 model_->setItem(lineindex, j, item);
                 item->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+                //item->setForeground();
+                if (lineindex == 0 || lineindex == 7 || lineindex == 23 || lineindex == 26) {
+                    //item->setForeground(QColor("orange"));
+                    item->setFont(QFont("Times", 8, QFont::Bold, false));
+                }
+                if (lineindex == 1) {
+                    if (j == 0) {
+                        item->setForeground(QColor("blue"));
+                        item->setFont(QFont("Times", 8, QFont::Bold, false));
+                    }
+                    if (j == 8) {
+                        item->setForeground(QColor("red"));
+                        item->setFont(QFont("Times", 8, QFont::Bold, false));
+                    }
+                }
+                item->setToolTip("<a style='color:royalblue'> " + value + "</a>");
                 item->setEditable(false);
             }
             lineindex++;
         }
-
         file.close();
     }
     this->widget.tableView->setModel(model_);
@@ -475,7 +515,7 @@ void juristFrm::spanTbl() {
             QStringList lineToken = fileLine.split(";", QString::KeepEmptyParts);
 
             // load parsed data to model accordingly
-            if (lineindex < 8 || lineindex == 23 || lineindex == 26 || lineindex == 33 || lineindex == 34|| lineindex == 35) {
+            if (lineindex < 8 || lineindex == 23 || lineindex == 26 || lineindex == 33 || lineindex == 34 || lineindex == 35) {
                 int spanCol = 1;
                 int j = 0;
                 for (; j < lineToken.size(); j++) {

@@ -70,7 +70,7 @@ public:
 "padding: 1px;\n"
 "border-style: solid;\n"
 "border: 1px solid gray;\n"
-"border-radius: 8px;\n"
+"border-radius: 4px;\n"
 " min-height: 30px;\n"
 "}\n"
 "\n"
