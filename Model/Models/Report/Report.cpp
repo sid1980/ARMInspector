@@ -1,0 +1,115 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/* 
+ * File:   Report.cpp
+ * Author: kazun_as
+ * 
+ * Created on 19 мая 2021 г., 15:58
+ */
+
+#include "Report.h"
+ModelWrapper::Model Report::model_ = {ModelWrapper::Model::Report};
+
+Report::Report() {
+}
+
+Report::~Report() {
+}
+
+///Функции чтения - записи полей класса
+
+void Report::setMro(const qint64& mro) {
+    mro_ = mro;
+}
+
+void Report::setMon(const qint64& mon) {
+    mon_ = mon;
+}
+
+void Report::setArticle(const qint64& article) {
+    article_ = article;
+}
+
+void Report::setSubject(const qint64& subject) {
+    subject_ = subject;
+}
+
+void Report::setYear(const qint64& year) {
+    year_ = year;
+}
+
+void Report::setNumrow(const qint64& numrow) {
+    numrow_ = numrow;
+}
+
+void Report::setCummulative(const qint64& cummulative) {
+    cummulative_ = cummulative;
+}
+
+const qint64& Report::getMro()const {
+    return mro_;
+}
+
+const qint64& Report::getMon()const {
+    return mon_;
+
+}
+
+const qint64& Report::getArticle()const {
+    return article_;
+
+}
+
+const qint64& Report::getSubject()const {
+    return subject_;
+
+}
+
+const qint64& Report::getYear()const {
+    return year_;
+
+}
+
+const qint64& Report::getNumrow()const {
+    return numrow_;
+
+}
+
+const qint64& Report::getCummulative()const {
+    return cummulative_;
+
+}
+///Функции сериализации объекта класса
+///Считывание JSON объкта в поля класса
+
+void Report::read(const QJsonObject &jsonObj) {
+
+    //array<QString, 10> fld_name=Report::getFieldArray();
+    array<QString, REPORT_COLUMN> fld = Report::getFields();
+
+    this->setMro(jsonObj[fld[Report::Column::MRO]].toInt());
+    this->setMon(jsonObj[fld[Report::Column::MON]].toInt());
+    this->setArticle(jsonObj[fld[Report::Column::ARTICLE]].toInt());
+    this->setSubject(jsonObj[fld[Report::Column::SUBJECT]].toInt());
+    this->setYear(jsonObj[fld[Report::Column::YEAR]].toInt());
+    this->setNumrow(jsonObj[fld[Report::Column::NUMROW]].toInt());
+    this->setCummulative(jsonObj[fld[Report::Column::CUMMULATIVE]].toInt());
+
+}
+///Запись полей класса в JSON объкт. 
+
+void Report::write(QJsonObject &jsonObj) const {
+
+    array<QString, REPORT_COLUMN> fld = Report::getFields();
+    jsonObj[fld[Report::Column::MRO]] = this->getMro();
+    jsonObj[fld[Report::Column::MON]] = this->getMro();
+    jsonObj[fld[Report::Column::ARTICLE]] = this->getArticle();
+    jsonObj[fld[Report::Column::SUBJECT]] = this->getSubject();
+    jsonObj[fld[Report::Column::YEAR]] = this->getYear();
+    jsonObj[fld[Report::Column::NUMROW]] = this->getNumrow();
+    jsonObj[fld[Report::Column::CUMMULATIVE]] = this->getCummulative();
+}

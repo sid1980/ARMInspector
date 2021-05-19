@@ -48,6 +48,7 @@ public:
         Mro,
         MroView,
         Nsi,
+        Report,
         RptRow,
         RptColumn,
         RptColumnView,

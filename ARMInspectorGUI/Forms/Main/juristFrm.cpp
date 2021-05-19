@@ -166,7 +166,7 @@ void juristFrm::OnExit() {
 ///-----------------------------------------------------------------------------
 
 void juristFrm::OnInspection() {
-    //QMessageBox::information(this, "АРМ Юриста", "OnInspection()");
+    QMessageBox::information(this, "АРМ Юриста", "OnInspection()");
     inspectionFrm* frm = new inspectionFrm();
     createFrmConnector(*frm);
     //frm->initClient(this->m_pClientController);
@@ -347,6 +347,24 @@ void juristFrm::worker(const QString& asWrapper) {
                     JsonSerializer::parse(wrapper.getData(), mroContainer);
                     QList<Mro> listmro = mroContainer.getItemsList();
                     setlistMro(listmro);
+                    emit ready();
+                }
+                    break;
+                case ModelWrapper::Model::RptColumn:
+                {
+                    ItemContainer<RptColumn> rptcolumnContainer;
+                    JsonSerializer::parse(wrapper.getData(), rptcolumnContainer);
+                    QList<RptColumn> listrptcolumn = rptcolumnContainer.getItemsList();
+                    setlistCol(listrptcolumn);
+                    emit ready();
+                }
+                    break;
+                case ModelWrapper::Model::RptRow:
+                {
+                    ItemContainer<RptRow> rptrowContainer;
+                    JsonSerializer::parse(wrapper.getData(), rptrowContainer);
+                    QList<RptRow> listrptrow = rptrowContainer.getItemsList();
+                    setlistRow(listrptrow);
                     emit ready();
                 }
                     break;
@@ -558,8 +576,26 @@ void juristFrm::setlistMro(const QList<Mro>& mro) {
     for (auto& t : mro_) {
         this->widget.comboBox->addItem(t.getName());
     }
-
 }
+///-----------------------------------------------------------------------------
+///
+///         Заполнение списка МРО
+///          
+///-----------------------------------------------------------------------------
+
+void juristFrm::setlistRow(const QList<RptRow>& listrow) {
+    listrow_ = listrow;
+}
+///-----------------------------------------------------------------------------
+///
+///         Заполнение списка МРО
+///          
+///-----------------------------------------------------------------------------
+
+void juristFrm::setlistCol(const QList<RptColumn>& listcol) {
+    listcol_ = listcol;
+}
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Нажата кнопка формирования отчёта.
@@ -568,10 +604,26 @@ void juristFrm::setlistMro(const QList<Mro>& mro) {
 
 void juristFrm::on_pushButton_Report_clicked() {
     //QMessageBox::information(this, "АРМ Юриста", "Отчет об АП");
+    QJsonObject param;
+    emit runServerCmd(Functor<RptRow>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
+    emit waitReady();
+    emit runServerCmd(Functor<RptColumn>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
+    emit waitReady();
     model_->clear();
     this->showControlsFrm();
     this->report();
+    model_->setData(model_->index(1,8),"май 2021 года", Qt::EditRole);
+    for (int i = 0; i < listrow_.size(); i++) {
+        RptRow rptrow = listrow_.at(i);
+        for (int j = 0; j < listcol_.size(); j++) {
+            RptColumn rptcol = listcol_.at(j);
+            //QJsonObject param;
+            //param.insert();
+            model_->setData(model_->index(rptrow.getRow() - 1, rptcol.getCol() - 1), rptrow.getNpp(), Qt::EditRole);
+        }
+    }
 }
+
 
 ///-----------------------------------------------------------------------------
 ///

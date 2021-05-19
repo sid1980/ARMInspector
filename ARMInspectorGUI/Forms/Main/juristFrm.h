@@ -66,8 +66,12 @@ public:
     ///создать сигнально-слотовые соединения
     ///между основноё формой и формой ввода-редактирования 
     void createFrmConnector(const QDialog&);
-    //void closeEvent(QCloseEvent *event);
+    //инициализировать список МРО;
     void setlistMro(const QList<Mro>&);
+    //инициализироваь список строк отчёта;
+    void setlistRow(const QList<RptRow>&);
+    //инициализировать список колонок отчёта;
+    void setlistCol(const QList<RptColumn>&);
 
 signals:
     ///сигнал готовности
@@ -95,6 +99,10 @@ private:
     QStandardItemModel *model_;
     ///список МРО
     QList<Mro> mro_;
+    ///список строк отчёта
+    QList<RptRow> listrow_;
+    ///список колонок  отчёта
+    QList<RptColumn> listcol_;
     ///указатель контроллера клиента.
     ClientController *m_pClientController{nullptr};
     //nsiFrm* frm; 
