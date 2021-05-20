@@ -21,6 +21,7 @@
 #include <QModelIndex>
 #include <QStandardItemModel>
 #include "ClientController.h"
+#include "Report/Report.h"
 #include "Mro/Mro.h"
 #include "Mro/mroFrm.h"
 #include "Nsi/nsiFrm.h"
@@ -106,7 +107,7 @@ private:
     ///указатель контроллера клиента.
     ClientController *m_pClientController{nullptr};
     //nsiFrm* frm; 
-
+    qint64 result_;
 
 };
 

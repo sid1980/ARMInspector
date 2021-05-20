@@ -18,6 +18,7 @@
 template <class T> class MQuery {
 public:
     MQuery<T>* select();
+    MQuery<T>* call();
     MQuery<T>* strquery(const QString&);
     MQuery<T>* insert();
     MQuery<T>* update();
@@ -43,6 +44,7 @@ private:
     QList<QString> where_;
     QList<QString> insert_;
     QList<QString> field_;
+    QList<QString> call_;
     T* model_;
 };
 #include "MQuery_IMPL.h"

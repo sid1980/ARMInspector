@@ -22,6 +22,7 @@
 #include <QSqlQuery>
 #include <MQuery.h>
 #include "ModelWrapper.h"
+#include "Report/ReportOut.h"
 #define REPORT_COLUMN 7
 using namespace std;
 
@@ -56,6 +57,11 @@ public:
     const qint64& getYear()const;
     const qint64& getNumrow()const;
     const qint64& getCummulative()const;
+
+    void setOutModel(const ReportOut&);
+    const ReportOut& getOutModel()const;
+
+
     ///Функции сериализации объекта класса
     ///Считывание JSON объкта в поля класса
     void read(const QJsonObject &jsonObj);
@@ -74,9 +80,18 @@ public:
             "cummulative"};
     }
 
+    ///название модели
+
+    static const QString getModelName() {
+        return ModelWrapper::map()[model_];
+    }
+
+    void bindData(QSqlQuery* asSqlQuery);
+    const QString& call();
 
 
 private:
+    MQuery<Report> query_;
     qint64 mro_; //МРО
     qint64 mon_; //отчётный месяц
     qint64 article_; //статья

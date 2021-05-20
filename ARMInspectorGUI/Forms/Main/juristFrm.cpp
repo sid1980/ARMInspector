@@ -352,6 +352,7 @@ void juristFrm::worker(const QString& asWrapper) {
                     break;
                 case ModelWrapper::Model::RptColumn:
                 {
+                    //QMessageBox::information(this, "RptColumn", "RptColumn");
                     ItemContainer<RptColumn> rptcolumnContainer;
                     JsonSerializer::parse(wrapper.getData(), rptcolumnContainer);
                     QList<RptColumn> listrptcolumn = rptcolumnContainer.getItemsList();
@@ -361,6 +362,7 @@ void juristFrm::worker(const QString& asWrapper) {
                     break;
                 case ModelWrapper::Model::RptRow:
                 {
+                //    QMessageBox::information(this, "RptRow", "RptRow");
                     ItemContainer<RptRow> rptrowContainer;
                     JsonSerializer::parse(wrapper.getData(), rptrowContainer);
                     QList<RptRow> listrptrow = rptrowContainer.getItemsList();
@@ -371,6 +373,17 @@ void juristFrm::worker(const QString& asWrapper) {
                 default:
                     break;
             }
+        }
+            break;
+        case ModelWrapper::Command::CALL_PROCEDURE:
+        {
+            //QMessageBox::information(this, "CALL_PROCEDURE", "CALL_PROCEDURE");
+             //Сервер вернул результат команды "LOGIN"     
+                ReportOut  report;
+                JsonSerializer::parse(wrapper.getData(), report);
+                result_=report.getCount();
+            emit ready();
+
         }
             break;
         default:
@@ -612,14 +625,27 @@ void juristFrm::on_pushButton_Report_clicked() {
     model_->clear();
     this->showControlsFrm();
     this->report();
-    model_->setData(model_->index(1,8),"май 2021 года", Qt::EditRole);
+    model_->setData(model_->index(1, 8), "май 2021 года", Qt::EditRole);
+    Report model;
+    model.setMro(mro_.at(this->widget.comboBox->currentIndex()).getId());
+    model.setMon(this->widget.dateEdit->date().month());
+    model.setYear(this->widget.dateEdit->date().year());
+    QMessageBox::information(this, "АРМ Юриста", "МРО:"+QString::number(model.getMro())+"месяц:  "+ QString::number(model.getMon())+ "год:" +QString::number(model.getYear()));
+    
+    model.setCummulative(0);
+    //model.setMro(this->widget->comboBox->ge)
     for (int i = 0; i < listrow_.size(); i++) {
         RptRow rptrow = listrow_.at(i);
+        model.setNumrow(rptrow.getRow());
         for (int j = 0; j < listcol_.size(); j++) {
             RptColumn rptcol = listcol_.at(j);
+            model.setArticle(rptcol.getArticle());
+            model.setSubject(rptcol.getSubject());
             //QJsonObject param;
             //param.insert();
-            model_->setData(model_->index(rptrow.getRow() - 1, rptcol.getCol() - 1), rptrow.getNpp(), Qt::EditRole);
+             emit runServerCmd(Functor<Report>::produce(ModelWrapper::Command::CALL_PROCEDURE, model));
+             emit waitReady();
+             model_->setData(model_->index(rptrow.getRow() - 1, rptcol.getCol() - 1), QString::number(result_), Qt::EditRole);
         }
     }
 }

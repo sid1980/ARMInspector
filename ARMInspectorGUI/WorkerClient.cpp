@@ -139,6 +139,7 @@ void WorkerClient::process() {
             case ModelWrapper::Command::ADD_NEW_MODEL:
             case ModelWrapper::Command::UPDATE_MODEL:
             case ModelWrapper::Command::DEL_MODEL:
+            case ModelWrapper::Command::CALL_PROCEDURE:
                 emit responseServer(m_aModelWrapperString);
                 break;
             default:

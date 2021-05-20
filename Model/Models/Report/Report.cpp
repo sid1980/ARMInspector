@@ -83,6 +83,8 @@ const qint64& Report::getCummulative()const {
     return cummulative_;
 
 }
+
+
 ///Функции сериализации объекта класса
 ///Считывание JSON объкта в поля класса
 
@@ -112,4 +114,67 @@ void Report::write(QJsonObject &jsonObj) const {
     jsonObj[fld[Report::Column::YEAR]] = this->getYear();
     jsonObj[fld[Report::Column::NUMROW]] = this->getNumrow();
     jsonObj[fld[Report::Column::CUMMULATIVE]] = this->getCummulative();
+}
+///-----------------------------------------------------------------------------
+///
+///
+///         Привязать данные к запросу. 
+///
+///
+///-----------------------------------------------------------------------------
+
+void Report::bindData(QSqlQuery* asSqlQuery) {
+    qInfo() << "Report::bindData";
+    QList<int> list = query_.getBindColumnList();
+    if (!list.isEmpty()) {
+        array<QString, REPORT_COLUMN> fld = Report::getFields();
+        for (int i = 0; i < list.size(); i++) {
+            qInfo() << QString::number(list.at(i));
+            switch (list.at(i)) {
+                case Report::Column::MRO:
+                    asSqlQuery->bindValue(":" + fld[Report::Column::MRO], this->getMro());
+                    break;
+                case Report::Column::MON:
+                    asSqlQuery->bindValue(":" + fld[Report::Column::MON], this->getMon());
+                    break;
+                case Report::Column::ARTICLE:
+                    asSqlQuery->bindValue(":" + fld[Report::Column::ARTICLE], this->getArticle());
+                    break;
+                case Report::Column::SUBJECT:
+                    asSqlQuery->bindValue(":" + fld[Report::Column::SUBJECT], this->getSubject());
+                    break;
+                case Report::Column::YEAR:
+                    asSqlQuery->bindValue(":" + fld[Report::Column::YEAR], this->getYear());
+                    break;
+                case Report::Column::NUMROW:
+                    asSqlQuery->bindValue(":" + fld[Report::Column::NUMROW], this->getNumrow());
+                    break;
+                case Report::Column::CUMMULATIVE:
+                    asSqlQuery->bindValue(":" + fld[Report::Column::CUMMULATIVE], this->getCummulative());
+                    break;
+                default:
+                    break;
+            }
+        }
+        //QMessageBox::information(0, "Information Box", this->getName());
+    }
+}
+///-----------------------------------------------------------------------------
+///
+///         Вызвать хранимую процудуру. 
+///
+///-----------------------------------------------------------------------------
+
+const QString& Report::call() {
+    qInfo() << "Report::call()";
+    return query_.call()->
+            field(Report::Column::MRO)->bind(Report::Column::MRO)->
+            field(Report::Column::MON)->bind(Report::Column::MON)->
+            field(Report::Column::ARTICLE)->bind(Report::Column::ARTICLE)->
+            field(Report::Column::SUBJECT)->bind(Report::Column::SUBJECT)->
+            field(Report::Column::YEAR)->bind(Report::Column::YEAR)->
+            field(Report::Column::NUMROW)->bind(Report::Column::NUMROW)->
+            field(Report::Column::CUMMULATIVE)->bind(Report::Column::CUMMULATIVE)->
+            prepare();
+
 }

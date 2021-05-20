@@ -38,6 +38,19 @@ template <class T> MQuery<T>* MQuery<T>::select() {
     query_.append(asSelect);
     return this;
 }
+///-----------------------------------------------------------------------------
+///
+///             Вызвать хранимую процедуру.
+///
+///-----------------------------------------------------------------------------
+
+template <class T> MQuery<T>* MQuery<T>::call() {
+    clear();
+    QString asCall = "CALL " + T::getModelName();
+    //query_.append(asCall);
+    call_.append(asCall);
+    return this;
+}
 
 
 ///-----------------------------------------------------------------------------
@@ -143,7 +156,7 @@ template <class T> MQuery<T>* MQuery<T>::bind(const int& column) {
 
 template <class T> MQuery<T>* MQuery<T>::field(const int& column) {
     field_.append(T::getFields()[column]);
-    if (insert_.isEmpty()) {
+    if (insert_.isEmpty() && call_.isEmpty()) {
         if (bind_.isEmpty()) {
             query_.append(" " + T::getFields()[column]);
         } else {
@@ -153,7 +166,7 @@ template <class T> MQuery<T>* MQuery<T>::field(const int& column) {
                 query_.append(" " + T::getFields()[column]);
             }
         }
-    } else {
+    } else if (!insert_.isEmpty()) {
         bind_.append(column);
     }
     return this;
@@ -168,11 +181,11 @@ template <class T> MQuery<T>* MQuery<T>::field(const int& column) {
 
 template <class T> const QString& MQuery<T>::prepare() {
     queryStr_ = "";
-    if (insert_.isEmpty()) {//
+    if (insert_.isEmpty() && call_.isEmpty()) {//
         for (int i = 0; i < query_.size(); i++) {
             queryStr_ += query_.at(i);
         };
-    } else {//Это  INSERT
+    } else if (!insert_.isEmpty()) {//Это  INSERT
         for (int i = 0; i < insert_.size(); i++) {
             queryStr_ += insert_.at(i);
         };
@@ -192,6 +205,19 @@ template <class T> const QString& MQuery<T>::prepare() {
             }
         };
         queryStr_ += ") ";
+    } else if (!call_.isEmpty()) {//Это CALL
+        for (int i = 0; i < call_.size(); i++) {
+            queryStr_ += call_.at(i);
+        };
+        queryStr_ += "(";
+        for (int i = 0; i < field_.size(); i++) {
+            queryStr_ += ":" + field_.at(i);
+            if (i < field_.size() - 1) {
+                queryStr_ += ",";
+            }
+        };
+        queryStr_ += ") ";
+
     }
     return queryStr_;
 }
@@ -208,6 +234,7 @@ template <class T> void MQuery<T>::clear() {
     where_.clear();
     insert_.clear();
     field_.clear();
+    call_.clear();
 }
 
 
@@ -251,9 +278,9 @@ template <class T> QString MQuery<T>::removeById(const int& id) {
 
 template <class T> QString MQuery<T>::selectMaxID() {
 
-    return "SELECT * FROM "+ T::getModelName()   +
-            " WHERE ID = (SELECT max(ID) FROM "+
-            T::getModelName() +")" ;
+    return "SELECT * FROM " + T::getModelName() +
+            " WHERE ID = (SELECT max(ID) FROM " +
+            T::getModelName() + ")";
 }
 
 

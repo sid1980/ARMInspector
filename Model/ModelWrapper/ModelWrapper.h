@@ -36,7 +36,8 @@ public:
         CHANGE_PASSWORD,
         SERVER_RESPONSE,
         WAIT_SERVER_RESPONSE,
-        SET_SESSION_ID
+        SET_SESSION_ID,
+        CALL_PROCEDURE
     };
 
 
@@ -75,6 +76,7 @@ public:
         {Command::SERVER_RESPONSE, "Сообщение  сервера."},
         {Command::WAIT_SERVER_RESPONSE, "Ждать ответ  сервера."},
         {Command::SET_SESSION_ID, "Установить идентификатор сессии."},
+        {Command::CALL_PROCEDURE, "Вызвать хранимую процедуру SQL"},
         {Command::NOP, "Холостая операция."}
     };
     //Названия моделей
@@ -90,6 +92,7 @@ public:
             {Model::RptRow, "reportrow"},
             {Model::RptColumn, "reportcol"},
             {Model::RptColumnView, "v_reportcol"},
+            {Model::Report, "getCount_NewKoAP"},
             {Model::Nsi, "nsi_"}
         };
         return ListModel;
