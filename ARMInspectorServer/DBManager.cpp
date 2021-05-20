@@ -106,16 +106,18 @@ void DBManager::login() {
     //Создать модель данных User
     User user;
     user.setName(asLogin);
-
+    //дополнение к сообщению
+    QString attach = "<br><a style='color:red'> ";
+    attach += user.getName() + "</a>";
     //Задать  функцию для установки результата выполнения команды сервера
     //и собщения о результате выполнения команды.
-    auto setResult = [this](User user, Message msg) {
+    auto setResult = [this](User user, Message msg, QString attach) {
         //Подготовить данные.
         QString json = JsonSerializer::serialize(user);
         m_pModelWrapper->setData(json);
         //Установить сообщение и результат выполнения команды.
         ServerMessage::Result result = ServerMessage::outPut(msg);
-        m_pModelWrapper->setMessage(result.str + QString("<a style='color:red'> ") + user.getName() + QString("</a>"));
+        m_pModelWrapper->setMessage(QString(result.str).arg(attach));
         m_pModelWrapper->setSuccess(result.success);
     };
     if (!asLogin.isEmpty()&&!asPassword.isEmpty()) {
@@ -129,10 +131,10 @@ void DBManager::login() {
         QSqlQuery queryStatementInfo(m_Db);
         //Подготовить запрос на чтение данных из  базы.
         QString strGetStatementInfo = "select * from user where name='" + asLogin + "'";
-
         //Выполнить зыпрос к базе данных.
         if (!queryStatementInfo.exec(strGetStatementInfo)) {
-            setResult(user, Message::SQL_ERROR);
+            attach = "Ошибка:  " + strGetStatementInfo;
+            setResult(user, Message::SQL_ERROR, attach);
             return;
         }
         //Проверить, есть ли в базе данных хотя бы одна запись, удовлетворяющая запросу    
@@ -147,15 +149,16 @@ void DBManager::login() {
                 qDebug() << sqlquery_string;
 
                 if (!queryStatementInfo.exec(sqlquery_string)) {
-                    setResult(user, Message::CANNOT_ADD_ADMIN_USER);
+                    attach = "Ошибка:  " + strGetStatementInfo;
+                    setResult(user, Message::CANNOT_ADD_ADMIN_USER, attach);
                     return;
                 } else {
-                    setResult(user, Message::ADD_ADMIN_USER_SUCCESS);
+                    setResult(user, Message::ADD_ADMIN_USER_SUCCESS, attach);
                     //Пользователь admin успешно добавлен в базу данных
                     return;
                 }
             } else {
-                setResult(user, Message::USER_IS_NOT_FOUND);
+                setResult(user, Message::USER_IS_NOT_FOUND, attach);
                 return;
             }
         }
@@ -173,24 +176,56 @@ void DBManager::login() {
         //Сравнить его с хеш в базе данных
         if (pasword_hash.compare(user.getPassword().trimmed(), Qt::CaseSensitive) != 0) {
             //Пользователь не прошёл авторизацию. Пароль неверен. 
-            setResult(user, Message::USER_LOGIN_FAILURE);
+            setResult(user, Message::USER_LOGIN_FAILURE, attach);
             return;
         }
         //Пароль введённый пользователем и пароль в базе данных совпали. Пользователь  прошёл авторизацию. 
-        setResult(user, Message::USER_LOGIN_SUCCESS);
+        setResult(user, Message::USER_LOGIN_SUCCESS, attach);
 
         return;
     } else {
         if (asLogin.isEmpty()) {
-            setResult(user, Message::USER_NAME_EMPTY);
+            setResult(user, Message::USER_NAME_EMPTY, attach);
             return;
         }
-        setResult(user, Message::USER_PASSWORD_EMPTY);
+        setResult(user, Message::USER_PASSWORD_EMPTY, attach);
         return;
     }
 }
 
 
+///-----------------------------------------------------------------------------
+///
+///             Вызвать хранимую процедуру
+///
+///-----------------------------------------------------------------------------
+
+void DBManager::callProcedure() {
+    ModelWrapper::Model model = m_pModelWrapper->getEnumModel();
+    //Выбрать модель, данные которой необходимо запросить. 
+    switch (model) {
+        case ModelWrapper::Model::Report:
+        {
+            callProcedure<Report, ReportOut>();
+        }
+            break;
+        default:
+        {
+            auto setResult = [this](Message msg, QString attach) {
+                //Установить сообщение и результат выполнения команды.
+                ServerMessage::Result result = ServerMessage::outPut(msg);
+                m_pModelWrapper->setMessage(QString(result.str).arg(attach));
+                m_pModelWrapper->setSuccess(result.success);
+            };
+            qDebug() << "Unknown model";
+            QString attach = "<a style='color:red'> deleteModel</a>";
+            setResult(Message::UNKMOWN_MODEL, attach);
+        }
+            break;
+
+    }
+
+}
 ///-----------------------------------------------------------------------------
 ///
 ///             Удалить модель

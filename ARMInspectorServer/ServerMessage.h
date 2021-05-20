@@ -63,7 +63,9 @@ enum Message {
     DATABASE_CONNECTION_INCORRECT,
     CANNOT_DELETE_SESSION,
     ADD_ADMIN_USER_SUCCESS,
-    CANNOT_ADD_ADMIN_USER
+    CANNOT_ADD_ADMIN_USER,
+    CALL_PROCEDURE_SUCCESS,
+    CALL_PROCEDURE_FAILURE
 };
 
 
@@ -78,19 +80,21 @@ namespace ServerMessage {
     } Result;
     ///Список сообщений с результатом выполнения команды сервером
     const QHash<const Message, Result> message = {
-        {Message::USER_LOGIN_SUCCESS,{"Успешная авторизация пользователя ", true, ModelWrapper::Command::NOP}},
-        {Message::USER_LOGIN_FAILURE,{"Введён неправильный пароль для пользователя  ", false, ModelWrapper::Command::NOP}},
-        {Message::USER_NAME_IS,{"В базе уже есть пльзователь с именем : ", false, ModelWrapper::Command::NOP}},
+        {Message::USER_LOGIN_SUCCESS,{"Успешная авторизация пользователя %1 ", true, ModelWrapper::Command::NOP}},
+        {Message::USER_LOGIN_FAILURE,{"Введён неправильный пароль для пользователя %1 ", false, ModelWrapper::Command::NOP}},
+        {Message::USER_NAME_IS,{"В базе уже есть пльзователь с именем : %1", false, ModelWrapper::Command::NOP}},
         {Message::USER_NAME_NO,{"Пользователь может быть добавлен в базу данных ", true, ModelWrapper::Command::NOP}},
-        {Message::USER_NAME_EMPTY,{"Поле для ввода имени пользователя не может быть пустым. ", false, ModelWrapper::Command::NOP}},
-        {Message::USER_PASSWORD_EMPTY,{"Поле для ввода пароля не может быть пустым. Пользователь: ", false, ModelWrapper::Command::NOP}},
-        {Message::USER_IS_NOT_FOUND,{"В базе данных не найден  пользователь с  именем ", false, ModelWrapper::Command::NOP}},
-        {Message::USER_ADD_SUCCESS,{"Успешное добавление в базу данных пользователя ", true, ModelWrapper::Command::NOP}},
+        {Message::USER_NAME_EMPTY,{"Поле для ввода имени пользователя не может быть пустым.%1 ", false, ModelWrapper::Command::NOP}},
+        {Message::USER_PASSWORD_EMPTY,{"Поле для ввода пароля не может быть пустым.<br> Пользователь: %1 ", false, ModelWrapper::Command::NOP}},
+        {Message::USER_IS_NOT_FOUND,{"В базе данных не найден  пользователь с  именем  %1", false, ModelWrapper::Command::NOP}},
+        {Message::USER_ADD_SUCCESS,{"Успешное добавление в базу данных пользователя %1", true, ModelWrapper::Command::NOP}},
         {Message::USER_ADD_FAILURE,{"Ошибка при добавлении в базу данных пользователя ", false, ModelWrapper::Command::NOP}},
         {Message::PASSWORD_CHANGE_SUCCESS,{"Успешное изменение пароля  пользователя ", true, ModelWrapper::Command::NOP}},
         {Message::PASSWORD_CHANGE_FAILURE,{"Ошибка при изменении пароля пользователя ", false, ModelWrapper::Command::NOP}},
-        {Message::MODEL_GET_SUCCESS,{"Успешная загрузка данных.", true, ModelWrapper::Command::NOP}},
-        {Message::MODEL_GET_FAILURE,{"Ошибка при загрузке данных.", false, ModelWrapper::Command::NOP}},
+        {Message::MODEL_GET_SUCCESS,{"Успешная загрузка данных. %1", true, ModelWrapper::Command::NOP}},
+        {Message::MODEL_GET_FAILURE,{"Ошибка при загрузке данных. %1", false, ModelWrapper::Command::NOP}},
+        {Message::CALL_PROCEDURE_SUCCESS,{"Успешный вызов процедуры SQL. %1", true, ModelWrapper::Command::NOP}},
+        {Message::CALL_PROCEDURE_FAILURE,{"Ошибка при вызове процедуры SQL. %1", false, ModelWrapper::Command::NOP}},
         {Message::MODEL_DEL_SUCCESS,{"Успешное удаление ", true, ModelWrapper::Command::NOP}},
         {Message::MODEL_DEL_FAILURE,{"Ошибка удаления ", false, ModelWrapper::Command::NOP}},
         {Message::USER_EDIT_SUCCESS,{"Успешное редактирование пользователя ", true, ModelWrapper::Command::NOP}},
@@ -102,7 +106,7 @@ namespace ServerMessage {
         {Message::DATABASE_IS_NOT_OPENED,{"База данных не открыта.", false, ModelWrapper::Command::NOP}},
         {Message::NO_DATABASE_CONNECTION,{"Подключение к базе данных отсутствует.", false, ModelWrapper::Command::NOP}},
         {Message::DATABASE_IS_OPENED,{"База данных открыта", true, ModelWrapper::Command::NOP}},
-        {Message::SQL_ERROR,{"Ошибка SQL запроса.", false, ModelWrapper::Command::NOP}},
+        {Message::SQL_ERROR,{"Ошибка SQL запроса. %1 ", false, ModelWrapper::Command::NOP}},
         {Message::SQL_SUCCESS,{"SQL запрос успешно выполнен.", true, ModelWrapper::Command::NOP}},
         {Message::CONNECTION_ERROR,{"Ошибка подключения.", false, ModelWrapper::Command::NOP}},
         {Message::DATABASE_DRIVER_IS_NOT_AVAILABLE,{"Драйвер базы данных не доступен.", false, ModelWrapper::Command::NOP}},
@@ -120,8 +124,8 @@ namespace ServerMessage {
         {Message::FAILED_CREATE_WORKER,{"Не удалось создать экземпляр класса, подсоединяемого к потоку.", false, ModelWrapper::Command::NOP}},
         {Message::DATABASE_CONNECTION_INCORRECT,{"Подключение  к базе данных некорректно.", false, ModelWrapper::Command::NOP}},
         {Message::CANNOT_DELETE_SESSION,{"Невозможно удалить сессию.", false, ModelWrapper::Command::NOP}},
-        {Message::ADD_ADMIN_USER_SUCCESS,{"Пользователь admin успешно добавлен в базу данных.", true, ModelWrapper::Command::NOP}},
-        {Message::CANNOT_ADD_ADMIN_USER,{"Не могу  добавить  пользователя admin.", false, ModelWrapper::Command::NOP}},
+        {Message::ADD_ADMIN_USER_SUCCESS,{"Пользователь admin успешно добавлен в базу данных. %1", true, ModelWrapper::Command::NOP}},
+        {Message::CANNOT_ADD_ADMIN_USER,{"Не могу  добавить  пользователя %1.", false, ModelWrapper::Command::NOP}},
         {Message::UNKMOWN_MODEL,{"Неизвестная модель данных. Операция: %1", false, ModelWrapper::Command::NOP}}
     };
     /// Выбрать сообщение из списка.

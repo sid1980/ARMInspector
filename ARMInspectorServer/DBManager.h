@@ -23,6 +23,7 @@
 #include "User/User.h"
 #include "Mro/Mro.h"
 #include "Mro/MroView.h"
+#include "Report/Report.h"
 #include "RptRow/RptRow.h"
 #include "RptColumn/RptColumn.h"
 #include "RptColumn/RptColumnView.h"
@@ -63,8 +64,10 @@ public:
     /// Получить список моделей.
     void getListModels();
     template<typename T> void getListModels();
-
-
+  
+/// Вызвать хранимую процедуру.
+    void callProcedure();
+    template<typename T,typename TOUT> void callProcedure();    
     /// Удалить  модель.
     void deleteModel();
     ///удалить модель из списка

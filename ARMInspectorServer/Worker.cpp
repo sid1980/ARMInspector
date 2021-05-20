@@ -130,8 +130,14 @@ void Worker::process() {
                     break;
                 case ModelWrapper::Command::DEL_MODEL:
                 {
-                    //Получить список моделей.
+                    //Удалить модель.
                     pDBManager->deleteModel();
+                }
+                    break;
+                case ModelWrapper::Command::CALL_PROCEDURE:
+                {
+                    //Вызвать хранимую процедуру.
+                    pDBManager->callProcedure();
                 }
                     break;
                 default:
