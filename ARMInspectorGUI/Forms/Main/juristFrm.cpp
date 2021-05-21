@@ -12,10 +12,12 @@
  */
 
 #include "juristFrm.h"
+#include "myProgressBar.h"
 #include "QMessageBoxEx.h"
 #include <QFile>
 #include <QTextStream>
-#include <QFont.h>
+#include <QLayout>
+#include <QProgressBar>
 ///-----------------------------------------------------------------------------
 ///
 ///         Конструктор.
@@ -362,7 +364,7 @@ void juristFrm::worker(const QString& asWrapper) {
                     break;
                 case ModelWrapper::Model::RptRow:
                 {
-                //    QMessageBox::information(this, "RptRow", "RptRow");
+                    //    QMessageBox::information(this, "RptRow", "RptRow");
                     ItemContainer<RptRow> rptrowContainer;
                     JsonSerializer::parse(wrapper.getData(), rptrowContainer);
                     QList<RptRow> listrptrow = rptrowContainer.getItemsList();
@@ -378,12 +380,14 @@ void juristFrm::worker(const QString& asWrapper) {
         case ModelWrapper::Command::CALL_PROCEDURE:
         {
             //QMessageBox::information(this, "CALL_PROCEDURE", "CALL_PROCEDURE");
-             //Сервер вернул результат команды "LOGIN"     
-                ReportOut  report;
-                JsonSerializer::parse(wrapper.getData(), report);
-                result_=report.getCount();
+            //Сервер вернул результат команды "LOGIN"     
+            ReportOut report;
+            JsonSerializer::parse(wrapper.getData(), report);
+            result_ = report.getCount();
+            if (report.getCount() > 0) {
+                //QMessageBox::information(this, "CALL_PROCEDURE", QString::number(report.getCount()));
+            }
             emit ready();
-
         }
             break;
         default:
@@ -630,10 +634,29 @@ void juristFrm::on_pushButton_Report_clicked() {
     model.setMro(mro_.at(this->widget.comboBox->currentIndex()).getId());
     model.setMon(this->widget.dateEdit->date().month());
     model.setYear(this->widget.dateEdit->date().year());
-    QMessageBox::information(this, "АРМ Юриста", "МРО:"+QString::number(model.getMro())+"месяц:  "+ QString::number(model.getMon())+ "год:" +QString::number(model.getYear()));
-    
+    //QMessageBox::information(this, "АРМ Юриста", "МРО:" + QString::number(model.getMro()) + "месяц:  " + QString::number(model.getMon()) + "год:" + QString::number(model.getYear()));
+
     model.setCummulative(0);
     //model.setMro(this->widget->comboBox->ge)
+    //QMessageBox *msgBox = new QMessageBox();
+    //msgBox->setText("Загружаются данные, пожалуйста, подождите ...");
+    //msgBox->show();
+    //msgBox->setAttribute(Qt::WA_DeleteOnClose);
+
+    //QHBoxLayout *layout = new QHBoxLayout();
+    //QProgressBar *progressBar = new QProgressBar();
+    //progressBar->setMinimum(0);
+    //progressBar->setMaximum(listrow_.size() * listcol_.size());
+    //layout->addWidget(progressBar);
+    //setLayout(layout);
+
+    // QTimer::singleShot(9000, msgBox, SLOT(close()));
+
+    myProgressBar* frmProgress = new myProgressBar(this);
+    frmProgress->getUI()->progressBar->setMinimum(0);
+    frmProgress->getUI()->progressBar->setMaximum(listrow_.size() * listcol_.size());
+    frmProgress->setAttribute(Qt::WA_DeleteOnClose);
+    frmProgress->show();
     for (int i = 0; i < listrow_.size(); i++) {
         RptRow rptrow = listrow_.at(i);
         model.setNumrow(rptrow.getRow());
@@ -643,11 +666,25 @@ void juristFrm::on_pushButton_Report_clicked() {
             model.setSubject(rptcol.getSubject());
             //QJsonObject param;
             //param.insert();
-             emit runServerCmd(Functor<Report>::produce(ModelWrapper::Command::CALL_PROCEDURE, model));
-             emit waitReady();
-             model_->setData(model_->index(rptrow.getRow() - 1, rptcol.getCol() - 1), QString::number(result_), Qt::EditRole);
+            emit runServerCmd(Functor<Report>::produce(ModelWrapper::Command::CALL_PROCEDURE, model));
+            emit waitReady();
+            frmProgress->getUI()->progressBar->setValue(frmProgress->getUI()->progressBar->value() + 1);
+            if (result_ > 0) {
+                model_->setData(model_->index(rptrow.getRow() - 1, rptcol.getCol() - 1), QString::number(result_), Qt::EditRole);
+                QMessageBox::information(this, "АРМ Юриста",
+                        "<br>  МРО: " +
+                        QString::number(model.getMro()) +
+                        "<br>  месяц:  " +
+                        QString::number(model.getMon()) +
+                        "<br>  статья:  " +
+                        QString::number(model.getArticle()) +
+                        "<br>  год:  " +
+                        QString::number(model.getYear()));
+            }
         }
     }
+    frmProgress->close();
+    //msgBox->close();
 }
 
 

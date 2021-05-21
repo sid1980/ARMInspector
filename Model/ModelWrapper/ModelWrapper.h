@@ -50,6 +50,7 @@ public:
         MroView,
         Nsi,
         Report,
+        ReportOut,
         RptRow,
         RptColumn,
         RptColumnView,
@@ -93,6 +94,7 @@ public:
             {Model::RptColumn, "reportcol"},
             {Model::RptColumnView, "v_reportcol"},
             {Model::Report, "getCount_NewKoAP"},
+            {Model::ReportOut, "getCount_NewKoAP"},
             {Model::Nsi, "nsi_"}
         };
         return ListModel;

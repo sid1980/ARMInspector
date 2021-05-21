@@ -23,9 +23,11 @@ ReportOut::~ReportOut() {
 void ReportOut::setCount(const qint64& count) {
     count_ = count;
 }
+
 const qint64& ReportOut::getCount()const {
     return count_;
 }
+
 ///Функции сериализации объекта класса
 ///Считывание JSON объкта в поля класса
 
