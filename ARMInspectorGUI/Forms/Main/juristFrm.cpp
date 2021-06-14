@@ -671,15 +671,15 @@ void juristFrm::on_pushButton_Report_clicked() {
             frmProgress->getUI()->progressBar->setValue(frmProgress->getUI()->progressBar->value() + 1);
             if (result_ > 0) {
                 model_->setData(model_->index(rptrow.getRow() - 1, rptcol.getCol() - 1), QString::number(result_), Qt::EditRole);
-                QMessageBox::information(this, "АРМ Юриста",
-                        "<br>  МРО: " +
-                        QString::number(model.getMro()) +
-                        "<br>  месяц:  " +
-                        QString::number(model.getMon()) +
-                        "<br>  статья:  " +
-                        QString::number(model.getArticle()) +
-                        "<br>  год:  " +
-                        QString::number(model.getYear()));
+                //QMessageBox::information(this, "АРМ Юриста",
+                //        "<br>  МРО: " +
+                //        QString::number(model.getMro()) +
+                //        "<br>  месяц:  " +
+                //        QString::number(model.getMon()) +
+                //        "<br>  статья:  " +
+                //        QString::number(model.getArticle()) +
+                //        "<br>  год:  " +
+                //        QString::number(model.getYear()));
             }
         }
     }
