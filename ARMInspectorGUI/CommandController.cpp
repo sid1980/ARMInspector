@@ -17,7 +17,7 @@ CommandController::CommandController(QIODevice *apIODevice, QObject *apParent) :
 /// @param asMessage Входящее сообщение.
 
 void CommandController::messageProcessing(const RpcMessage &asMessage) {
-    qInfo() << "messageProcessing(...)";
+    //qInfo() << "messageProcessing(...)";
     RpcSocket *socket = static_cast<RpcSocket*> (sender());
     if (!socket) {
         qDebug() << "Отсутствует соединение с сервером";

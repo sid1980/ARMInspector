@@ -20,10 +20,22 @@ ReportOut::~ReportOut() {
 
 ///Функции чтения - записи полей класса
 
+void ReportOut::setArticle(const qint64& article) {
+    article_ = article;
+}
+void ReportOut::setMysubject(const qint64& mysubject) {
+    mysubject_ = mysubject;
+}
 void ReportOut::setCount(const qint64& count) {
     count_ = count;
 }
 
+const qint64& ReportOut::getArticle()const {
+    return article_;
+}
+const qint64& ReportOut::getMysubject()const {
+    return mysubject_;
+}
 const qint64& ReportOut::getCount()const {
     return count_;
 }
@@ -36,13 +48,16 @@ void ReportOut::read(const QJsonObject &jsonObj) {
     //array<QString, 10> fld_name=Report::getFieldArray();
     array<QString, OUT_COLUMN> fld = ReportOut::getFields();
 
+    this->setArticle(jsonObj[fld[ReportOut::Column::ARTICLE]].toInt());
+    this->setMysubject(jsonObj[fld[ReportOut::Column::MYSUBJECT]].toInt());
     this->setCount(jsonObj[fld[ReportOut::Column::COUNT]].toInt());
-
 }
 ///Запись полей класса в JSON объкт. 
 
 void ReportOut::write(QJsonObject &jsonObj) const {
 
     array<QString, OUT_COLUMN> fld = ReportOut::getFields();
+    jsonObj[fld[ReportOut::Column::ARTICLE]] = this->getArticle();
+    jsonObj[fld[ReportOut::Column::MYSUBJECT]] = this->getMysubject();
     jsonObj[fld[ReportOut::Column::COUNT]] = this->getCount();
 }

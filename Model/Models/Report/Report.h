@@ -23,7 +23,7 @@
 #include <MQuery.h>
 #include "ModelWrapper.h"
 #include "Report/ReportOut.h"
-#define REPORT_COLUMN 7
+#define REPORT_COLUMN 5
 using namespace std;
 
 class Report : public JsonSerializable {
@@ -33,8 +33,6 @@ public:
     enum Column {
         MRO = 0,
         MON,
-        ARTICLE,
-        SUBJECT,
         YEAR,
         NUMROW,
         CUMMULATIVE
@@ -45,15 +43,11 @@ public:
     ///Функции чтения - записи полей класса
     void setMro(const qint64&);
     void setMon(const qint64&);
-    void setArticle(const qint64&);
-    void setSubject(const qint64&);
     void setYear(const qint64&);
     void setNumrow(const qint64&);
     void setCummulative(const qint64&);
     const qint64& getMro()const;
     const qint64& getMon()const;
-    const qint64& getArticle()const;
-    const qint64& getSubject()const;
     const qint64& getYear()const;
     const qint64& getNumrow()const;
     const qint64& getCummulative()const;
@@ -73,8 +67,6 @@ public:
         return array<QString, REPORT_COLUMN>{
             "mro",
             "mon",
-            "article",
-            "subject",
             "year",
             "numrow",
             "cummulative"};
@@ -94,8 +86,6 @@ private:
     MQuery<Report> query_;
     qint64 mro_; //МРО
     qint64 mon_; //отчётный месяц
-    qint64 article_; //статья
-    qint64 subject_; //убъект АП
     qint64 year_; //отчётный год 
     qint64 numrow_; //номер строки отчёта 
     qint64 cummulative_; //накопление для итоговых колонок

@@ -86,8 +86,8 @@ void WorkerClient::process() {
     //Разворачиваем командную обёртку.
     JsonSerializer::parse(m_aModelWrapperString, wrapper);
     //Вывести заголовок и сообщение.
-    qInfo() << "head: " << QString::fromLocal8Bit(wrapper.getHead().toStdString().c_str());
-    qInfo() << "message: " << QString::fromLocal8Bit(wrapper.getMessage().toStdString().c_str());
+    //qInfo() << "head: " << QString::fromLocal8Bit(wrapper.getHead().toStdString().c_str());
+    //qInfo() << "message: " << QString::fromLocal8Bit(wrapper.getMessage().toStdString().c_str());
     //Проверяем результат выполнения команды 
     ModelWrapper::Command command = wrapper.getEnumCommand();
     ModelWrapper::Model model = wrapper.getEnumModel();

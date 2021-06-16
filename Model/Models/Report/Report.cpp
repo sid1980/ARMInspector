@@ -30,13 +30,6 @@ void Report::setMon(const qint64& mon) {
     mon_ = mon;
 }
 
-void Report::setArticle(const qint64& article) {
-    article_ = article;
-}
-
-void Report::setSubject(const qint64& subject) {
-    subject_ = subject;
-}
 
 void Report::setYear(const qint64& year) {
     year_ = year;
@@ -56,16 +49,6 @@ const qint64& Report::getMro()const {
 
 const qint64& Report::getMon()const {
     return mon_;
-
-}
-
-const qint64& Report::getArticle()const {
-    return article_;
-
-}
-
-const qint64& Report::getSubject()const {
-    return subject_;
 
 }
 
@@ -95,8 +78,6 @@ void Report::read(const QJsonObject &jsonObj) {
 
     this->setMro(jsonObj[fld[Report::Column::MRO]].toInt());
     this->setMon(jsonObj[fld[Report::Column::MON]].toInt());
-    this->setArticle(jsonObj[fld[Report::Column::ARTICLE]].toInt());
-    this->setSubject(jsonObj[fld[Report::Column::SUBJECT]].toInt());
     this->setYear(jsonObj[fld[Report::Column::YEAR]].toInt());
     this->setNumrow(jsonObj[fld[Report::Column::NUMROW]].toInt());
     this->setCummulative(jsonObj[fld[Report::Column::CUMMULATIVE]].toInt());
@@ -109,8 +90,6 @@ void Report::write(QJsonObject &jsonObj) const {
     array<QString, REPORT_COLUMN> fld = Report::getFields();
     jsonObj[fld[Report::Column::MRO]] = this->getMro();
     jsonObj[fld[Report::Column::MON]] = this->getMro();
-    jsonObj[fld[Report::Column::ARTICLE]] = this->getArticle();
-    jsonObj[fld[Report::Column::SUBJECT]] = this->getSubject();
     jsonObj[fld[Report::Column::YEAR]] = this->getYear();
     jsonObj[fld[Report::Column::NUMROW]] = this->getNumrow();
     jsonObj[fld[Report::Column::CUMMULATIVE]] = this->getCummulative();
@@ -136,12 +115,6 @@ void Report::bindData(QSqlQuery* asSqlQuery) {
                     break;
                 case Report::Column::MON:
                     asSqlQuery->bindValue(":" + fld[Report::Column::MON], this->getMon());
-                    break;
-                case Report::Column::ARTICLE:
-                    asSqlQuery->bindValue(":" + fld[Report::Column::ARTICLE], this->getArticle());
-                    break;
-                case Report::Column::SUBJECT:
-                    asSqlQuery->bindValue(":" + fld[Report::Column::SUBJECT], this->getSubject());
                     break;
                 case Report::Column::YEAR:
                     asSqlQuery->bindValue(":" + fld[Report::Column::YEAR], this->getYear());
@@ -170,8 +143,6 @@ const QString& Report::call() {
     return query_.call()->
             field(Report::Column::MRO)->bind(Report::Column::MRO)->
             field(Report::Column::MON)->bind(Report::Column::MON)->
-            field(Report::Column::ARTICLE)->bind(Report::Column::ARTICLE)->
-            field(Report::Column::SUBJECT)->bind(Report::Column::SUBJECT)->
             field(Report::Column::YEAR)->bind(Report::Column::YEAR)->
             field(Report::Column::NUMROW)->bind(Report::Column::NUMROW)->
             field(Report::Column::CUMMULATIVE)->bind(Report::Column::CUMMULATIVE)->

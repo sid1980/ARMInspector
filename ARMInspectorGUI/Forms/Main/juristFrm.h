@@ -73,6 +73,8 @@ public:
     void setlistRow(const QList<RptRow>&);
     //инициализировать список колонок отчёта;
     void setlistCol(const QList<RptColumn>&);
+    //инициализировать список результата полученного от сервера;
+    void setlistResult(const QList<ReportOut>&);
 
 signals:
     ///сигнал готовности
@@ -107,7 +109,7 @@ private:
     ///указатель контроллера клиента.
     ClientController *m_pClientController{nullptr};
     //nsiFrm* frm; 
-    qint64 result_;
+    QList<ReportOut> result_;
 
 };
 
