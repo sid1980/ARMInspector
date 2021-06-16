@@ -75,9 +75,11 @@ template<typename T> void DBManager::getModel() {
 template<typename T, typename TOUT> void DBManager::callProcedure() {
     //Задать  функцию для установки результата выполнения команды сервера
     //и собщения о результате выполнения команды.
-    auto setResult = [this](TOUT model, Message msg, QString attach) {
+    //Контейнер, в который записываются  объекты сериализаци-модели.
+    ItemContainer<TOUT> container;
+    auto setResult = [this](ItemContainer<TOUT> container, Message msg, QString attach) {
         //Подготовить данные.
-        QString json = JsonSerializer::serialize(model);
+        QString json = JsonSerializer::serialize(container);
         m_pModelWrapper->setData(json);
         //Установить сообщение и результат выполнения команды.
         ServerMessage::Result result = ServerMessage::outPut(msg);
@@ -101,7 +103,8 @@ template<typename T, typename TOUT> void DBManager::callProcedure() {
     model.bindData(&query);
     //Проверить  и выполнить  SQL запрос.
     if (!query.exec()) {
-        setResult(outmodel, Message::SQL_ERROR, attach);
+        attach += query.lastError().text();
+        setResult(container, Message::SQL_ERROR, attach);
         return;
     }
     QJsonObject recordObject;
@@ -111,16 +114,15 @@ template<typename T, typename TOUT> void DBManager::callProcedure() {
         for (int x = 0; x < query.record().count(); x++) {
             recordObject.insert(query.record().fieldName(x), QJsonValue::fromVariant(query.value(x)));
         }
+        ///Считать запись базы данных  в объект класса T.
+        outmodel.read(recordObject);
+        container.add(outmodel);
+        qDebug() << "TOUT" << QString::number(outmodel.getArticle())
+                + " " + QString::number(outmodel.getMysubject())
+                + " " + QString::number(outmodel.getCount());
     }
-    ///Считать запись базы данных  в объект класса T.
-    outmodel.read(recordObject);
-    qDebug() << "TOUT" << QString::number(outmodel.getCount());
-    setResult(outmodel, Message::CALL_PROCEDURE_SUCCESS, attach);
-
+    setResult(container, Message::CALL_PROCEDURE_SUCCESS, attach);
     return;
-
-
-
 }
 ///-----------------------------------------------------------------------------
 ///
@@ -149,8 +151,6 @@ template<typename T> void DBManager::addModel() {
     if (!connectDB<T>()) {
         return;
     }
-
-
     QSqlQuery query(m_Db);
     attach += model.insert() + "</a>";
     qInfo() << model.insert();
