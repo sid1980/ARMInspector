@@ -62,7 +62,8 @@ bool DBManager::addDataBase() {
     //Добавить  подключение клиента в список подключений к базе данных 
     QSqlDatabase database = QSqlDatabase::addDatabase(DRIVER, QString().setNum(m_pModelWrapper->getSessionID()));
     if (database.isValid()) {
-        database.setDatabaseName("DRIVER={MySQL ODBC 8.0 Unicode Driver};SERVER=localhost;DATABASE=gu_delinq;Uid=test;Pwd=tst;");
+        database.setDatabaseName("DRIVER={MySQL ODBC 5.1 Driver};SERVER=localhost;DATABASE=gu_delinq;Uid=test;Pwd=tst;");
+//        database.setDatabaseName("DRIVER={MySQL ODBC 8.0 Unicode Driver};SERVER=localhost;DATABASE=gu_delinq;Uid=test;Pwd=tst;");
         //database.setConnectOptions("SQL_ATTR_ODBC_VERSION=SQL_OV_ODBC3");
         //database.setDatabaseName("arm");
         //database.setUserName("");
