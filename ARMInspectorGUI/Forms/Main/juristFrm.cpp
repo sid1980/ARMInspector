@@ -183,8 +183,6 @@ void juristFrm::OnInspection() {
     frm->setWindowTitle("Список инспекций");
     frm->setSizeTbl(853, 550);
     frm->exec();
-
-
 }
 ///-----------------------------------------------------------------------------
 ///
@@ -645,7 +643,6 @@ void juristFrm::on_pushButton_Report_clicked() {
     model.setMon(this->widget.dateEdit->date().month());
     model.setYear(this->widget.dateEdit->date().year());
     //QMessageBox::information(this, "АРМ Юриста", "МРО:" + QString::number(model.getMro()) + "месяц:  " + QString::number(model.getMon()) + "год:" + QString::number(model.getYear()));
-
     ///Получить значение RadioBox
     QList<QRadioButton *> buttons;
     buttons = this->widget.groupBox->findChildren<QRadioButton *>();
@@ -664,9 +661,9 @@ void juristFrm::on_pushButton_Report_clicked() {
         case 1:
         {
             QString prd = "";
-            prd += this->widget.dateEdit->date().longMonthName(model.getMon());
+            prd += this->widget.dateEdit->date().longMonthName(model.getMon()); //название месяца
             prd += " ";
-            prd += QString::number(model.getYear());
+            prd += QString::number(model.getYear()); //год
             prd += " года";
             model_->setData(model_->index(1, 8), prd, Qt::EditRole);
             model.setCummulative(0);
@@ -680,7 +677,7 @@ void juristFrm::on_pushButton_Report_clicked() {
                 kv++;
             }
             QString prd = "";
-            prd += QString::number(kv);
+            prd += QString::number(kv); //квартал
             prd += " квартал ";
             prd += QString::number(model.getYear());
             prd += " года";
@@ -710,8 +707,12 @@ void juristFrm::on_pushButton_Report_clicked() {
     //progressBar->setMaximum(listrow_.size() * listcol_.size());
     //layout->addWidget(progressBar);
     //setLayout(layout);
-
     // QTimer::singleShot(9000, msgBox, SLOT(close()));
+    //QMessageBox::information(this, "АРМ Юриста",
+    //        "<br> МРО" + QString::number(model.getMro()) +
+    //        "<br> отчётный месяц" + QString::number(model.getMon()) +
+    //        "<br>год - " + QString::number(model.getYear())
+    //       );
 
     myProgressBar* frmProgress = new myProgressBar(this);
     frmProgress->getUI()->progressBar->setMinimum(0);
@@ -725,7 +726,20 @@ void juristFrm::on_pushButton_Report_clicked() {
         int col = 0;
         emit runServerCmd(Functor<Report>::produce(ModelWrapper::Command::CALL_PROCEDURE, model));
         emit waitReady();
-        //QMessageBox::information(this, "АРМ Юриста", QString::number(result_.size()));
+        //QString msg = "";
+        //bool box = false;
+        //for (int i = 0; i < result_.size(); i++) {
+        //    ReportOut rout = result_.at(i);
+        //    msg += "<br>статья " + QString::number(rout.getArticle()) +
+        //            " субъект АП " + QString::number(rout.getMysubject()) +
+        //            " кол-во " + QString::number(rout.getCount());
+        //    if (rout.getCount() > 0) {
+        //        box = true;
+        //   }
+        // }
+        //if (box) {
+        //    QMessageBox::information(this, "АРМ Юриста", msg);
+        //}
         for (int j = 0; j < listcol_.size(); j++) {
             //RptColumn rptcol = listcol_.at(j);
             //model.setArticle(rptcol.getArticle());
@@ -736,7 +750,7 @@ void juristFrm::on_pushButton_Report_clicked() {
             col = j + 2;
             ReportOut rptout = result_.at(j);
             if (rptout.getCount() > 0) {
-            //    //QMessageBox::information(this, "АРМ Юриста", "HELP");
+                //QMessageBox::information(this, "АРМ Юриста", "HELP");
                 mon_total += rptout.getCount();
                 model_->setData(model_->index(rptrow.getRow() - 1, col), rptout.getCount(), Qt::EditRole);
             }
