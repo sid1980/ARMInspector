@@ -22,7 +22,7 @@
 #include <QSqlQuery>
 #include <MQuery.h>
 #include "ModelWrapper.h"
-#define OUT_COLUMN 3
+#define OUT_COLUMN 4
 using namespace std;
 
 class ReportOut : public JsonSerializable {
@@ -30,16 +30,19 @@ public:
     static ModelWrapper::Model model_;
 
     enum Column {
-        ARTICLE = 0,
+        COL = 0,
+        ARTICLE,
         MYSUBJECT,
         COUNT
     };
     ReportOut();
     virtual ~ReportOut();
     ///Функции чтения - записи полей класса
+    void setCol(const qint64&);
     void setArticle(const qint64&);
     void setMysubject(const qint64&);
     void setCount(const qint64&);
+    const qint64& getCol()const;
     const qint64& getArticle()const;
     const qint64& getMysubject()const;
     const qint64& getCount()const;
@@ -53,11 +56,13 @@ public:
 
     static array<QString, OUT_COLUMN> getFields() {
         return array<QString, OUT_COLUMN>{
+            "mycol",
             "myarticle",
             "mysubject",        
             "count"};
     }
 private:
+    qint64 mycol_;
     qint64 article_;
     qint64 mysubject_;
     qint64 count_;

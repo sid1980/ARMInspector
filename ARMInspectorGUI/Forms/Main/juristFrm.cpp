@@ -658,7 +658,8 @@ void juristFrm::on_pushButton_Report_clicked() {
     //QMessageBox::information(this, "АРМ Юриста", this->widget.dateEdit->date().longMonthName(model.getMon()));
     //Определение периода отчёта.
     switch (period) {
-        case 1:
+
+        case 1://Данные за месяц
         {
             QString prd = "";
             prd += this->widget.dateEdit->date().longMonthName(model.getMon()); //название месяца
@@ -669,7 +670,7 @@ void juristFrm::on_pushButton_Report_clicked() {
             model.setCummulative(0);
         }
             break;
-        case 2:
+        case 2://Данные за квартал
         {
             int kv;
             kv = model.getMon() / 3;
@@ -685,7 +686,7 @@ void juristFrm::on_pushButton_Report_clicked() {
             model.setCummulative(kv);
         }
             break;
-        case 3:
+        case 3://Данные с начала года
         {
             QString prd = "";
             prd += QString::number(model.getYear());
@@ -722,8 +723,6 @@ void juristFrm::on_pushButton_Report_clicked() {
     for (int i = 0; i < listrow_.size(); i++) {
         RptRow rptrow = listrow_.at(i);
         model.setNumrow(rptrow.getRow());
-        int mon_total = 0;
-        int col = 0;
         emit runServerCmd(Functor<Report>::produce(ModelWrapper::Command::CALL_PROCEDURE, model));
         emit waitReady();
         //QString msg = "";
@@ -740,7 +739,9 @@ void juristFrm::on_pushButton_Report_clicked() {
         //if (box) {
         //    QMessageBox::information(this, "АРМ Юриста", msg);
         //}
-        for (int j = 0; j < listcol_.size(); j++) {
+        int col = 0;
+        int mon_total = 0;
+        for (int j = 0; j < result_.size(); j++) {
             //RptColumn rptcol = listcol_.at(j);
             //model.setArticle(rptcol.getArticle());
             //model.setSubject(rptcol.getSubject());
@@ -750,9 +751,8 @@ void juristFrm::on_pushButton_Report_clicked() {
             col = j + 2;
             ReportOut rptout = result_.at(j);
             if (rptout.getCount() > 0) {
-                //QMessageBox::information(this, "АРМ Юриста", "HELP");
                 mon_total += rptout.getCount();
-                model_->setData(model_->index(rptrow.getRow() - 1, col), rptout.getCount(), Qt::EditRole);
+                model_->setData(model_->index(rptrow.getRow() - 1, rptout.getCol()), rptout.getCount(), Qt::EditRole);
             }
         }
         //if (mon_total > 0) {

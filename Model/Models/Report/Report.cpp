@@ -89,7 +89,7 @@ void Report::write(QJsonObject &jsonObj) const {
 
     array<QString, REPORT_COLUMN> fld = Report::getFields();
     jsonObj[fld[Report::Column::MRO]] = this->getMro();
-    jsonObj[fld[Report::Column::MON]] = this->getMro();
+    jsonObj[fld[Report::Column::MON]] = this->getMon();
     jsonObj[fld[Report::Column::YEAR]] = this->getYear();
     jsonObj[fld[Report::Column::NUMROW]] = this->getNumrow();
     jsonObj[fld[Report::Column::CUMMULATIVE]] = this->getCummulative();
