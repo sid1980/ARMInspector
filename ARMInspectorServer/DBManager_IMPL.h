@@ -87,8 +87,8 @@ template<typename T, typename TOUT> void DBManager::callProcedure() {
         m_pModelWrapper->setSuccess(result.success);
     };
     //Создать модель данных 
-    T model;
-    TOUT outmodel;
+    T model;//Входные данные 
+    TOUT outmodel;//Выходные данные
     //дополнение к сообщению
     QString attach = "<br><a style='color:red'>";
     attach += model.call() + "</a>";
