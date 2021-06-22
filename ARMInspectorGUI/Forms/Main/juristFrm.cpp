@@ -506,7 +506,7 @@ void juristFrm::report() {
                 this->widget.tableView->setRowHeight(i, 35);
         }
     }
-    //connect(this->widget.tableView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
+    connect(this->widget.tableView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
     //this->widget.tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     //this->widget.tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     //QString style = R"(
@@ -522,8 +522,9 @@ void juristFrm::report() {
 void juristFrm::onTableClicked(const QModelIndex &index) {
     if (index.isValid()) {
         QString cellText = index.data().toString();
-        QMessageBox::information(this, "АРМ Юриста", cellText);
-
+        if (!cellText.isEmpty()) {
+            QMessageBox::information(this, "АРМ Юриста", cellText);
+        }
     }
 }
 ///-----------------------------------------------------------------------------
@@ -725,42 +726,26 @@ void juristFrm::on_pushButton_Report_clicked() {
         model.setNumrow(rptrow.getRow());
         emit runServerCmd(Functor<Report>::produce(ModelWrapper::Command::CALL_PROCEDURE, model));
         emit waitReady();
-        //QString msg = "";
-        //bool box = false;
-        //for (int i = 0; i < result_.size(); i++) {
-        //    ReportOut rout = result_.at(i);
-        //    msg += "<br>статья " + QString::number(rout.getArticle()) +
-        //            " субъект АП " + QString::number(rout.getMysubject()) +
-        //            " кол-во " + QString::number(rout.getCount());
-        //    if (rout.getCount() > 0) {
-        //        box = true;
-        //   }
-        // }
-        //if (box) {
-        //    QMessageBox::information(this, "АРМ Юриста", msg);
-        //}
         int col = 0;
         int mon_total = 0;
         for (int j = 0; j < result_.size(); j++) {
-            //RptColumn rptcol = listcol_.at(j);
-            //model.setArticle(rptcol.getArticle());
-            //model.setSubject(rptcol.getSubject());
-            //QJsonObject param;
-            //param.iinsert();
             frmProgress->getUI()->progressBar->setValue(frmProgress->getUI()->progressBar->value() + 1);
             col = j + 2;
             ReportOut rptout = result_.at(j);
             if (rptout.getCount() > 0) {
-                mon_total += rptout.getCount();
-                model_->setData(model_->index(rptrow.getRow() - 1, rptout.getCol()), rptout.getCount(), Qt::EditRole);
+                if (rptout.getCol() < 29) {
+                    if (rptout.getArticle() != 6) {
+                        mon_total += rptout.getCount();
+                    }
+                    model_->setData(model_->index(rptrow.getRow() - 1, rptout.getCol() - 1), rptout.getCount(), Qt::EditRole);
+                } else if (rptout.getCol() == 30) {
+                    model_->setData(model_->index(rptrow.getRow() - 1, rptout.getCol()), rptout.getCount(), Qt::EditRole);
+                }
             }
         }
-        //if (mon_total > 0) {
-        //    col++;
-        //    model_->setData(model_->index(rptrow.getRow() - 1, col), QString::number(mon_total), Qt::EditRole);
-        //}
-        //        emit runServerCmd(Functor<Report>::produce(ModelWrapper::Command::CALL_PROCEDURE, model));
-        //        emit waitReady();
+        if (mon_total > 0) {
+            model_->setData(model_->index(rptrow.getRow() - 1, col), QString::number(mon_total), Qt::EditRole);
+        }
     }
     frmProgress->close();
     //msgBox->close();
