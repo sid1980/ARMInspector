@@ -523,7 +523,7 @@ void juristFrm::onTableClicked(const QModelIndex &index) {
     if (index.isValid()) {
         QString cellText = index.data().toString();
         if (!cellText.isEmpty()) {
-            QMessageBox::information(this, "АРМ Юриста", cellText);
+            //QMessageBox::information(this, "АРМ Юриста", cellText);
         }
     }
 }
@@ -728,13 +728,22 @@ void juristFrm::on_pushButton_Report_clicked() {
         emit waitReady();
         int col = 0;
         int mon_total = 0;
+        double sum_total = 0;
+        bool sum = false;
+        if (rptrow.getRow() == 25 || rptrow.getRow() == 26) {//строки сумм штрафов
+            sum = true;
+        } else {
+            sum = false;
+        }
         for (int j = 0; j < result_.size(); j++) {
             frmProgress->getUI()->progressBar->setValue(frmProgress->getUI()->progressBar->value() + 1);
             col = j + 2;
             ReportOut rptout = result_.at(j);
             if (rptout.getCount() > 0) {
                 if (rptout.getCol() < 29) {
-                    if (rptout.getArticle() != 6) {
+                    if (sum) {
+                        sum_total += rptout.getCount();
+                    } else {
                         mon_total += rptout.getCount();
                     }
                     model_->setData(model_->index(rptrow.getRow() - 1, rptout.getCol() - 1), rptout.getCount(), Qt::EditRole);
@@ -743,8 +752,14 @@ void juristFrm::on_pushButton_Report_clicked() {
                 }
             }
         }
-        if (mon_total > 0) {
-            model_->setData(model_->index(rptrow.getRow() - 1, col), QString::number(mon_total), Qt::EditRole);
+        if (mon_total > 0 || sum_total > 0) {
+            if (sum) {
+                model_->setData(model_->index(rptrow.getRow() - 1, col), QString::number(sum_total, 'f', 2), Qt::EditRole);
+
+            } else {
+                model_->setData(model_->index(rptrow.getRow() - 1, col), QString::number(mon_total), Qt::EditRole);
+
+            }
         }
     }
     frmProgress->close();

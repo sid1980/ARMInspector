@@ -41,11 +41,11 @@ public:
     void setCol(const qint64&);
     void setArticle(const qint64&);
     void setMysubject(const qint64&);
-    void setCount(const qint64&);
+    void setCount(const double&);
     const qint64& getCol()const;
     const qint64& getArticle()const;
     const qint64& getMysubject()const;
-    const qint64& getCount()const;
+    const double& getCount()const;
     ///Функции сериализации объекта класса
     ///Считывание JSON объкта в поля класса
     void read(const QJsonObject &jsonObj);
@@ -65,7 +65,7 @@ private:
     qint64 mycol_;
     qint64 article_;
     qint64 mysubject_;
-    qint64 count_;
+    double  count_;
 };
 
 #endif /* REPORTOUT_H */
