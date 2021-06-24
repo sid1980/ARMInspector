@@ -25,7 +25,7 @@ public:
     {
         if (myProgressBar->objectName().isEmpty())
             myProgressBar->setObjectName(QString::fromUtf8("myProgressBar"));
-        myProgressBar->resize(400, 94);
+        myProgressBar->resize(400, 90);
         progressBar = new QProgressBar(myProgressBar);
         progressBar->setObjectName(QString::fromUtf8("progressBar"));
         progressBar->setGeometry(QRect(40, 30, 311, 23));
@@ -38,7 +38,7 @@ public:
 
     void retranslateUi(QDialog *myProgressBar)
     {
-        myProgressBar->setWindowTitle(QCoreApplication::translate("myProgressBar", "myProgressBar", nullptr));
+        myProgressBar->setWindowTitle(QCoreApplication::translate("myProgressBar", "\320\244\320\276\321\200\320\274\320\270\321\200\320\276\320\262\320\260\320\275\320\270\320\265 \320\276\321\202\321\207\321\221\321\202\320\260", nullptr));
     } // retranslateUi
 
 };

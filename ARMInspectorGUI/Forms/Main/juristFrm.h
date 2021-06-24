@@ -93,6 +93,7 @@ signals:
 private slots:
     void onTableClicked(const QModelIndex &);
     void on_pushButton_Report_clicked();
+    void on_pushButton_Excel_clicked();
     ///Обработчик команд (ответов) сервера
     void worker(const QString& asWrapper);
 private:

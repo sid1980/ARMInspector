@@ -18,6 +18,9 @@
 #include <QTextStream>
 #include <QLayout>
 #include <QProgressBar>
+#include <QtCore/QCoreApplication>
+#include <ActiveQt/QAxWidget>
+#include <ActiveQt/QAxObject>
 #include <array>
 
 
@@ -459,16 +462,39 @@ void juristFrm::report() {
                 }
                 if (lineindex == 1) {
                     if (j == 0) {
-                        item->setForeground(QColor("blue"));
+                        //                        item->setForeground(QColor("blue"));
+                        item->setBackground(QColor("LightSkyBlue"));
                         item->setFont(QFont("Times", 8, QFont::Bold, false));
                     }
                     if (j == 8) {
-                        item->setForeground(QColor("red"));
+                        item->setBackground(QColor("LightSkyBlue"));
+                        //                        item->setForeground(QColor("red"));
                         item->setFont(QFont("Times", 8, QFont::Bold, false));
                     }
                 }
+                if (j == 0) {
+                    if (lineindex > 1 && lineindex < 33) {
+                        item->setBackground(QColor("LightGreen"));
+
+                    }
+                }
+                if (j == 29) {
+                    item->setBackground(QColor("LightGreen"));
+                }
+                if (j == 30) {
+                    item->setBackground(QColor("LightPink"));
+                }
                 item->setToolTip("<a style='color:royalblue'> " + value + "</a>");
                 item->setEditable(false);
+                if (lineindex == 7 || lineindex == 23 || lineindex == 26) {
+                    if (j == 0 || j == 1) {
+                        item->setBackground(QColor("LightSkyBlue"));
+                    }
+                }
+                if (lineindex == 33) {
+                    item->setBackground(QColor("LightSkyBlue"));
+                }
+
             }
             lineindex++;
         }
@@ -621,6 +647,42 @@ void juristFrm::setlistResult(const QList<ReportOut>& result) {
 void juristFrm::setlistCol(const QList<RptColumn>& listcol) {
     listcol_ = listcol;
 }
+///-----------------------------------------------------------------------------
+///
+///         Нажата кнопка формирования отчёта.
+///          
+///-----------------------------------------------------------------------------
+
+void juristFrm::on_pushButton_Excel_clicked() {
+    //QMessageBox::information(this, "АРМ Юриста", "Выгрузка в Excel");
+    // получаем указатель на Excel
+    QAxObject *mExcel = new QAxObject("Excel.Application", this);
+    // на книги
+    QAxObject *workbooks = mExcel->querySubObject("Workbooks");
+    // на директорию, откуда грузить книг
+    QAxObject *workbook = workbooks->querySubObject("Open(const QString&)", "c:/ais/resources/reference.xlsx");
+    // на листы
+    QAxObject *mSheets = workbook->querySubObject("Sheets");
+    // указываем, какой лист выбрать
+    QAxObject *StatSheet = mSheets->querySubObject("Item(const QVariant&)", QVariant("mainSheet"));
+    // получение указателя на ячейку [row][col] ((!)нумерация с единицы)
+    QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", 1, 1);
+    // вставка значения переменной data (любой тип, приводимый к QVariant) в полученную ячейку
+    cell->setProperty("Value", QVariant("Some value"));
+    // освобождение памяти
+    delete cell;
+    delete StatSheet;
+    delete mSheets;
+    workbook->dynamicCall("Save()");
+    delete workbook;
+    //закрываем книги
+    delete workbooks;
+    //закрываем Excel
+    mExcel->dynamicCall("Quit()");
+    delete mExcel;
+}
+
+
 
 ///-----------------------------------------------------------------------------
 ///
