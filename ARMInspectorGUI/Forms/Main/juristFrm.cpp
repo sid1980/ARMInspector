@@ -662,6 +662,12 @@ void juristFrm::setlistCol(const QList<RptColumn>& listcol) {
 ///-----------------------------------------------------------------------------
 
 void juristFrm::on_pushButton_Excel_clicked() {
+    if (!pressed_) {
+        pressed_ = true;
+    } else {
+        QMessageBox::information(this, "АРМ Юриста", "Идёт процесс формирования отчёта. Подождите, пожалуйста...");
+        return;
+    }
     //QMessageBox::information(this, "АРМ Юриста", "Выгрузка в Excel");
     // получаем указатель на Excel
     // [1]  Writing excel file(*.xlsx)
@@ -784,13 +790,19 @@ void Window::importExcelToDatabase()
 ///-----------------------------------------------------------------------------
 
 void juristFrm::on_pushButton_Report_clicked() {
+    if (!pressed_) {
+        pressed_ = true;
+    } else {
+        QMessageBox::information(this, "АРМ Юриста", "Идёт процесс формирования отчёта. Подождите, пожалуйста...");
+        return;
+    }
     //QMessageBox::information(this, "АРМ Юриста", "Отчет об АП");
     QAxObject *mExcel = new QAxObject("Excel.Application", this);
     //mExcel-> setProperty("Visible", true);
     // на книги
     QAxObject *workbooks = mExcel->querySubObject("Workbooks");
     // на директорию, откуда грузить книг
-    QAxObject *workbook = workbooks->querySubObject("Open(const QString&)", QString("d:/MyProjects_2021/ARMInspector/ARMInspectorGUI/ExcelDocs/frm1.xlsx"));
+    QAxObject *workbook = workbooks->querySubObject("Open(const QString&)", QString("d:/MyProjects_2021/ARMInspector/ARMInspectorGUI/Tmp/frm1.xlsx"));
     if (workbook == NULL) {
         QMessageBox::information(this, "АРМ Юриста", "Open Excel error");
         return;
@@ -985,6 +997,7 @@ void juristFrm::on_pushButton_Report_clicked() {
     //закрываем Excel
     mExcel->dynamicCall("Quit()");
     delete mExcel;
+    pressed_ = false;
 
 }
 

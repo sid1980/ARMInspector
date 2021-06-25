@@ -389,6 +389,9 @@ public:
 "min-height: 30px;\n"
 "max-height: 30px;\n"
 "}\n"
+"QPushButton:pressed {\n"
+"    background-color: #4169E1;     \n"
+"}\n"
 ""));
         pushButton_Report->setFlat(true);
 
@@ -412,6 +415,10 @@ public:
 "min-height: 30px;\n"
 "max-height: 30px;\n"
 "}\n"
+"QPushButton:pressed {\n"
+"    background-color: #4169E1;     \n"
+"}\n"
+"\n"
 ""));
 
         gridLayout_5->addWidget(pushButton_Excel, 0, 4, 1, 1);

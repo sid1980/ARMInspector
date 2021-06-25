@@ -30,6 +30,9 @@ max-width: 150px;
 min-height: 13px;
 max-height: 13px;
 }
+QPushButton:pressed {
+    background-color: #4169E1;     
+}
 QHeaderView {
     background-color: #fff;
     font-size:11px;

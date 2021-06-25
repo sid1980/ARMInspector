@@ -39,7 +39,9 @@ max-width: 100px;
 min-height: 23px;
 max-height: 23px;
 }
-
+QPushButton:pressed {
+    background-color: #4169E1;     
+}
 QLabel  {
 font-size: 15px;
 color: white;

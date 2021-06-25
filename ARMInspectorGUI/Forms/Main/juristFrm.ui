@@ -486,6 +486,9 @@ max-width: 150px;
 min-height: 30px;
 max-height: 30px;
 }
+QPushButton:pressed {
+    background-color: #4169E1;     
+}
 </string>
       </property>
       <property name="text">
@@ -515,6 +518,10 @@ max-width: 150px;
 min-height: 30px;
 max-height: 30px;
 }
+QPushButton:pressed {
+    background-color: #4169E1;     
+}
+
 </string>
       </property>
       <property name="text">

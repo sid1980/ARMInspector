@@ -111,7 +111,7 @@ private:
     ClientController *m_pClientController{nullptr};
     //nsiFrm* frm; 
     QList<ReportOut> result_;
-
+    bool pressed_{false};
 };
 
 #endif /* _JURISTFRM_H */

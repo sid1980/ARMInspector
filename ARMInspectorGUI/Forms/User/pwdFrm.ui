@@ -33,6 +33,10 @@ max-width: 50px;
 min-height: 15px;
 max-height: 15px;
 }
+QPushButton:pressed {
+    background-color: #4169E1;     
+}
+
 QLineEdit {
 padding: 1px;
 border-style: solid;
