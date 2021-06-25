@@ -20,9 +20,17 @@
 #include <QProgressBar>
 #include <QtCore/QCoreApplication>
 #include <ActiveQt/QAxWidget>
+#include <ActiveQt/QAxBase>
 #include <ActiveQt/QAxObject>
 #include <array>
-
+// [0] include QXlsx headers 
+#include "xlsxdocument.h"
+#include "xlsxchartsheet.h"
+#include "xlsxcellrange.h"
+#include "xlsxchart.h"
+#include "xlsxrichstring.h"
+#include "xlsxworkbook.h"
+using namespace QXlsx;
 
 ///-----------------------------------------------------------------------------
 ///
@@ -656,32 +664,45 @@ void juristFrm::setlistCol(const QList<RptColumn>& listcol) {
 void juristFrm::on_pushButton_Excel_clicked() {
     //QMessageBox::information(this, "АРМ Юриста", "Выгрузка в Excel");
     // получаем указатель на Excel
+    // [1]  Writing excel file(*.xlsx)
     QAxObject *mExcel = new QAxObject("Excel.Application", this);
+    mExcel-> setProperty("Visible", true);
     // на книги
     QAxObject *workbooks = mExcel->querySubObject("Workbooks");
     // на директорию, откуда грузить книг
-    QAxObject *workbook = workbooks->querySubObject("Open(const QString&)", "c:/ais/resources/reference.xlsx");
+    QAxObject *workbook = workbooks->querySubObject("Open(const QString&)", QString("d:/MyProjects_2021/ARMInspector/ARMInspectorGUI/Tmp/frm1.xlsx"));
+    if (workbook == NULL) {
+        QMessageBox::information(this, "АРМ Юриста", "Open Excel error");
+        return;
+    }
     // на листы
     QAxObject *mSheets = workbook->querySubObject("Sheets");
+    if (mSheets == NULL) {
+        QMessageBox::information(this, "АРМ Юриста", "Sheets Excel error");
+        return;
+    }
     // указываем, какой лист выбрать
-    QAxObject *StatSheet = mSheets->querySubObject("Item(const QVariant&)", QVariant("mainSheet"));
+    QAxObject *StatSheet = mSheets->querySubObject("Item(const QVariant&)", QVariant("Пинск"));
+    if (StatSheet == NULL) {
+        QMessageBox::information(this, "АРМ Юриста", "StatSheet Excel error");
+        return;
+    }
     // получение указателя на ячейку [row][col] ((!)нумерация с единицы)
-    QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", 1, 1);
+    //QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", 1, 1);
     // вставка значения переменной data (любой тип, приводимый к QVariant) в полученную ячейку
-    cell->setProperty("Value", QVariant("Some value"));
+    //cell->setProperty("Value", QVariant("Some value"));
     // освобождение памяти
-    delete cell;
-    delete StatSheet;
-    delete mSheets;
-    workbook->dynamicCall("Save()");
-    delete workbook;
+    //delete cell;
+    //delete StatSheet;
+    //delete mSheets;
+    //workbook->dynamicCall("Save()");
+    //delete workbook;
     //закрываем книги
-    delete workbooks;
+    //delete workbooks;
     //закрываем Excel
-    mExcel->dynamicCall("Quit()");
-    delete mExcel;
+    //mExcel->dynamicCall("Quit()");
+    //delete mExcel;
 }
-
 
 
 ///-----------------------------------------------------------------------------
@@ -690,13 +711,105 @@ void juristFrm::on_pushButton_Excel_clicked() {
 ///          
 ///-----------------------------------------------------------------------------
 
+/*void juristFrm::on_pushButton_Excel_clicked() {
+
+    QXlsx::Document xlsx;
+    xlsx.write("A1", "Hello Qt!"); // write "Hello Qt!" to cell(A,1). it's shared string.
+    xlsx.saveAs("TestExcel.xlsx"); // save the document as 'Test.xlsx'
+    // [2] Reading excel file(*.xlsx)
+    Document xlsxR("TestExcel.xlsx");
+    if (xlsxR.load()) // load excel file
+    {
+        int row = 1;
+        int col = 1;
+        Cell* cell = xlsxR.cellAt(row, col); // get cell pointer.
+        if (cell != NULL) {
+            QVariant var = cell->readValue(); // read cell value (number(double), QDateTime, QString ...)
+            qDebug() << var; // display value. it is 'Hello Qt!'.
+        }
+    }
+    this->widget.tableView->clearFocus();
+    QAxWidget* ExcelDocument = new QAxWidget("Excel.Application", this->widget.tableView);
+    ExcelDocument-> setGeometry(QRect(1, 1, 1900, 1200));
+    ExcelDocument->setControl("d:/MyProjects_2021/ARMInspector/ARMInspectorGUI/ExcelDocs/3.xlsx");
+    ExcelDocument-> show();
+
+}
+
+void Window::importExcelToDatabase()
+{
+         QString strFilePathName = QFileDialog :: getOpenFileName (this, QStringLiteral ( "Select the Excel file"), "", tr ( "Exel file (* xls * .xlsx)").);
+        if(strFilePathName.isNull())
+        {
+                return ;
+        }
+         QAxObject * excel = new QAxObject (this); // connect Excel Controls
+        if(excel->setControl("Excel.Application"))
+        {
+        excel->setControl("Excel.Application")
+        }
+        else
+        {
+                 excel-> setControl ( "ket.Application"); // connect Excel Controls
+        }
+         excel-> setProperty ( "Visible", false); // do not display the form
+         QAxObject * workbooks = excel-> querySubObject ( "WorkBooks"); // get a set of workbooks
+         workbooks-> dynamicCall ( "Open (const QString &)", strFilePathName); // Open to open an existing workbook
+         QAxObject * workbook = excel-> querySubObject ( "ActiveWorkBook"); // Get the current workbook 
+         QAxObject * sheets = workbook-> querySubObject ( "Sheets"); // Get the sheet set, Sheets may be substituted therefore WorkSheets
+         QAxObject * sheet = workbook-> querySubObject ( "WorkSheets (int)", 1); // Get worksheets collection sheet 1, i.e. sheet1
+         QAxObject * range = sheet-> querySubObject ( "UsedRange"); // Get the scope of use of the sheet objects
+        QVariant var = range->dynamicCall("Value");
+        delete range;
+         QVariantList varRows = var.toList (); // get all the data in the table
+        if(varRows.isEmpty())
+        {
+                return;
+        }
+        const int rowCount = varRows.size();
+        QStringList m_userid,m_card_id,m_action;
+        for(int i = 1; i < rowCount; ++i)   //
+        {
+                QVariantList rowData = varRows[i].toList();
+                m_userid<<rowData[0].toString();
+                m_card_id<<rowData[1].toString();
+                m_action<<rowData[2].toString();
+        }
+}
+ */
+///-----------------------------------------------------------------------------
+///
+///         Нажата кнопка формирования отчёта.
+///          
+///-----------------------------------------------------------------------------
+
 void juristFrm::on_pushButton_Report_clicked() {
     //QMessageBox::information(this, "АРМ Юриста", "Отчет об АП");
+    QAxObject *mExcel = new QAxObject("Excel.Application", this);
+    //mExcel-> setProperty("Visible", true);
+    // на книги
+    QAxObject *workbooks = mExcel->querySubObject("Workbooks");
+    // на директорию, откуда грузить книг
+    QAxObject *workbook = workbooks->querySubObject("Open(const QString&)", QString("d:/MyProjects_2021/ARMInspector/ARMInspectorGUI/ExcelDocs/frm1.xlsx"));
+    if (workbook == NULL) {
+        QMessageBox::information(this, "АРМ Юриста", "Open Excel error");
+        return;
+    }
+    // на листы
+    QAxObject *mSheets = workbook->querySubObject("Sheets");
+    if (mSheets == NULL) {
+        QMessageBox::information(this, "АРМ Юриста", "Sheets Excel error");
+        return;
+    }
+
+
     QJsonObject param;
     emit runServerCmd(Functor<RptRow>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
     emit waitReady();
     emit runServerCmd(Functor<RptColumn>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
     emit waitReady();
+
+
     model_->clear();
     this->showControlsFrm();
     this->report();
@@ -705,6 +818,18 @@ void juristFrm::on_pushButton_Report_clicked() {
     model.setMro(mro_.at(this->widget.comboBox->currentIndex()).getId());
     model.setMon(this->widget.dateEdit->date().month());
     model.setYear(this->widget.dateEdit->date().year());
+    // указываем, какой лист выбрать
+    QString mro;
+    if (model.getMro() == 1) mro = "Брест";
+    if (model.getMro() == 2) mro = "Барановичи";
+    if (model.getMro() == 3) mro = "Пинск";
+    if (model.getMro() == 4) mro = "";
+    QAxObject *StatSheet = mSheets->querySubObject("Item(const QVariant&)", QVariant(mro));
+    if (StatSheet == NULL) {
+        QMessageBox::information(this, "АРМ Юриста", "StatSheet Excel error");
+        return;
+    }
+
     //QMessageBox::information(this, "АРМ Юриста", "МРО:" + QString::number(model.getMro()) + "месяц:  " + QString::number(model.getMon()) + "год:" + QString::number(model.getYear()));
     ///Получить значение RadioBox
     QList<QRadioButton *> buttons;
@@ -812,20 +937,55 @@ void juristFrm::on_pushButton_Report_clicked() {
                 } else if (rptout.getCol() == 30) {
                     model_->setData(model_->index(rptrow.getRow() - 1, rptout.getCol()), rptout.getCount(), Qt::EditRole);
                 }
+                if (!mro.isEmpty()) {
+                    // получение указателя на ячейку [row][col] ((!)нумерация с единицы)
+                    QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", rptrow.getRow(), rptout.getCol());
+                    // вставка значения переменной data (любой тип, приводимый к QVariant) в полученную ячейку
+                    cell->setProperty("Value", QVariant(rptout.getCount()));
+                    delete cell;
+                }
+
             }
         }
         if (mon_total > 0 || sum_total > 0) {
             if (sum) {
                 model_->setData(model_->index(rptrow.getRow() - 1, col), QString::number(sum_total, 'f', 2), Qt::EditRole);
+                if (!mro.isEmpty()) {
+                    // получение указателя на ячейку [row][col] ((!)нумерация с единицы)
+                    QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", rptrow.getRow(), col + 1);
+                    // вставка значения переменной data (любой тип, приводимый к QVariant) в полученную ячейку
+                    cell->setProperty("Value", QVariant(sum_total));
+                    delete cell;
+
+                }
 
             } else {
                 model_->setData(model_->index(rptrow.getRow() - 1, col), QString::number(mon_total), Qt::EditRole);
+                if (!mro.isEmpty()) {
+                    // получение указателя на ячейку [row][col] ((!)нумерация с единицы)
+                    QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", rptrow.getRow(), col + 1);
+                    // вставка значения переменной data (любой тип, приводимый к QVariant) в полученную ячейку
+                    cell->setProperty("Value", QVariant(mon_total));
+                    delete cell;
+
+                }
 
             }
         }
     }
     frmProgress->close();
     //msgBox->close();
+    delete StatSheet;
+    delete mSheets;
+    //workbook->dynamicCall("Save()");
+    workbook->dynamicCall("SaveAS(const QString&)", QDir::toNativeSeparators("d:/MyProjects_2021/ARMInspector/ARMInspectorGUI/Tmp/frm1.xlsx"));
+    delete workbook;
+    //закрываем книги
+    delete workbooks;
+    //закрываем Excel
+    mExcel->dynamicCall("Quit()");
+    delete mExcel;
+
 }
 
 
