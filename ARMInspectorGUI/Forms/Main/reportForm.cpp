@@ -5,13 +5,13 @@
  */
 
 /*
- * File:   juristFrm.cpp
+ * File:   reportForm.cpp
  * Author: kazun_as
  *
  * Created on 16 апреля 2021 г., 13:09
  */
 
-#include "juristFrm.h"
+#include "reportForm.h"
 #include "myProgressBar.h"
 #include "QMessageBoxEx.h"
 #include <QFile>
@@ -38,7 +38,12 @@ using namespace QXlsx;
 ///          
 ///-----------------------------------------------------------------------------
 
-juristFrm::juristFrm() {
+reportForm::reportForm() {
+    genMroRep_[0] = false;
+    genMroRep_[1] = false;
+    genMroRep_[2] = false;
+    genMroRep_[3] = false;
+
     widget.setupUi(this);
     model_ = new QStandardItemModel;
     m_pMenuBar = new QMenuBar(this);
@@ -47,38 +52,38 @@ juristFrm::juristFrm() {
     QMenu * menu1 = m_pMenuBar->addMenu("&Журнал");
     // Выход
     QAction * action = new QAction("&Выход", this);
-    connect(action, &QAction::triggered, this, &juristFrm::OnExit);
+    connect(action, &QAction::triggered, this, &reportForm::OnExit);
     menu1->addAction(action);
     QMenu * menu = m_pMenuBar->addMenu("&Отчеты по АП");
     //menu->setLayoutDirection(Qt::RightToLeft); // Display menu bar to the right
     // New
     action = new QAction("&Отчёт Приложение 1", this);
     action->setIcon(QPixmap("Icons/icons8-file-48.png"));
-    connect(action, &QAction::triggered, this, &juristFrm::OnGenerateReport);
+    connect(action, &QAction::triggered, this, &reportForm::OnGenerateReport);
     menu->addAction(action);
     // Open
     action = new QAction("&Отчёт Приложение 2", this);
-    connect(action, &QAction::triggered, this, &juristFrm::OnGenerateReprt2);
+    connect(action, &QAction::triggered, this, &reportForm::OnGenerateReprt2);
     menu->addAction(action);
     QMenu * menu2 = m_pMenuBar->addMenu("&Справочники");
     // Справочники
     action = new QAction("&Список инспекций", this);
-    connect(action, &QAction::triggered, this, &juristFrm::OnInspection);
+    connect(action, &QAction::triggered, this, &reportForm::OnInspection);
     menu2->addAction(action);
     action = new QAction("&Список МРО", this);
-    connect(action, &QAction::triggered, this, &juristFrm::OnMro);
+    connect(action, &QAction::triggered, this, &reportForm::OnMro);
     menu2->addAction(action);
     action = new QAction("&Статьи КоАП", this);
-    connect(action, &QAction::triggered, this, &juristFrm::OnArticle);
+    connect(action, &QAction::triggered, this, &reportForm::OnArticle);
     menu2->addAction(action);
     action = new QAction("&Субъекты АП", this);
-    connect(action, &QAction::triggered, this, &juristFrm::OnSubject);
+    connect(action, &QAction::triggered, this, &reportForm::OnSubject);
     menu2->addAction(action);
     action = new QAction("&Справочник колонок отчёта", this);
-    connect(action, &QAction::triggered, this, &juristFrm::OnRptColumn);
+    connect(action, &QAction::triggered, this, &reportForm::OnRptColumn);
     menu2->addAction(action);
     action = new QAction("&Справочник строк отчёта", this);
-    connect(action, &QAction::triggered, this, &juristFrm::OnRptRow);
+    connect(action, &QAction::triggered, this, &reportForm::OnRptRow);
     menu2->addAction(action);
 
     //qApp->setStyleSheet("QMainWindow { background-color: yellow; border: 1px solid #424242 }"
@@ -108,7 +113,7 @@ juristFrm::juristFrm() {
 ///          
 ///-----------------------------------------------------------------------------
 
-juristFrm::~juristFrm() {
+reportForm::~reportForm() {
     delete model_;
     delete m_pMenuBar;
 }
@@ -119,7 +124,7 @@ juristFrm::~juristFrm() {
 ///          
 ///-----------------------------------------------------------------------------
 
-QMenuBar * juristFrm::getMenuBar() {
+QMenuBar * reportForm::getMenuBar() {
     return m_pMenuBar;
 }
 
@@ -129,7 +134,7 @@ QMenuBar * juristFrm::getMenuBar() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::OnGenerateReport() {
+void reportForm::OnGenerateReport() {
     //QVBoxLayout *layout = new QVBoxLayout;
     //ayout->addWidget(widget->tableView);
     ///получен ответ от сервера в виде строки
@@ -138,16 +143,66 @@ void juristFrm::OnGenerateReport() {
     emit runServerCmd(Functor<Mro>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
     emit waitReady();
     this->showControlsFrm();
-    report();
+    int mro = this->widget.tabWidget->currentIndex();
+    if (mro == 0) {
+        mro = 4;
+    }
+
+    report(mro);
+
+    connect(this->widget.tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabSelected()));
     //QMessageBox::information(0, "Menu", "Отчёт Приложение 1");
 }
+///-----------------------------------------------------------------------------
+///
+///         Меню.Формирование отчёта.Приложение 1.
+///          
+///-----------------------------------------------------------------------------
+
+void reportForm::tabSelected() {
+
+
+    if (this->widget.tabWidget->currentIndex() == 0) {
+
+        // Do something here when user clicked at tab1
+        if (!genMroRep_[this->widget.tabWidget->currentIndex()]) {
+            report(4);
+            model_->setData(model_->index(1, 0), "по филиалу Госэнергогазнадзора по Брестской области ", Qt::EditRole);
+        }
+    }
+    if (this->widget.tabWidget->currentIndex() == 1) {
+        if (!genMroRep_[this->widget.tabWidget->currentIndex()]) {
+            report(1);
+            model_->setData(model_->index(1, 0), "по Брестскому межрайонному отделению ", Qt::EditRole);
+        }
+        // Do something here when user clicked at tab1
+
+    }
+    if (this->widget.tabWidget->currentIndex() == 2) {
+        if (!genMroRep_[this->widget.tabWidget->currentIndex()]) {
+            report(2);
+            model_->setData(model_->index(1, 0), "по Барановичскому межрайонному отделению ", Qt::EditRole);
+        }
+        // Do something here when user clicked at tab1
+
+    }
+    if (this->widget.tabWidget->currentIndex() == 3) {
+        if (!genMroRep_[this->widget.tabWidget->currentIndex()]) {
+            report(3);
+            model_->setData(model_->index(1, 0), "по Пинскому межрайонному отделению ", Qt::EditRole);
+        }
+        // Do something here when user clicked at tab4
+
+    }
+}
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Меню.Формирование отчёта.Приложение 2.
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::OnGenerateReprt2() {
+void reportForm::OnGenerateReprt2() {
     model_->clear();
     this->hideControlsFrm();
 }
@@ -158,7 +213,7 @@ void juristFrm::OnGenerateReprt2() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::OnExit() {
+void reportForm::OnExit() {
 
     QMessageBoxEx::StandardButton reply;
     reply = QMessageBoxEx::question(this, "Завершение работы АРМ Инспектор",
@@ -181,7 +236,7 @@ void juristFrm::OnExit() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::OnInspection() {
+void reportForm::OnInspection() {
     QMessageBox::information(this, "АРМ Юриста", "OnInspection()");
     inspectionFrm* frm = new inspectionFrm();
     createFrmConnector(*frm);
@@ -201,7 +256,7 @@ void juristFrm::OnInspection() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::OnRptColumn() {
+void reportForm::OnRptColumn() {
     //QMessageBox::information(this, "АРМ Юриста", "OnRptColumn()");
     RptColumnFrm* frm = new RptColumnFrm();
     createFrmConnector(*frm);
@@ -230,7 +285,7 @@ void juristFrm::OnRptColumn() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::OnRptRow() {
+void reportForm::OnRptRow() {
     //QMessageBox::information(this, "АРМ Юриста", "OnRptColumn()");
     RptRowFrm* frm = new RptRowFrm();
     createFrmConnector(*frm);
@@ -251,7 +306,7 @@ void juristFrm::OnRptRow() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::OnMro() {
+void reportForm::OnMro() {
     //QMessageBox::information(this, "АРМ Юриста", "OnMro()");
     mroFrm* frm = new mroFrm();
     createFrmConnector(*frm);
@@ -272,7 +327,7 @@ void juristFrm::OnMro() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::OnArticle() {
+void reportForm::OnArticle() {
     //QMessageBox::information(this, "АРМ Юриста", "Статьи КоАП");
     nsiFrm* frm = new nsiFrm();
     createFrmConnector(*frm);
@@ -290,11 +345,11 @@ void juristFrm::OnArticle() {
 
 ///-----------------------------------------------------------------------------
 ///
-///         сигнально-слотовое соединение juristFrm<---->nsiFrm
+///         сигнально-слотовое соединение reportForm<---->nsiFrm
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::createFrmConnector(const QDialog& frm) {
+void reportForm::createFrmConnector(const QDialog& frm) {
     ///выполнить команду на сервере
     connect(&frm, SIGNAL(runServerCmd(const QString&)), this, SIGNAL(runServerCmd(const QString&)));
     ///получен ответ от сервера в виде строки
@@ -309,11 +364,11 @@ void juristFrm::createFrmConnector(const QDialog& frm) {
 ///-----------------------------------------------------------------------------
 ///
 ///         Инициализация ссылки на контроллер клиента.
-///         сигнально-слотовое соединение juristFrm<---->m_pClientController
+///         сигнально-слотовое соединение reportForm<---->m_pClientController
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::initClient(ClientController *clientController) {
+void reportForm::initClient(ClientController *clientController) {
     m_pClientController = clientController;
     ///сигнал завершения процесса обработки
     connect(this, SIGNAL(ready()), m_pClientController, SLOT(formReady()));
@@ -335,7 +390,7 @@ void juristFrm::initClient(ClientController *clientController) {
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::worker(const QString& asWrapper) {
+void reportForm::worker(const QString& asWrapper) {
     ModelWrapper wrapper;
     //Разворачиваем командную обёртку.
     JsonSerializer::parse(asWrapper, wrapper);
@@ -412,7 +467,7 @@ void juristFrm::worker(const QString& asWrapper) {
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::OnSubject() {
+void reportForm::OnSubject() {
     nsiFrm* frm = new nsiFrm();
     createFrmConnector(*frm);
     //frm->initClient(this->m_pClientController);
@@ -434,15 +489,33 @@ void juristFrm::OnSubject() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::report() {
+void reportForm::report(int mro) {
     //QMessageBox::critical(0, qApp->tr("Cannot open database"),
     //        qApp->tr("Unable to establish a database connection.\n"
     //        "This example needs SQLite support. Please read "
     //        "the Qt SQL driver documentation for information how "
     //        "to build it.\n\n"
     //        "Click Cancel to exit."), QMessageBox::Ok);
+    QString filename;
+    QTableView *tview;
+    if (mro == 1) {
+        filename = "test1.csv";
+        tview = this->widget.tableView_2;
+    }
+    if (mro == 2) {
+        filename = "test2.csv";
+        tview = this->widget.tableView_3;
+    }
+    if (mro == 3) {
+        filename = "test3.csv";
+        tview = this->widget.tableView_4;
+    }
+    if (mro == 4) {
+        filename = "test4.csv";
+        tview = this->widget.tableView;
+    }
 
-    QFile file("test2.csv");
+    QFile file(filename.toStdString().c_str());
     if (file.open(QIODevice::ReadOnly)) {
         //QMessageBox::information(this, "АРМ Юриста", "Отчет об АП");
         int lineindex = 0; // file line counter
@@ -508,8 +581,8 @@ void juristFrm::report() {
         }
         file.close();
     }
-    this->widget.tableView->setModel(model_);
-    spanTbl();
+    tview->setModel(model_);
+    spanTbl(mro);
     //this->widget.tableView->resizeColumnsToContents();
     //this->widget.tableView->resizeRowsToContents();
     //this->widget.tableView->setContentsMargins(10,10,10,10);
@@ -517,32 +590,35 @@ void juristFrm::report() {
     //verticalResizeTableViewToContents();
     //this->widget.tableView->verticalHeader()->setsetRsetResizeMode( QHeaderView::Stretch);
     //  this->widget.tableView->horizontalHeader()->setResizeMode( QHeaderView::Stretch);
-    this->widget.tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    this->widget.tableView->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-    this->widget.tableView->rowHeight(7);
-    this->widget.tableView->columnWidth(7);
-    this->widget.tableView->horizontalHeader()->setDefaultSectionSize(3);
-    this->widget.tableView->verticalHeader()->setDefaultSectionSize(3);
-    //this->widget.tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    this->widget.tableView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    this->widget.tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    this->widget.tableView->setColumnWidth(1, 290);
+    tview->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    tview->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+    tview->rowHeight(7);
+    tview->columnWidth(7);
+    tview->horizontalHeader()->setDefaultSectionSize(3);
+    tview->verticalHeader()->setDefaultSectionSize(3);
+    //tview->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    tview->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    tview->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    tview->setColumnWidth(1, 320);
 
     for (int i = 16; i < 29; i++) {
-        this->widget.tableView->setColumnWidth(i, 50);
+        tview->setColumnWidth(i, 50);
     }
     for (int i = 29; i < 31; i++) {
-        this->widget.tableView->setColumnWidth(i, 120);
+        tview->setColumnWidth(i, 120);
     }
     for (int i = 0; i < 35; i++) {
+        if (i == 0) {
+            tview->setColumnWidth(i, 70);
+        }
         if (i > 7) {
             if (i != 10 && i != 21 && i != 22 && i != 23 && i != 24 && i != 25 && i != 26 && i != 33 && i != 34)
-                this->widget.tableView->setRowHeight(i, 35);
+                tview->setRowHeight(i, 35);
         }
     }
-    connect(this->widget.tableView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
-    //this->widget.tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    //this->widget.tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    connect(tview, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
+    //tview->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    //tview->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     //QString style = R"(
     //                QScrollBar:vertical {
     //                 background: #32CC99;
@@ -553,7 +629,7 @@ void juristFrm::report() {
     //               )";
 }
 
-void juristFrm::onTableClicked(const QModelIndex &index) {
+void reportForm::onTableClicked(const QModelIndex &index) {
     if (index.isValid()) {
         QString cellText = index.data().toString();
         if (!cellText.isEmpty()) {
@@ -567,8 +643,26 @@ void juristFrm::onTableClicked(const QModelIndex &index) {
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::spanTbl() {
-    QFile file("test2.csv");
+void reportForm::spanTbl(int mro) {
+    QString filename;
+    QTableView *tview;
+    if (mro == 1) {
+        filename = "test1.csv";
+        tview = this->widget.tableView_2;
+    }
+    if (mro == 2) {
+        filename = "test2.csv";
+        tview = this->widget.tableView_3;
+    }
+    if (mro == 3) {
+        filename = "test3.csv";
+        tview = this->widget.tableView_4;
+    }
+    if (mro == 4) {
+        filename = "test4.csv";
+        tview = this->widget.tableView;
+    }
+    QFile file(filename.toStdString().c_str());
     if (file.open(QIODevice::ReadOnly)) {
         //QMessageBox::information(this, "АРМ Юриста", "Отчет об АП");
         int lineindex = 0; // file line counter
@@ -594,9 +688,9 @@ void juristFrm::spanTbl() {
                     } else {
                         //qInfo() << QString::fromLocal8Bit(value.toStdString().c_str());
                         if (spanCol > 1) {
-                            this->widget.tableView->setSpan(lineindex, j - spanCol, 1, spanCol);
+                            tview->setSpan(lineindex, j - spanCol, 1, spanCol);
                             //QString style = R"( )";
-                            //this->widget.tableView->currentIndex()->child(lineindex, j - spanCol)->setStyleSheet(style);
+                            //tview->currentIndex()->child(lineindex, j - spanCol)->setStyleSheet(style);
                             spanCol = 1;
                         }
                     }
@@ -604,7 +698,7 @@ void juristFrm::spanTbl() {
                 }
                 if (spanCol > 1) {
                     if (lineindex != 5) {
-                        this->widget.tableView->setSpan(lineindex, j - spanCol, 1, spanCol);
+                        tview->setSpan(lineindex, j - spanCol, 1, spanCol);
                     }
                 }
             }
@@ -621,11 +715,11 @@ void juristFrm::spanTbl() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::setlistMro(const QList<Mro>& mro) {
+void reportForm::setlistMro(const QList<Mro>& mro) {
     mro_ = mro;
-    this->widget.comboBox->clear();
+    //this->widget.comboBox->clear();
     for (auto& t : mro_) {
-        this->widget.comboBox->addItem(t.getName());
+        this->widget.tab->setWindowTitle(t.getName());
     }
 }
 ///-----------------------------------------------------------------------------
@@ -634,7 +728,7 @@ void juristFrm::setlistMro(const QList<Mro>& mro) {
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::setlistRow(const QList<RptRow>& listrow) {
+void reportForm::setlistRow(const QList<RptRow>& listrow) {
     listrow_ = listrow;
 }
 ///-----------------------------------------------------------------------------
@@ -643,7 +737,7 @@ void juristFrm::setlistRow(const QList<RptRow>& listrow) {
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::setlistResult(const QList<ReportOut>& result) {
+void reportForm::setlistResult(const QList<ReportOut>& result) {
     result_ = result;
 }
 ///-----------------------------------------------------------------------------
@@ -652,7 +746,7 @@ void juristFrm::setlistResult(const QList<ReportOut>& result) {
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::setlistCol(const QList<RptColumn>& listcol) {
+void reportForm::setlistCol(const QList<RptColumn>& listcol) {
     listcol_ = listcol;
 }
 ///-----------------------------------------------------------------------------
@@ -661,7 +755,7 @@ void juristFrm::setlistCol(const QList<RptColumn>& listcol) {
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::on_pushButton_Excel_clicked() {
+void reportForm::on_pushButton_Excel_clicked() {
     if (!pressed_) {
         pressed_ = true;
     } else {
@@ -688,11 +782,31 @@ void juristFrm::on_pushButton_Excel_clicked() {
         return;
     }
     // указываем, какой лист выбрать
-    QAxObject *StatSheet = mSheets->querySubObject("Item(const QVariant&)", QVariant("Пинск"));
+    QString mro;
+    if (this->widget.tab->isActiveWindow()) mro = "Филиал";
+    if (this->widget.tab_2->isActiveWindow()) mro = "Брест";
+    if (this->widget.tab_3->isActiveWindow()) mro = "Барановичи";
+    if (this->widget.tab_4->isActiveWindow()) mro = "Пинск";
+    QAxObject *StatSheet = mSheets->querySubObject("Item(const QVariant&)", QVariant(mro));
     if (StatSheet == NULL) {
         QMessageBox::information(this, "АРМ Юриста", "StatSheet Excel error");
         return;
     }
+    //QMessageBox::information(this, "АРМ Юриста", QString::number(this->model_->columnCount()));
+    for (int i = 0; i < this->model_->rowCount(); i++) {
+        if (i > 7 && i < 33) {
+            for (int j = 0; j < this->model_->columnCount(); j++) {
+                if (j > 3) {
+                    // получение указателя на ячейку [row][col] ((!)нумерация с единицы)
+                    QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", i + 1, j + 1);
+                    // вставка значения переменной data (любой тип, приводимый к QVariant) в полученную ячейку
+                    cell->setProperty("Value", QVariant(model_->data(model_->index(i, j))));
+                    delete cell;
+                }
+            }
+        }
+    }
+
     // получение указателя на ячейку [row][col] ((!)нумерация с единицы)
     //QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", 1, 1);
     // вставка значения переменной data (любой тип, приводимый к QVariant) в полученную ячейку
@@ -717,7 +831,7 @@ void juristFrm::on_pushButton_Excel_clicked() {
 ///          
 ///-----------------------------------------------------------------------------
 
-/*void juristFrm::on_pushButton_Excel_clicked() {
+/*void reportForm::on_pushButton_Excel_clicked() {
 
     QXlsx::Document xlsx;
     xlsx.write("A1", "Hello Qt!"); // write "Hello Qt!" to cell(A,1). it's shared string.
@@ -734,7 +848,7 @@ void juristFrm::on_pushButton_Excel_clicked() {
             qDebug() << var; // display value. it is 'Hello Qt!'.
         }
     }
-    this->widget.tableView->clearFocus();
+    tview->clearFocus();
     QAxWidget* ExcelDocument = new QAxWidget("Excel.Application", this->widget.tableView);
     ExcelDocument-> setGeometry(QRect(1, 1, 1900, 1200));
     ExcelDocument->setControl("d:/MyProjects_2021/ARMInspector/ARMInspectorGUI/ExcelDocs/3.xlsx");
@@ -789,7 +903,7 @@ void Window::importExcelToDatabase()
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::on_pushButton_Report_clicked() {
+void reportForm::on_pushButton_Report_clicked() {
     if (!pressed_) {
         pressed_ = true;
     } else {
@@ -797,22 +911,22 @@ void juristFrm::on_pushButton_Report_clicked() {
         return;
     }
     //QMessageBox::information(this, "АРМ Юриста", "Отчет об АП");
-    QAxObject *mExcel = new QAxObject("Excel.Application", this);
+    //QAxObject *mExcel = new QAxObject("Excel.Application", this);
     //mExcel-> setProperty("Visible", true);
     // на книги
-    QAxObject *workbooks = mExcel->querySubObject("Workbooks");
+    // QAxObject *workbooks = mExcel->querySubObject("Workbooks");
     // на директорию, откуда грузить книг
-    QAxObject *workbook = workbooks->querySubObject("Open(const QString&)", QString("d:/MyProjects_2021/ARMInspector/ARMInspectorGUI/Tmp/frm1.xlsx"));
-    if (workbook == NULL) {
-        QMessageBox::information(this, "АРМ Юриста", "Open Excel error");
-        return;
-    }
+    //QAxObject *workbook = workbooks->querySubObject("Open(const QString&)", QString("d:/MyProjects_2021/ARMInspector/ARMInspectorGUI/Tmp/frm1.xlsx"));
+    //if (workbook == NULL) {
+    //    QMessageBox::information(this, "АРМ Юриста", "Open Excel error");
+    //    return;
+    // }
     // на листы
-    QAxObject *mSheets = workbook->querySubObject("Sheets");
-    if (mSheets == NULL) {
-        QMessageBox::information(this, "АРМ Юриста", "Sheets Excel error");
-        return;
-    }
+    //QAxObject *mSheets = workbook->querySubObject("Sheets");
+    //if (mSheets == NULL) {
+    //    QMessageBox::information(this, "АРМ Юриста", "Sheets Excel error");
+    //    return;
+    //}
 
 
     QJsonObject param;
@@ -824,23 +938,23 @@ void juristFrm::on_pushButton_Report_clicked() {
 
     model_->clear();
     this->showControlsFrm();
-    this->report();
+    int num_mro = this->widget.tabWidget->currentIndex();
+    genMroRep_[num_mro] = true;
+
+    if (num_mro == 0) {
+        num_mro = 4;
+    }
+    this->report(num_mro);
     //    model_->setData(model_->index(1, 8), "май 2021 года", Qt::EditRole);
     Report model;
-    model.setMro(mro_.at(this->widget.comboBox->currentIndex()).getId());
+    model.setMro(num_mro);
     model.setMon(this->widget.dateEdit->date().month());
     model.setYear(this->widget.dateEdit->date().year());
-    // указываем, какой лист выбрать
-    QString mro;
-    if (model.getMro() == 1) mro = "Брест";
-    if (model.getMro() == 2) mro = "Барановичи";
-    if (model.getMro() == 3) mro = "Пинск";
-    if (model.getMro() == 4) mro = "";
-    QAxObject *StatSheet = mSheets->querySubObject("Item(const QVariant&)", QVariant(mro));
-    if (StatSheet == NULL) {
-        QMessageBox::information(this, "АРМ Юриста", "StatSheet Excel error");
-        return;
-    }
+    //QAxObject *StatSheet = mSheets->querySubObject("Item(const QVariant&)", QVariant(mro));
+    //if (StatSheet == NULL) {
+    //    QMessageBox::information(this, "АРМ Юриста", "StatSheet Excel error");
+    //    return;
+    //}
 
     //QMessageBox::information(this, "АРМ Юриста", "МРО:" + QString::number(model.getMro()) + "месяц:  " + QString::number(model.getMon()) + "год:" + QString::number(model.getYear()));
     ///Получить значение RadioBox
@@ -949,54 +1063,30 @@ void juristFrm::on_pushButton_Report_clicked() {
                 } else if (rptout.getCol() == 30) {
                     model_->setData(model_->index(rptrow.getRow() - 1, rptout.getCol()), rptout.getCount(), Qt::EditRole);
                 }
-                if (!mro.isEmpty()) {
-                    // получение указателя на ячейку [row][col] ((!)нумерация с единицы)
-                    QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", rptrow.getRow(), rptout.getCol());
-                    // вставка значения переменной data (любой тип, приводимый к QVariant) в полученную ячейку
-                    cell->setProperty("Value", QVariant(rptout.getCount()));
-                    delete cell;
-                }
 
             }
         }
         if (mon_total > 0 || sum_total > 0) {
             if (sum) {
                 model_->setData(model_->index(rptrow.getRow() - 1, col), QString::number(sum_total, 'f', 2), Qt::EditRole);
-                if (!mro.isEmpty()) {
-                    // получение указателя на ячейку [row][col] ((!)нумерация с единицы)
-                    QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", rptrow.getRow(), col + 1);
-                    // вставка значения переменной data (любой тип, приводимый к QVariant) в полученную ячейку
-                    cell->setProperty("Value", QVariant(sum_total));
-                    delete cell;
-
-                }
 
             } else {
                 model_->setData(model_->index(rptrow.getRow() - 1, col), QString::number(mon_total), Qt::EditRole);
-                if (!mro.isEmpty()) {
-                    // получение указателя на ячейку [row][col] ((!)нумерация с единицы)
-                    QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", rptrow.getRow(), col + 1);
-                    // вставка значения переменной data (любой тип, приводимый к QVariant) в полученную ячейку
-                    cell->setProperty("Value", QVariant(mon_total));
-                    delete cell;
-
-                }
-
             }
         }
     }
     frmProgress->close();
     //msgBox->close();
-    delete StatSheet;
-    delete mSheets;
+    //delete StatSheet;
+    //delete mSheets;
     //workbook->dynamicCall("Save()");
-    workbook->dynamicCall("SaveAS(const QString&)", QDir::toNativeSeparators("d:/MyProjects_2021/ARMInspector/ARMInspectorGUI/Tmp/frm1.xlsx"));
-    delete workbook;
+    //workbook->dynamicCall("SaveAS(const QString&)", QDir::toNativeSeparators("d:/MyProjects_2021/ARMInspector/ARMInspectorGUI/Tmp/frm1.xlsx"));
+    //delete workbook;
     //закрываем книги
-    delete workbooks;
+    //delete workbooks;
     //закрываем Excel
-    mExcel->dynamicCall("Quit()");
-    delete mExcel;
+    //mExcel->dynamicCall("Quit()");
+    //delete mExcel;
     pressed_ = false;
 
 }
@@ -1008,9 +1098,10 @@ void juristFrm::on_pushButton_Report_clicked() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::hideControlsFrm() {
+void reportForm::hideControlsFrm() {
 
-    this->widget.comboBox->setHidden(true);
+    //his->widget.comboBox->setHidden(true);
+    this->widget.tabWidget->setHidden(true);
     this->widget.dateEdit->setHidden(true);
     this->widget.groupBox->setHidden(true);
     this->widget.tableView->setHidden(true);
@@ -1018,7 +1109,7 @@ void juristFrm::hideControlsFrm() {
     this->widget.pushButton_Report->setHidden(true);
     this->widget.pushButton_Report->setHidden(true);
     this->widget.label_Data->setHidden(true);
-    this->widget.label_Mro->setHidden(true);
+    //this->widget.label_Mro->setHidden(true);
     this->widget.label_Period->setHidden(true);
 }
 
@@ -1028,8 +1119,9 @@ void juristFrm::hideControlsFrm() {
 ///          
 ///-----------------------------------------------------------------------------
 
-void juristFrm::showControlsFrm() {
-    this->widget.comboBox->setVisible(true);
+void reportForm::showControlsFrm() {
+    //this->widget.comboBox->setVisible(true);
+    this->widget.tabWidget->setVisible(true);
     this->widget.dateEdit->setVisible(true);
     this->widget.groupBox->setVisible(true);
     this->widget.tableView->setVisible(true);
@@ -1037,7 +1129,7 @@ void juristFrm::showControlsFrm() {
     this->widget.pushButton_Report->setVisible(true);
     this->widget.pushButton_Report->setVisible(true);
     this->widget.label_Data->setVisible(true);
-    this->widget.label_Mro->setVisible(true);
+    //this->widget.label_Mro->setVisible(true);
     this->widget.label_Period->setVisible(true);
 
 }
@@ -1048,7 +1140,7 @@ void juristFrm::showControlsFrm() {
 //    qApp->setStyleSheet(qssStr);
 //https://www.programmersought.com/article/2906246923/
 
-//void juristFrm::closeEvent(QCloseEvent *event) {
+//void reportForm::closeEvent(QCloseEvent *event) {
 //    event->accept();
 //    QMainWindow::closeEvent(event);
 //(new DialogDestroyer())->DelayedDestruction(this);

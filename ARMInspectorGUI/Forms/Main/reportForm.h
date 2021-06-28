@@ -5,16 +5,16 @@
  */
 
 /* 
- * File:   juristFrm.h
+ * File:   reportForm.h
  * Author: kazun_as
  *
  * Created on 16 апреля 2021 г., 13:09
  */
 
-#ifndef _JURISTFRM_H
-#define _JURISTFRM_H
+#ifndef _reportForm_H
+#define _reportForm_H
 
-#include "ui_juristFrm.h"
+#include "ui_reportForm.h"
 #include <QMenuBar>
 #include <QMainWindow>
 #include <QTableView>
@@ -29,11 +29,11 @@
 #include "DialogDestroyer.h"
 #include "Inspection/inspectionFrm.h"
 
-class juristFrm : public QMainWindow {
+class reportForm : public QMainWindow {
     Q_OBJECT
 public:
-    juristFrm();
-    virtual ~juristFrm();
+    reportForm();
+    virtual ~reportForm();
     ///Инициализация ссылки на контроллер клинта
     void initClient(ClientController *clientController);
     ///Скрыть элементы управления 
@@ -41,9 +41,9 @@ public:
     ///Показать элементы управления 
     void showControlsFrm();
     ///Сформировать отчёт
-    void report();
+    void report(int);
     ///Объединить ячейки таблицы
-    void spanTbl();
+    void spanTbl(int);
     ///Получить указатель на меню
     QMenuBar * getMenuBar();
     ///Меню.Сформировать отчёт
@@ -94,10 +94,11 @@ private slots:
     void onTableClicked(const QModelIndex &);
     void on_pushButton_Report_clicked();
     void on_pushButton_Excel_clicked();
+    void tabSelected();
     ///Обработчик команд (ответов) сервера
     void worker(const QString& asWrapper);
 private:
-    Ui::juristFrm widget;
+    Ui::reportForm widget;
     QMenuBar * m_pMenuBar;
     QMenu * m_pMenu;
     QStandardItemModel *model_;
@@ -112,6 +113,7 @@ private:
     //nsiFrm* frm; 
     QList<ReportOut> result_;
     bool pressed_{false};
+    bool genMroRep_[4];
 };
 
-#endif /* _JURISTFRM_H */
+#endif /* _reportForm_H */

@@ -10,7 +10,7 @@
 #include "ModelWrapper.h"
 #include "Login/myForm.h"
 #include "MainWindow.h"
-#include "Main/juristFrm.h"
+#include "Main/reportForm.h"
 #include "QMessageBoxEx.cpp"
 
 int main(int argc, char *argv[]) {
@@ -106,7 +106,7 @@ max-height: 13px;
         w.show();
         return app.exec();
     } else {
-        juristFrm frm;
+        reportForm frm;
         frm.initClient(&clientController);
         //clientController.getListMRO();
         //QMenuBar * menuBar = frm.getMenuBar();
