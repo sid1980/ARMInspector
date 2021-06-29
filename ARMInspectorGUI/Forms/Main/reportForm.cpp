@@ -39,13 +39,9 @@ using namespace QXlsx;
 ///-----------------------------------------------------------------------------
 
 reportForm::reportForm() {
-    genMroRep_[0] = false;
-    genMroRep_[1] = false;
-    genMroRep_[2] = false;
-    genMroRep_[3] = false;
 
     widget.setupUi(this);
-    model_ = new QStandardItemModel;
+    //model_ = new QStandardItemModel;
     m_pMenuBar = new QMenuBar(this);
     //frm = new nsiFrm(this);
     this->setMenuBar(m_pMenuBar);
@@ -106,6 +102,8 @@ reportForm::reportForm() {
     //m_pMenuBar->adjustSize();
     QMessageBoxEx::setCustomTextForButton(QMessageBox::Yes, "Да");
     QMessageBoxEx::setCustomTextForButton(QMessageBox::No, "Нет");
+    this->resetTabs();
+    this->initTblView();
 }
 ///-----------------------------------------------------------------------------
 ///
@@ -114,7 +112,7 @@ reportForm::reportForm() {
 ///-----------------------------------------------------------------------------
 
 reportForm::~reportForm() {
-    delete model_;
+    //delete model_;
     delete m_pMenuBar;
 }
 
@@ -128,6 +126,20 @@ QMenuBar * reportForm::getMenuBar() {
     return m_pMenuBar;
 }
 
+///-----------------------------------------------------------------------------
+///
+///         Инициализировать указатели на QTableView
+///          
+///-----------------------------------------------------------------------------
+
+void reportForm::initTblView() {
+
+    tblview_[0] = this->widget.tableView;
+    tblview_[1] = this->widget.tableView_2;
+    tblview_[2] = this->widget.tableView_3;
+    tblview_[3] = this->widget.tableView_4;
+
+}
 ///-----------------------------------------------------------------------------
 ///
 ///         Меню.Формирование отчёта.Приложение 1.
@@ -161,38 +173,14 @@ void reportForm::OnGenerateReport() {
 
 void reportForm::tabSelected() {
 
-
-    if (this->widget.tabWidget->currentIndex() == 0) {
-
-        // Do something here when user clicked at tab1
-        if (!genMroRep_[this->widget.tabWidget->currentIndex()]) {
-            report(4);
-            model_->setData(model_->index(1, 0), "по филиалу Госэнергогазнадзора по Брестской области ", Qt::EditRole);
-        }
-    }
-    if (this->widget.tabWidget->currentIndex() == 1) {
-        if (!genMroRep_[this->widget.tabWidget->currentIndex()]) {
-            report(1);
-            model_->setData(model_->index(1, 0), "по Брестскому межрайонному отделению ", Qt::EditRole);
-        }
-        // Do something here when user clicked at tab1
-
-    }
-    if (this->widget.tabWidget->currentIndex() == 2) {
-        if (!genMroRep_[this->widget.tabWidget->currentIndex()]) {
-            report(2);
-            model_->setData(model_->index(1, 0), "по Барановичскому межрайонному отделению ", Qt::EditRole);
-        }
-        // Do something here when user clicked at tab1
-
-    }
-    if (this->widget.tabWidget->currentIndex() == 3) {
-        if (!genMroRep_[this->widget.tabWidget->currentIndex()]) {
-            report(3);
-            model_->setData(model_->index(1, 0), "по Пинскому межрайонному отделению ", Qt::EditRole);
-        }
-        // Do something here when user clicked at tab4
-
+    array<QString, TAB_VIEW> listMro = reportForm::getListMroNameInReport();
+    int selTabIndex = this->widget.tabWidget->currentIndex();
+    if (!this->getTab(selTabIndex)) {
+        selTabIndex == 0 ? report(4) : report(selTabIndex);
+        model_[selTabIndex].setData(model_[selTabIndex].index(1, 0), listMro[selTabIndex], Qt::EditRole);
+    } else {
+        tblview_[selTabIndex]->setModel(&model_[selTabIndex]);
+        setTableStyle(tblview_[selTabIndex]);
     }
 }
 
@@ -203,9 +191,59 @@ void reportForm::tabSelected() {
 ///-----------------------------------------------------------------------------
 
 void reportForm::OnGenerateReprt2() {
-    model_->clear();
+    for (int i = 0; i < 4; i++) {
+        model_[i].clear();
+    }
+    this->resetTabs();
     this->hideControlsFrm();
 }
+
+///-----------------------------------------------------------------------------
+///
+///         Сбросить флаги заполнености таблиц.
+///          
+///-----------------------------------------------------------------------------
+
+void reportForm::resetTabs() {
+
+    tab_[0] = false;
+    tab_[1] = false;
+    tab_[2] = false;
+    tab_[3] = false;
+}
+
+///-----------------------------------------------------------------------------
+///
+///         Получить  флаги заполнености таблиц.
+///          
+///-----------------------------------------------------------------------------
+
+const array<bool, TAB_VIEW>& reportForm::getTabs() {
+    return tab_;
+}
+
+///-----------------------------------------------------------------------------
+///
+///         Получить  флаг заполнености таблиц.
+///          
+///-----------------------------------------------------------------------------
+
+const bool& reportForm::getTab(const int& i) {
+    return tab_[i];
+}
+
+
+///-----------------------------------------------------------------------------
+///
+///         Установить фла для заполнености таблиц.
+///          
+///-----------------------------------------------------------------------------
+
+void reportForm::setTab(const int& i, const bool& fg) {
+    tab_[i] = fg;
+}
+
+
 
 ///-----------------------------------------------------------------------------
 ///
@@ -498,22 +536,9 @@ void reportForm::report(int mro) {
     //        "Click Cancel to exit."), QMessageBox::Ok);
     QString filename;
     QTableView *tview;
-    if (mro == 1) {
-        filename = "test1.csv";
-        tview = this->widget.tableView_2;
-    }
-    if (mro == 2) {
-        filename = "test2.csv";
-        tview = this->widget.tableView_3;
-    }
-    if (mro == 3) {
-        filename = "test3.csv";
-        tview = this->widget.tableView_4;
-    }
-    if (mro == 4) {
-        filename = "test4.csv";
-        tview = this->widget.tableView;
-    }
+    array<QString, TAB_VIEW> listExcel = reportForm::getListExcelFiles();
+    filename = (mro == 4) ? listExcel[0] : listExcel[mro];
+    tview = (mro == 4) ? tblview_[0] : tblview_[mro];
 
     QFile file(filename.toStdString().c_str());
     if (file.open(QIODevice::ReadOnly)) {
@@ -534,7 +559,8 @@ void reportForm::report(int mro) {
             for (int j = 0; j < lineToken.size(); j++) {
                 QString value = lineToken.at(j);
                 QStandardItem *item = new QStandardItem(value);
-                model_->setItem(lineindex, j, item);
+                mro == 4 ? model_[0].setItem(lineindex, j, item) : model_[mro].setItem(lineindex, j, item);
+
                 item->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
                 //item->setForeground();
                 if (lineindex == 0 || lineindex == 7 || lineindex == 23 || lineindex == 26) {
@@ -581,15 +607,33 @@ void reportForm::report(int mro) {
         }
         file.close();
     }
-    tview->setModel(model_);
+    mro == 4 ? tview->setModel(&model_[0]) : tview->setModel(&model_[mro]);
     spanTbl(mro);
-    //this->widget.tableView->resizeColumnsToContents();
-    //this->widget.tableView->resizeRowsToContents();
-    //this->widget.tableView->setContentsMargins(10,10,10,10);
-    //this->widget.tableView->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-    //verticalResizeTableViewToContents();
-    //this->widget.tableView->verticalHeader()->setsetRsetResizeMode( QHeaderView::Stretch);
-    //  this->widget.tableView->horizontalHeader()->setResizeMode( QHeaderView::Stretch);
+    setTableStyle(tview);
+    connect(tview, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
+
+}
+///-----------------------------------------------------------------------------
+///
+///         обработчик выбора Tab.
+///          
+///-----------------------------------------------------------------------------
+
+void reportForm::onTableClicked(const QModelIndex &index) {
+    if (index.isValid()) {
+        QString cellText = index.data().toString();
+        if (!cellText.isEmpty()) {
+            //QMessageBox::information(this, "АРМ Юриста", cellText);
+        }
+    }
+}
+///-----------------------------------------------------------------------------
+///
+///         Стиль таблицы.
+///          
+///-----------------------------------------------------------------------------
+
+void reportForm::setTableStyle(QTableView* tview) {
     tview->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     tview->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
     tview->rowHeight(7);
@@ -616,27 +660,9 @@ void reportForm::report(int mro) {
                 tview->setRowHeight(i, 35);
         }
     }
-    connect(tview, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
-    //tview->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    //tview->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    //QString style = R"(
-    //                QScrollBar:vertical {
-    //                 background: #32CC99;
-    //                }
-    //                QScrollBar:horizontal {
-    //                 background: #FF0000;
-    //                }
-    //               )";
 }
 
-void reportForm::onTableClicked(const QModelIndex &index) {
-    if (index.isValid()) {
-        QString cellText = index.data().toString();
-        if (!cellText.isEmpty()) {
-            //QMessageBox::information(this, "АРМ Юриста", cellText);
-        }
-    }
-}
+
 ///-----------------------------------------------------------------------------
 ///
 ///         Объединение ячеек таблицы.
@@ -646,22 +672,10 @@ void reportForm::onTableClicked(const QModelIndex &index) {
 void reportForm::spanTbl(int mro) {
     QString filename;
     QTableView *tview;
-    if (mro == 1) {
-        filename = "test1.csv";
-        tview = this->widget.tableView_2;
-    }
-    if (mro == 2) {
-        filename = "test2.csv";
-        tview = this->widget.tableView_3;
-    }
-    if (mro == 3) {
-        filename = "test3.csv";
-        tview = this->widget.tableView_4;
-    }
-    if (mro == 4) {
-        filename = "test4.csv";
-        tview = this->widget.tableView;
-    }
+    array<QString, TAB_VIEW> listExcel = reportForm::getListExcelFiles();
+    filename = (mro == 4) ? listExcel[0] : listExcel[mro];
+    tview = (mro == 4) ? tblview_[0] : tblview_[mro];
+
     QFile file(filename.toStdString().c_str());
     if (file.open(QIODevice::ReadOnly)) {
         //QMessageBox::information(this, "АРМ Юриста", "Отчет об АП");
@@ -762,67 +776,96 @@ void reportForm::on_pushButton_Excel_clicked() {
         QMessageBox::information(this, "АРМ Юриста", "Идёт процесс формирования отчёта. Подождите, пожалуйста...");
         return;
     }
+    int selTabIndex = this->widget.tabWidget->currentIndex();
+    array<QString, TAB_VIEW>listName = reportForm::getListMroName();
+
     //QMessageBox::information(this, "АРМ Юриста", "Выгрузка в Excel");
     // получаем указатель на Excel
-    // [1]  Writing excel file(*.xlsx)
     QAxObject *mExcel = new QAxObject("Excel.Application", this);
     mExcel-> setProperty("Visible", true);
     // на книги
     QAxObject *workbooks = mExcel->querySubObject("Workbooks");
-    // на директорию, откуда грузить книг
-    QAxObject *workbook = workbooks->querySubObject("Open(const QString&)", QString("d:/MyProjects_2021/ARMInspector/ARMInspectorGUI/Tmp/frm1.xlsx"));
+    QAxObject *workbook = workbooks->querySubObject("Open(const QString&)",
+            QString("d:/MyProjects_2021/ARMInspector/ARMInspectorGUI/Tmp/" + listName[selTabIndex] + ".xlsx"));
+
     if (workbook == NULL) {
         QMessageBox::information(this, "АРМ Юриста", "Open Excel error");
         return;
     }
-    // на листы
-    QAxObject *mSheets = workbook->querySubObject("Sheets");
-    if (mSheets == NULL) {
-        QMessageBox::information(this, "АРМ Юриста", "Sheets Excel error");
-        return;
-    }
-    // указываем, какой лист выбрать
-    QString mro;
-    if (this->widget.tab->isActiveWindow()) mro = "Филиал";
-    if (this->widget.tab_2->isActiveWindow()) mro = "Брест";
-    if (this->widget.tab_3->isActiveWindow()) mro = "Барановичи";
-    if (this->widget.tab_4->isActiveWindow()) mro = "Пинск";
-    QAxObject *StatSheet = mSheets->querySubObject("Item(const QVariant&)", QVariant(mro));
-    if (StatSheet == NULL) {
-        QMessageBox::information(this, "АРМ Юриста", "StatSheet Excel error");
-        return;
-    }
-    //QMessageBox::information(this, "АРМ Юриста", QString::number(this->model_->columnCount()));
-    for (int i = 0; i < this->model_->rowCount(); i++) {
-        if (i > 7 && i < 33) {
-            for (int j = 0; j < this->model_->columnCount(); j++) {
-                if (j > 3) {
-                    // получение указателя на ячейку [row][col] ((!)нумерация с единицы)
-                    QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", i + 1, j + 1);
-                    // вставка значения переменной data (любой тип, приводимый к QVariant) в полученную ячейку
-                    cell->setProperty("Value", QVariant(model_->data(model_->index(i, j))));
-                    delete cell;
+    if (selTabIndex > 0) {
+        // на листы
+        QAxObject *mSheets = workbook->querySubObject("Sheets");
+        if (mSheets == NULL) {
+            QMessageBox::information(this, "АРМ Юриста", "Sheets Excel error");
+            return;
+        }
+        // указываем, какой лист выбрать
+        QAxObject *StatSheet = mSheets->querySubObject("Item(const QVariant&)", QVariant(listName[selTabIndex]));
+        if (StatSheet == NULL) {
+            QMessageBox::information(this, "АРМ Юриста", "StatSheet Excel error");
+            return;
+        }
+        //QMessageBox::information(this, "АРМ Юриста", QString::number(this->model_->columnCount()));
+        for (int row = 0; row < this->model_[selTabIndex].rowCount(); row++) {
+            if (row > 7 && row < 33 && row != 23 && row != 26) {
+                for (int col = 0; col < this->model_[selTabIndex].columnCount(); col++) {
+                    if (col > 3) {
+                        // получение указателя на ячейку [row][col] ((!)нумерация с единицы)
+                        QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", row + 1, col + 1);
+                        // вставка значения переменной data (любой тип, приводимый к QVariant) в полученную ячейку
+                        if (QVariant(model_[selTabIndex].data(model_[selTabIndex].index(row, col))).toDouble() > 0) {
+                            if (row == 24 || row == 25) {
+                                cell->setProperty("Value", QVariant(model_[selTabIndex].data(model_[selTabIndex].index(row, col))).toDouble());
+                            } else {
+                                cell->setProperty("Value", QVariant(model_[selTabIndex].data(model_[selTabIndex].index(row, col))).toInt());
+                            }
+                        }
+                        delete cell;
+                    }
+                }
+            }
+        }
+    } else {
+        for (int mro = 1; mro < 4; mro++) {
+            // на листы
+            QAxObject *mSheets = workbook->querySubObject("Sheets");
+            if (mSheets == NULL) {
+                QMessageBox::information(this, "АРМ Юриста", "Sheets Excel error");
+                return;
+            }
+            // указываем, какой лист выбрать
+            QAxObject *StatSheet = mSheets->querySubObject("Item(const QVariant&)", QVariant(listName[mro]));
+            if (StatSheet == NULL) {
+                QMessageBox::information(this, "АРМ Юриста", "StatSheet Excel error");
+                return;
+            }
+            //QMessageBox::information(this, "АРМ Юриста", QString::number(this->model_->columnCount()));
+            for (int row = 0; row < this->model_[mro].rowCount(); row++) {
+                if (row > 7 && row < 33 && row != 23 && row != 26) {
+                    for (int col = 0; col < this->model_[mro].columnCount(); col++) {
+                        if (col > 3) {
+                            // получение указателя на ячейку [row][col] ((!)нумерация с единицы)
+                            QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", row + 1, col + 1);
+                            // вставка значения переменной data (любой тип, приводимый к QVariant) в полученную ячейку
+                            if (QVariant(model_[mro].data(model_[mro].index(row, col))).toDouble() > 0) {
+                                if (row == 24 || row == 25) {
+                                    cell->setProperty("Value", QVariant(model_[mro].data(model_[mro].index(row, col))).toDouble());
+                                } else {
+                                    cell->setProperty("Value", QVariant(model_[mro].data(model_[mro].index(row, col))).toInt());
+                                }
+                            }
+                            delete cell;
+                        }
+                    }
                 }
             }
         }
     }
-
-    // получение указателя на ячейку [row][col] ((!)нумерация с единицы)
-    //QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", 1, 1);
-    // вставка значения переменной data (любой тип, приводимый к QVariant) в полученную ячейку
-    //cell->setProperty("Value", QVariant("Some value"));
-    // освобождение памяти
-    //delete cell;
-    //delete StatSheet;
-    //delete mSheets;
-    //workbook->dynamicCall("Save()");
-    //delete workbook;
-    //закрываем книги
-    //delete workbooks;
-    //закрываем Excel
-    //mExcel->dynamicCall("Quit()");
-    //delete mExcel;
+    pressed_ = false;
 }
+
+
+
 
 
 ///-----------------------------------------------------------------------------
@@ -904,29 +947,15 @@ void Window::importExcelToDatabase()
 ///-----------------------------------------------------------------------------
 
 void reportForm::on_pushButton_Report_clicked() {
+    hideButtons();
     if (!pressed_) {
         pressed_ = true;
     } else {
         QMessageBox::information(this, "АРМ Юриста", "Идёт процесс формирования отчёта. Подождите, пожалуйста...");
         return;
     }
-    //QMessageBox::information(this, "АРМ Юриста", "Отчет об АП");
-    //QAxObject *mExcel = new QAxObject("Excel.Application", this);
-    //mExcel-> setProperty("Visible", true);
-    // на книги
-    // QAxObject *workbooks = mExcel->querySubObject("Workbooks");
-    // на директорию, откуда грузить книг
-    //QAxObject *workbook = workbooks->querySubObject("Open(const QString&)", QString("d:/MyProjects_2021/ARMInspector/ARMInspectorGUI/Tmp/frm1.xlsx"));
-    //if (workbook == NULL) {
-    //    QMessageBox::information(this, "АРМ Юриста", "Open Excel error");
-    //    return;
-    // }
-    // на листы
-    //QAxObject *mSheets = workbook->querySubObject("Sheets");
-    //if (mSheets == NULL) {
-    //    QMessageBox::information(this, "АРМ Юриста", "Sheets Excel error");
-    //    return;
-    //}
+
+
 
 
     QJsonObject param;
@@ -936,14 +965,11 @@ void reportForm::on_pushButton_Report_clicked() {
     emit waitReady();
 
 
-    model_->clear();
     this->showControlsFrm();
-    int num_mro = this->widget.tabWidget->currentIndex();
-    genMroRep_[num_mro] = true;
-
-    if (num_mro == 0) {
-        num_mro = 4;
-    }
+    int currentIndex = this->widget.tabWidget->currentIndex();
+    model_[currentIndex].clear();
+    this->setTab(currentIndex, true);
+    int num_mro = (currentIndex == 0) ? 4 : currentIndex;
     this->report(num_mro);
     //    model_->setData(model_->index(1, 8), "май 2021 года", Qt::EditRole);
     Report model;
@@ -971,16 +997,14 @@ void reportForm::on_pushButton_Report_clicked() {
 
     //QMessageBox::information(this, "АРМ Юриста", this->widget.dateEdit->date().longMonthName(model.getMon()));
     //Определение периода отчёта.
+    prd_ = "";
     switch (period) {
-
         case 1://Данные за месяц
         {
-            QString prd = "";
-            prd += this->widget.dateEdit->date().longMonthName(model.getMon()); //название месяца
-            prd += " ";
-            prd += QString::number(model.getYear()); //год
-            prd += " года";
-            model_->setData(model_->index(1, 8), prd, Qt::EditRole);
+            prd_ += this->widget.dateEdit->date().longMonthName(model.getMon()); //название месяца
+            prd_ += " ";
+            prd_ += QString::number(model.getYear()); //год
+            prd_ += " года";
             model.setCummulative(0);
         }
             break;
@@ -991,45 +1015,29 @@ void reportForm::on_pushButton_Report_clicked() {
             if (model.getMon() % 3 > 0) {
                 kv++;
             }
-            QString prd = "";
-            prd += QString::number(kv); //квартал
-            prd += " квартал ";
-            prd += QString::number(model.getYear());
-            prd += " года";
-            model_->setData(model_->index(1, 8), prd, Qt::EditRole);
+            prd_ += QString::number(kv); //квартал
+            prd_ += " квартал ";
+            prd_ += QString::number(model.getYear());
+            prd_ += " года";
             model.setCummulative(kv);
         }
             break;
         case 3://Данные с начала года
         {
-            QString prd = "";
-            prd += QString::number(model.getYear());
-            prd += " год(С начала года).";
-            model_->setData(model_->index(1, 8), prd, Qt::EditRole);
+            prd_ += QString::number(model.getYear());
+            prd_ += " год(С начала года).";
             model.setCummulative(11);
         }
             break;
     }
-    //model.setMro(this->widget->comboBox->ge)
-    //QMessageBox *msgBox = new QMessageBox();
-    //msgBox->setText("Загружаются данные, пожалуйста, подождите ...");
-    //msgBox->show();
-    //msgBox->setAttribute(Qt::WA_DeleteOnClose);
 
-    //QHBoxLayout *layout = new QHBoxLayout();
-    //QProgressBar *progressBar = new QProgressBar();
-    //progressBar->setMinimum(0);
-    //progressBar->setMaximum(listrow_.size() * listcol_.size());
-    //layout->addWidget(progressBar);
-    //setLayout(layout);
-    // QTimer::singleShot(9000, msgBox, SLOT(close()));
-    //QMessageBox::information(this, "АРМ Юриста",
-    //        "<br> МРО" + QString::number(model.getMro()) +
-    //        "<br> отчётный месяц" + QString::number(model.getMon()) +
-    //        "<br>год - " + QString::number(model.getYear())
-    //       );
+    QMessageBox::information(this, "АРМ Юриста", prd_);
+    array<QString, TAB_VIEW> listMro = reportForm::getListMroNameInReport();
+    model_[currentIndex].setData(model_[currentIndex].index(1, 0), listMro[currentIndex], Qt::EditRole);
+    model_[currentIndex].setData(model_[currentIndex].index(1, 8), prd_, Qt::EditRole);
 
     myProgressBar* frmProgress = new myProgressBar(this);
+    frmProgress->setWindowFlags(frmProgress->windowFlags() & ~Qt::WindowCloseButtonHint);
     frmProgress->getUI()->progressBar->setMinimum(0);
     frmProgress->getUI()->progressBar->setMaximum(listrow_.size() * listcol_.size());
     frmProgress->setAttribute(Qt::WA_DeleteOnClose);
@@ -1059,19 +1067,20 @@ void reportForm::on_pushButton_Report_clicked() {
                     } else {
                         mon_total += rptout.getCount();
                     }
-                    model_->setData(model_->index(rptrow.getRow() - 1, rptout.getCol() - 1), rptout.getCount(), Qt::EditRole);
+                    model_[currentIndex].setData(model_[currentIndex].index(rptrow.getRow() - 1, rptout.getCol() - 1), rptout.getCount(), Qt::EditRole);
                 } else if (rptout.getCol() == 30) {
-                    model_->setData(model_->index(rptrow.getRow() - 1, rptout.getCol()), rptout.getCount(), Qt::EditRole);
+                    model_[currentIndex].setData(model_[currentIndex].index(rptrow.getRow() - 1, rptout.getCol()), rptout.getCount(), Qt::EditRole);
                 }
 
             }
         }
         if (mon_total > 0 || sum_total > 0) {
             if (sum) {
-                model_->setData(model_->index(rptrow.getRow() - 1, col), QString::number(sum_total, 'f', 2), Qt::EditRole);
+                model_[currentIndex].setData(model_[currentIndex].index(rptrow.getRow() - 1, col), QString::number(sum_total, 'f', 2), Qt::EditRole);
 
             } else {
-                model_->setData(model_->index(rptrow.getRow() - 1, col), QString::number(mon_total), Qt::EditRole);
+
+                model_[currentIndex].setData(model_[currentIndex].index(rptrow.getRow() - 1, col), QString::number(mon_total), Qt::EditRole);
             }
         }
     }
@@ -1088,10 +1097,39 @@ void reportForm::on_pushButton_Report_clicked() {
     //mExcel->dynamicCall("Quit()");
     //delete mExcel;
     pressed_ = false;
+    connect(frmProgress->getUI()->progressBar, SIGNAL(destroyed()), this, SLOT(showButtons()));
 
 }
 
 
+
+///-----------------------------------------------------------------------------
+///
+///         Показать кнопки
+///          
+///-----------------------------------------------------------------------------
+
+void reportForm::showButtons() {
+    //QMessageBox::information(this, "АРМ Юриста", "showButton()");
+
+    this->widget.pushButton_Excel->show();
+    this->widget.pushButton_Report->show();
+
+}
+
+///-----------------------------------------------------------------------------
+///
+///         Скрыть  кнопки
+///          
+///-----------------------------------------------------------------------------
+
+void reportForm::hideButtons() {
+    //QMessageBox::information(this, "АРМ Юриста", "showButton()");
+
+    this->widget.pushButton_Excel->hide();
+    this->widget.pushButton_Report->hide();
+
+}
 ///-----------------------------------------------------------------------------
 ///
 ///         Спрятать элементы формы отчёта.
@@ -1101,12 +1139,12 @@ void reportForm::on_pushButton_Report_clicked() {
 void reportForm::hideControlsFrm() {
 
     //his->widget.comboBox->setHidden(true);
+
     this->widget.tabWidget->setHidden(true);
     this->widget.dateEdit->setHidden(true);
     this->widget.groupBox->setHidden(true);
     this->widget.tableView->setHidden(true);
     this->widget.pushButton_Excel->setHidden(true);
-    this->widget.pushButton_Report->setHidden(true);
     this->widget.pushButton_Report->setHidden(true);
     this->widget.label_Data->setHidden(true);
     //this->widget.label_Mro->setHidden(true);
@@ -1126,7 +1164,6 @@ void reportForm::showControlsFrm() {
     this->widget.groupBox->setVisible(true);
     this->widget.tableView->setVisible(true);
     this->widget.pushButton_Excel->setVisible(true);
-    this->widget.pushButton_Report->setVisible(true);
     this->widget.pushButton_Report->setVisible(true);
     this->widget.label_Data->setVisible(true);
     //this->widget.label_Mro->setVisible(true);

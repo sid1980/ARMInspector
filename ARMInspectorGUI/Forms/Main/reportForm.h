@@ -28,6 +28,9 @@
 #include "RptRow/RptRowFrm.h"
 #include "DialogDestroyer.h"
 #include "Inspection/inspectionFrm.h"
+#include <array>
+
+#define TAB_VIEW 4
 
 class reportForm : public QMainWindow {
     Q_OBJECT
@@ -75,6 +78,17 @@ public:
     void setlistCol(const QList<RptColumn>&);
     //инициализировать список результата полученного от сервера;
     void setlistResult(const QList<ReportOut>&);
+    //сбросить флаги заполнености талиц;
+    void resetTabs();
+    //Получить флаги заполнености талиц;
+    const array<bool, TAB_VIEW>& getTabs();
+    //Установить  флаг заполнености талиц;
+    void setTab(const int&, const bool&);
+    //Получить флаг заполнености талиц;
+    const bool& getTab(const int&);
+    //Установить стиль таблицы;
+    void setTableStyle(QTableView*);
+    void initTblView();
 
 signals:
     ///сигнал готовности
@@ -95,13 +109,41 @@ private slots:
     void on_pushButton_Report_clicked();
     void on_pushButton_Excel_clicked();
     void tabSelected();
+    void showButtons();
+    void hideButtons();
     ///Обработчик команд (ответов) сервера
     void worker(const QString& asWrapper);
+
+    static array<QString, TAB_VIEW> getListExcelFiles() {
+        return array<QString, TAB_VIEW>{
+            "test4.csv",
+            "test1.csv",
+            "test2.csv",
+            "test3.csv"};
+    }
+
+    static array<QString, TAB_VIEW> getListMroName() {
+        return array<QString, TAB_VIEW>{
+            "Филиал",
+            "Брест",
+            "Барановичи",
+            "Пинск"};
+    }
+
+    static array<QString, TAB_VIEW> getListMroNameInReport() {
+        return array<QString, TAB_VIEW>{
+            "по филиалу Госэнергогазнадзора по Брестской области ",
+            "по Брестскому межрайонному отделению ",
+            "по Барановичскому межрайонному отделению ",
+            "по Пинскому межрайонному отделению "};
+    }
+
+
 private:
     Ui::reportForm widget;
     QMenuBar * m_pMenuBar;
     QMenu * m_pMenu;
-    QStandardItemModel *model_;
+    array<QStandardItemModel, TAB_VIEW> model_;
     ///список МРО
     QList<Mro> mro_;
     ///список строк отчёта
@@ -113,7 +155,14 @@ private:
     //nsiFrm* frm; 
     QList<ReportOut> result_;
     bool pressed_{false};
-    bool genMroRep_[4];
+    array<QTableView*, TAB_VIEW> tblview_;
+    array<bool, TAB_VIEW> tab_{
+        false,
+        false,
+        false,
+        false};
+    //Период отчёта    
+    QString prd_;
 };
 
 #endif /* _reportForm_H */
