@@ -61,26 +61,6 @@ reportForm::reportForm() {
     action = new QAction("&Отчёт Приложение 2", this);
     connect(action, &QAction::triggered, this, &reportForm::OnGenerateReprt2);
     menu->addAction(action);
-    QMenu * menu2 = m_pMenuBar->addMenu("&Справочники");
-    // Справочники
-    action = new QAction("&Список инспекций", this);
-    connect(action, &QAction::triggered, this, &reportForm::OnInspection);
-    menu2->addAction(action);
-    action = new QAction("&Список МРО", this);
-    connect(action, &QAction::triggered, this, &reportForm::OnMro);
-    menu2->addAction(action);
-    action = new QAction("&Статьи КоАП", this);
-    connect(action, &QAction::triggered, this, &reportForm::OnArticle);
-    menu2->addAction(action);
-    action = new QAction("&Субъекты АП", this);
-    connect(action, &QAction::triggered, this, &reportForm::OnSubject);
-    menu2->addAction(action);
-    action = new QAction("&Справочник колонок отчёта", this);
-    connect(action, &QAction::triggered, this, &reportForm::OnRptColumn);
-    menu2->addAction(action);
-    action = new QAction("&Справочник строк отчёта", this);
-    connect(action, &QAction::triggered, this, &reportForm::OnRptRow);
-    menu2->addAction(action);
 
     //qApp->setStyleSheet("QMainWindow { background-color: yellow; border: 1px solid #424242 }"
     //        "QLCDNumber { background-color: red }"
@@ -116,6 +96,55 @@ reportForm::~reportForm() {
     delete m_pMenuBar;
 }
 
+///-----------------------------------------------------------------------------
+///
+///         setMenuByUserRole
+///          
+///-----------------------------------------------------------------------------
+
+void reportForm::setMenuByUserRole() {
+    if (this->getUser().getRole() == 1) {
+        QMenu * menu2 = m_pMenuBar->addMenu("&Справочники");
+        // Справочники
+        QAction *action = new QAction("&Список инспекций", this);
+        connect(action, &QAction::triggered, this, &reportForm::OnInspection);
+        menu2->addAction(action);
+        action = new QAction("&Список МРО", this);
+        connect(action, &QAction::triggered, this, &reportForm::OnMro);
+        menu2->addAction(action);
+        action = new QAction("&Статьи КоАП", this);
+        connect(action, &QAction::triggered, this, &reportForm::OnArticle);
+        menu2->addAction(action);
+        action = new QAction("&Субъекты АП", this);
+        connect(action, &QAction::triggered, this, &reportForm::OnSubject);
+        menu2->addAction(action);
+        action = new QAction("&Справочник колонок отчёта", this);
+        connect(action, &QAction::triggered, this, &reportForm::OnRptColumn);
+        menu2->addAction(action);
+        action = new QAction("&Справочник строк отчёта", this);
+        connect(action, &QAction::triggered, this, &reportForm::OnRptRow);
+        menu2->addAction(action);
+    }
+}
+///-----------------------------------------------------------------------------
+///
+///         setUser.
+///          
+///-----------------------------------------------------------------------------
+
+void reportForm::setUser(const User& user) {
+    user_ = user;
+}
+
+///-----------------------------------------------------------------------------
+///
+///         getUser.
+///          
+///-----------------------------------------------------------------------------
+
+const User& reportForm::getUser() const {
+    return user_;
+}
 ///-----------------------------------------------------------------------------
 ///
 ///         getMenuBar.
@@ -159,9 +188,7 @@ void reportForm::OnGenerateReport() {
     if (mro == 0) {
         mro = 4;
     }
-
     report(mro);
-
     connect(this->widget.tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabSelected()));
     //QMessageBox::information(0, "Menu", "Отчёт Приложение 1");
 }
@@ -235,7 +262,7 @@ const bool& reportForm::getTab(const int& i) {
 
 ///-----------------------------------------------------------------------------
 ///
-///         Установить фла для заполнености таблиц.
+///         Установить флаг для заполнености таблиц.
 ///          
 ///-----------------------------------------------------------------------------
 
@@ -275,7 +302,7 @@ void reportForm::OnExit() {
 ///-----------------------------------------------------------------------------
 
 void reportForm::OnInspection() {
-    QMessageBox::information(this, "АРМ Юриста", "OnInspection()");
+    //QMessageBox::information(this, "АРМ Юриста", "OnInspection()");
     inspectionFrm* frm = new inspectionFrm();
     createFrmConnector(*frm);
     //frm->initClient(this->m_pClientController);
@@ -640,6 +667,8 @@ void reportForm::setTableStyle(QTableView* tview) {
     tview->columnWidth(7);
     tview->horizontalHeader()->setDefaultSectionSize(3);
     tview->verticalHeader()->setDefaultSectionSize(3);
+    tview->verticalHeader()->setVisible(false);
+    tview->horizontalHeader()->setVisible(false);
     //tview->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     tview->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     tview->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
@@ -763,21 +792,135 @@ void reportForm::setlistResult(const QList<ReportOut>& result) {
 void reportForm::setlistCol(const QList<RptColumn>& listcol) {
     listcol_ = listcol;
 }
+
 ///-----------------------------------------------------------------------------
 ///
-///         Нажата кнопка формирования отчёта.
+///         Получить индикатор нарастающего итога.
+///          
+///-----------------------------------------------------------------------------
+
+const qint64& reportForm::getCummulative() const {
+    return cummulative_;
+}
+
+///-----------------------------------------------------------------------------
+///
+///         Установить индикатор нарастающего итога.
+///          
+///-----------------------------------------------------------------------------
+
+void reportForm::setCummulative() {
+    int mon = this->widget.dateEdit->date().month();
+    int kv = mon / 3;
+    kv = (mon % 3 > 0) ? ++kv : kv;
+    ///Получить значение RadioBox
+    QList<QRadioButton *> buttons;
+    buttons = this->widget.groupBox->findChildren<QRadioButton *>();
+    int period = 0;
+    for (int i = 1; i <= buttons.size(); ++i) {
+        if (buttons[i - 1]->isChecked()) {
+            period = i;
+            break;
+        }
+    }
+    //Определение индикатора нарастающего итога .
+    switch (period) {
+        case 1://Данные за месяц
+        {
+            cummulative_ = 0;
+        }
+            break;
+        case 2://Данные за квартал
+        {
+
+            cummulative_ = kv;
+        }
+            break;
+        case 3://Данные с начала года
+        {
+            cummulative_ = 11;
+        }
+            break;
+    }
+}
+
+///-----------------------------------------------------------------------------
+///
+///         Получить строку периода отчёта.
+///          
+///-----------------------------------------------------------------------------
+
+const QString& reportForm::getPeriod() const {
+    return prd_;
+}
+///-----------------------------------------------------------------------------
+///
+///         Установить строку периода отчёта.
+///          
+///-----------------------------------------------------------------------------
+
+void reportForm::setPeriod() {
+    int mon = this->widget.dateEdit->date().month();
+    int year = this->widget.dateEdit->date().year();
+    int kv = mon / 3;
+    kv = (mon % 3 > 0) ? ++kv : kv;
+    ///Получить значение RadioBox
+    QList<QRadioButton *> buttons;
+    buttons = this->widget.groupBox->findChildren<QRadioButton *>();
+    int period = 0;
+    for (int i = 1; i <= buttons.size(); ++i) {
+        if (buttons[i - 1]->isChecked()) {
+            period = i;
+            break;
+        }
+    }
+    //Определение периода отчёта.
+    prd_ = "";
+    switch (period) {
+        case 1://Данные за месяц
+        {
+            prd_ += this->widget.dateEdit->date().longMonthName(mon); //название месяца
+            prd_ += " ";
+            prd_ += QString::number(year); //год
+            prd_ += " года";
+        }
+            break;
+        case 2://Данные за квартал
+        {
+
+            prd_ += QString::number(kv); //квартал
+            prd_ += " квартал ";
+            prd_ += QString::number(year);
+            prd_ += " года";
+        }
+            break;
+        case 3://Данные с начала года
+        {
+            prd_ += QString::number(year);
+            prd_ += " год(С начала года).";
+        }
+            break;
+    }
+}
+
+///-----------------------------------------------------------------------------
+///
+///         Нажата кнопка выгрузки отчёта в Excel.
 ///          
 ///-----------------------------------------------------------------------------
 
 void reportForm::on_pushButton_Excel_clicked() {
-    if (!pressed_) {
-        pressed_ = true;
-    } else {
-        QMessageBox::information(this, "АРМ Юриста", "Идёт процесс формирования отчёта. Подождите, пожалуйста...");
+
+    this->setPeriod();
+    if (this->getPeriod().isEmpty()) {
+        QMessageBox::information(this, "АРМ Юриста", "Не задан период отчёта");
+        showButtons();
         return;
     }
+
     int selTabIndex = this->widget.tabWidget->currentIndex();
     array<QString, TAB_VIEW>listName = reportForm::getListMroName();
+    array<QString, TAB_VIEW> listMRO = getListMroNameInReport();
 
     //QMessageBox::information(this, "АРМ Юриста", "Выгрузка в Excel");
     // получаем указатель на Excel
@@ -785,14 +928,16 @@ void reportForm::on_pushButton_Excel_clicked() {
     mExcel-> setProperty("Visible", true);
     // на книги
     QAxObject *workbooks = mExcel->querySubObject("Workbooks");
+    QDir dir(".");
+    //QMessageBox::information(this, "АРМ Юриста", dir.absolutePath());
     QAxObject *workbook = workbooks->querySubObject("Open(const QString&)",
-            QString("d:/MyProjects_2021/ARMInspector/ARMInspectorGUI/Tmp/" + listName[selTabIndex] + ".xlsx"));
+            QString(dir.absolutePath() + "/Tmp/" + listName[selTabIndex] + ".xlsx"));
 
     if (workbook == NULL) {
         QMessageBox::information(this, "АРМ Юриста", "Open Excel error");
         return;
     }
-    if (selTabIndex > 0) {
+    if (selTabIndex > 0) {//по МРО
         // на листы
         QAxObject *mSheets = workbook->querySubObject("Sheets");
         if (mSheets == NULL) {
@@ -805,8 +950,17 @@ void reportForm::on_pushButton_Excel_clicked() {
             QMessageBox::information(this, "АРМ Юриста", "StatSheet Excel error");
             return;
         }
-        //QMessageBox::information(this, "АРМ Юриста", QString::number(this->model_->columnCount()));
+        // получение указателя на ячейку [row][col] ((!)нумерация с единицы)
+        QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", 3, 1);
+        cell->setProperty("Value", QVariant(listMRO[selTabIndex] + " за " + this->getPeriod()));
+        delete cell;
         for (int row = 0; row < this->model_[selTabIndex].rowCount(); row++) {
+            if (row == 1) {
+                // получение указателя на ячейку [row][col] ((!)нумерация с единицы)
+                QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", 3, 1);
+                cell->setProperty("Value", QVariant(model_[selTabIndex].data(model_[selTabIndex].index(row, 0))).toString() + " за " + this->getPeriod());
+                delete cell;
+            }
             if (row > 7 && row < 33 && row != 23 && row != 26) {
                 for (int col = 0; col < this->model_[selTabIndex].columnCount(); col++) {
                     if (col > 3) {
@@ -819,13 +973,15 @@ void reportForm::on_pushButton_Excel_clicked() {
                             } else {
                                 cell->setProperty("Value", QVariant(model_[selTabIndex].data(model_[selTabIndex].index(row, col))).toInt());
                             }
+                        } else {
+                            cell->clear();
                         }
                         delete cell;
                     }
                 }
             }
         }
-    } else {
+    } else {//по филиалу
         for (int mro = 1; mro < 4; mro++) {
             // на листы
             QAxObject *mSheets = workbook->querySubObject("Sheets");
@@ -839,7 +995,10 @@ void reportForm::on_pushButton_Excel_clicked() {
                 QMessageBox::information(this, "АРМ Юриста", "StatSheet Excel error");
                 return;
             }
-            //QMessageBox::information(this, "АРМ Юриста", QString::number(this->model_->columnCount()));
+            // получение указателя на ячейку [row][col] ((!)нумерация с единицы)
+            QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", 3, 1);
+            cell->setProperty("Value", QVariant(listMRO[mro] + " за " + this->getPeriod()));
+            delete cell;
             for (int row = 0; row < this->model_[mro].rowCount(); row++) {
                 if (row > 7 && row < 33 && row != 23 && row != 26) {
                     for (int col = 0; col < this->model_[mro].columnCount(); col++) {
@@ -853,6 +1012,8 @@ void reportForm::on_pushButton_Excel_clicked() {
                                 } else {
                                     cell->setProperty("Value", QVariant(model_[mro].data(model_[mro].index(row, col))).toInt());
                                 }
+                            } else {
+                                cell->clear();
                             }
                             delete cell;
                         }
@@ -860,8 +1021,23 @@ void reportForm::on_pushButton_Excel_clicked() {
                 }
             }
         }
+        // на листы
+        QAxObject *mSheets = workbook->querySubObject("Sheets");
+        if (mSheets == NULL) {
+            QMessageBox::information(this, "АРМ Юриста", "Sheets Excel error");
+            return;
+        }
+        // указываем, какой лист выбрать
+        QAxObject *StatSheet = mSheets->querySubObject("Item(const QVariant&)", QVariant(listName[0]));
+        if (StatSheet == NULL) {
+            QMessageBox::information(this, "АРМ Юриста", "StatSheet Excel error");
+            return;
+        }
+        // получение указателя на ячейку [row][col] ((!)нумерация с единицы)
+        QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", 3, 1);
+        cell->setProperty("Value", QVariant(listMRO[0] + " за " + this->getPeriod()));
+        delete cell;
     }
-    pressed_ = false;
 }
 
 
@@ -947,16 +1123,6 @@ void Window::importExcelToDatabase()
 ///-----------------------------------------------------------------------------
 
 void reportForm::on_pushButton_Report_clicked() {
-    hideButtons();
-    if (!pressed_) {
-        pressed_ = true;
-    } else {
-        QMessageBox::information(this, "АРМ Юриста", "Идёт процесс формирования отчёта. Подождите, пожалуйста...");
-        return;
-    }
-
-
-
 
     QJsonObject param;
     emit runServerCmd(Functor<RptRow>::producePrm(ModelWrapper::GET_LIST_MODELS, param));
@@ -966,139 +1132,173 @@ void reportForm::on_pushButton_Report_clicked() {
 
 
     this->showControlsFrm();
+    hideButtons();
     int currentIndex = this->widget.tabWidget->currentIndex();
+    array<QString, TAB_VIEW>listName = reportForm::getListMroName();
+    array<QString, TAB_VIEW> listMRO = getListMroNameInReport();
     model_[currentIndex].clear();
-    this->setTab(currentIndex, true);
     int num_mro = (currentIndex == 0) ? 4 : currentIndex;
+    this->setTab(currentIndex, false);
     this->report(num_mro);
     //    model_->setData(model_->index(1, 8), "май 2021 года", Qt::EditRole);
     Report model;
     model.setMro(num_mro);
     model.setMon(this->widget.dateEdit->date().month());
     model.setYear(this->widget.dateEdit->date().year());
-    //QAxObject *StatSheet = mSheets->querySubObject("Item(const QVariant&)", QVariant(mro));
-    //if (StatSheet == NULL) {
-    //    QMessageBox::information(this, "АРМ Юриста", "StatSheet Excel error");
-    //    return;
-    //}
-
-    //QMessageBox::information(this, "АРМ Юриста", "МРО:" + QString::number(model.getMro()) + "месяц:  " + QString::number(model.getMon()) + "год:" + QString::number(model.getYear()));
-    ///Получить значение RadioBox
-    QList<QRadioButton *> buttons;
-    buttons = this->widget.groupBox->findChildren<QRadioButton *>();
-    int period = 0;
-    for (int i = 1; i <= buttons.size(); ++i) {
-        if (buttons[i - 1]->isChecked()) {
-            //user->setStatus(i);
-            period = i;
-            break;
-        }
+    this->setPeriod();
+    if (this->getPeriod().isEmpty()) {
+        QMessageBox::information(this, "АРМ Юриста", "Не задан период отчёта");
+        showButtons();
+        return;
     }
+    this->setCummulative();
+    model.setCummulative(this->getCummulative());
+    //QMessageBox::information(this, "АРМ Юриста", prd_);
+    if (currentIndex > 0) {
+        this->setTab(currentIndex, true);
+        model_[currentIndex].setData(model_[currentIndex].index(1, 0), listMRO[currentIndex], Qt::EditRole);
+        model_[currentIndex].setData(model_[currentIndex].index(1, 8), this->getPeriod(), Qt::EditRole);
 
-    //QMessageBox::information(this, "АРМ Юриста", this->widget.dateEdit->date().longMonthName(model.getMon()));
-    //Определение периода отчёта.
-    prd_ = "";
-    switch (period) {
-        case 1://Данные за месяц
-        {
-            prd_ += this->widget.dateEdit->date().longMonthName(model.getMon()); //название месяца
-            prd_ += " ";
-            prd_ += QString::number(model.getYear()); //год
-            prd_ += " года";
-            model.setCummulative(0);
-        }
-            break;
-        case 2://Данные за квартал
-        {
-            int kv;
-            kv = model.getMon() / 3;
-            if (model.getMon() % 3 > 0) {
-                kv++;
-            }
-            prd_ += QString::number(kv); //квартал
-            prd_ += " квартал ";
-            prd_ += QString::number(model.getYear());
-            prd_ += " года";
-            model.setCummulative(kv);
-        }
-            break;
-        case 3://Данные с начала года
-        {
-            prd_ += QString::number(model.getYear());
-            prd_ += " год(С начала года).";
-            model.setCummulative(11);
-        }
-            break;
-    }
+        myProgressBar* frmProgress = new myProgressBar(this);
+        frmProgress->setWindowTitle("Формирование отчёта " + listName[currentIndex] + " МРО  за  " + this->getPeriod());
+        frmProgress->getUI()->progressBar->setStyleSheet("QProgressBar {"
+                "border: 2px solid grey;"
+                "border-radius: 5px;"
+                "text-align: center;"
+                "}"
+                "QProgressBar::chunk {"
+                "background-color: #05B8CC;"
+                "width: 20px;}");
 
-    QMessageBox::information(this, "АРМ Юриста", prd_);
-    array<QString, TAB_VIEW> listMro = reportForm::getListMroNameInReport();
-    model_[currentIndex].setData(model_[currentIndex].index(1, 0), listMro[currentIndex], Qt::EditRole);
-    model_[currentIndex].setData(model_[currentIndex].index(1, 8), prd_, Qt::EditRole);
-
-    myProgressBar* frmProgress = new myProgressBar(this);
-    frmProgress->setWindowFlags(frmProgress->windowFlags() & ~Qt::WindowCloseButtonHint);
-    frmProgress->getUI()->progressBar->setMinimum(0);
-    frmProgress->getUI()->progressBar->setMaximum(listrow_.size() * listcol_.size());
-    frmProgress->setAttribute(Qt::WA_DeleteOnClose);
-    frmProgress->show();
-    for (int i = 0; i < listrow_.size(); i++) {
-        RptRow rptrow = listrow_.at(i);
-        model.setNumrow(rptrow.getRow());
-        emit runServerCmd(Functor<Report>::produce(ModelWrapper::Command::CALL_PROCEDURE, model));
-        emit waitReady();
-        int col = 0;
-        int mon_total = 0;
-        double sum_total = 0;
-        bool sum = false;
-        if (rptrow.getRow() == 25 || rptrow.getRow() == 26) {//строки сумм штрафов
-            sum = true;
-        } else {
-            sum = false;
-        }
-        for (int j = 0; j < result_.size(); j++) {
-            frmProgress->getUI()->progressBar->setValue(frmProgress->getUI()->progressBar->value() + 1);
-            col = j + 2;
-            ReportOut rptout = result_.at(j);
-            if (rptout.getCount() > 0) {
-                if (rptout.getCol() < 29) {
-                    if (sum) {
-                        sum_total += rptout.getCount();
-                    } else {
-                        mon_total += rptout.getCount();
-                    }
-                    model_[currentIndex].setData(model_[currentIndex].index(rptrow.getRow() - 1, rptout.getCol() - 1), rptout.getCount(), Qt::EditRole);
-                } else if (rptout.getCol() == 30) {
-                    model_[currentIndex].setData(model_[currentIndex].index(rptrow.getRow() - 1, rptout.getCol()), rptout.getCount(), Qt::EditRole);
-                }
-
-            }
-        }
-        if (mon_total > 0 || sum_total > 0) {
-            if (sum) {
-                model_[currentIndex].setData(model_[currentIndex].index(rptrow.getRow() - 1, col), QString::number(sum_total, 'f', 2), Qt::EditRole);
-
+        frmProgress->setWindowFlags(frmProgress->windowFlags() & ~Qt::WindowCloseButtonHint);
+        frmProgress->getUI()->progressBar->setMinimum(0);
+        frmProgress->getUI()->progressBar->setMaximum(listrow_.size() * listcol_.size());
+        frmProgress->setAttribute(Qt::WA_DeleteOnClose);
+        frmProgress->show();
+        for (int i = 0; i < listrow_.size(); i++) {
+            RptRow rptrow = listrow_.at(i);
+            model.setNumrow(rptrow.getRow());
+            emit runServerCmd(Functor<Report>::produce(ModelWrapper::Command::CALL_PROCEDURE, model));
+            emit waitReady();
+            int col = 0;
+            int mon_total = 0;
+            double sum_total = 0;
+            bool sum = false;
+            if (rptrow.getRow() == 25 || rptrow.getRow() == 26) {//строки сумм штрафов
+                sum = true;
             } else {
+                sum = false;
+            }
+            for (int j = 0; j < result_.size(); j++) {
+                frmProgress->getUI()->progressBar->setValue(frmProgress->getUI()->progressBar->value() + 1);
+                col = j + 2;
+                ReportOut rptout = result_.at(j);
+                if (rptout.getCount() > 0) {
+                    if (rptout.getCol() < 29) {
+                        if (sum) {
+                            sum_total += rptout.getCount();
+                        } else {
+                            mon_total += rptout.getCount();
+                        }
+                        model_[currentIndex].setData(model_[currentIndex].index(rptrow.getRow() - 1, rptout.getCol() - 1), rptout.getCount(), Qt::EditRole);
+                    } else if (rptout.getCol() == 30) {
+                        model_[currentIndex].setData(model_[currentIndex].index(rptrow.getRow() - 1, rptout.getCol()), rptout.getCount(), Qt::EditRole);
+                    }
 
-                model_[currentIndex].setData(model_[currentIndex].index(rptrow.getRow() - 1, col), QString::number(mon_total), Qt::EditRole);
+                }
+            }
+            if (mon_total > 0 || sum_total > 0) {
+                if (sum) {
+                    model_[currentIndex].setData(model_[currentIndex].index(rptrow.getRow() - 1, col), QString::number(sum_total, 'f', 2), Qt::EditRole);
+
+                } else {
+
+                    model_[currentIndex].setData(model_[currentIndex].index(rptrow.getRow() - 1, col), QString::number(mon_total), Qt::EditRole);
+                }
             }
         }
-    }
-    frmProgress->close();
-    //msgBox->close();
-    //delete StatSheet;
-    //delete mSheets;
-    //workbook->dynamicCall("Save()");
-    //workbook->dynamicCall("SaveAS(const QString&)", QDir::toNativeSeparators("d:/MyProjects_2021/ARMInspector/ARMInspectorGUI/Tmp/frm1.xlsx"));
-    //delete workbook;
-    //закрываем книги
-    //delete workbooks;
-    //закрываем Excel
-    //mExcel->dynamicCall("Quit()");
-    //delete mExcel;
-    pressed_ = false;
-    connect(frmProgress->getUI()->progressBar, SIGNAL(destroyed()), this, SLOT(showButtons()));
+        frmProgress->close();
+        connect(frmProgress->getUI()->progressBar, SIGNAL(destroyed()), this, SLOT(showButtons()));
 
+    } else {
+        this->resetTabs();
+        for (int mro = 0; mro < 4; mro++) {
+            num_mro = (mro == 0) ? 4 : mro;
+            model.setMro(num_mro);
+            this->widget.tabWidget->setCurrentIndex(mro);
+            this->setTab(mro, true);
+            model_[mro].setData(model_[mro].index(1, 0), listMRO[mro], Qt::EditRole);
+            model_[mro].setData(model_[mro].index(1, 8), this->getPeriod(), Qt::EditRole);
+
+            myProgressBar* frmProgress = new myProgressBar(this);
+            if (mro == 0) {
+                frmProgress->setWindowTitle("Формирование отчёта " + listName[mro] + " за  " + this->getPeriod());
+            } else {
+                frmProgress->setWindowTitle("Формирование отчёта " + listName[mro] + " МРО за  " + this->getPeriod());
+            }
+
+            frmProgress->getUI()->progressBar->setStyleSheet("QProgressBar {"
+                    "border: 2px solid grey;"
+                    "border-radius: 5px;"
+                    "text-align: center;"
+                    "}"
+                    "QProgressBar::chunk {"
+                    "background-color: #05B8CC;"
+                    "width: 20px;}");
+            frmProgress->setWindowFlags(frmProgress->windowFlags() & ~Qt::WindowCloseButtonHint);
+            frmProgress->getUI()->progressBar->setMinimum(0);
+            frmProgress->getUI()->progressBar->setMaximum(listrow_.size() * listcol_.size());
+
+            frmProgress->getUI()->progressBar->setWindowTitle(listMRO[mro]);
+            frmProgress->setAttribute(Qt::WA_DeleteOnClose);
+            frmProgress->show();
+            for (int i = 0; i < listrow_.size(); i++) {
+                RptRow rptrow = listrow_.at(i);
+                model.setNumrow(rptrow.getRow());
+                emit runServerCmd(Functor<Report>::produce(ModelWrapper::Command::CALL_PROCEDURE, model));
+                emit waitReady();
+                int col = 0;
+                int mon_total = 0;
+                double sum_total = 0;
+                bool sum = false;
+                if (rptrow.getRow() == 25 || rptrow.getRow() == 26) {//строки сумм штрафов
+                    sum = true;
+                } else {
+                    sum = false;
+                }
+                for (int j = 0; j < result_.size(); j++) {
+                    frmProgress->getUI()->progressBar->setValue(frmProgress->getUI()->progressBar->value() + 1);
+                    col = j + 2;
+                    ReportOut rptout = result_.at(j);
+                    if (rptout.getCount() > 0) {
+                        if (rptout.getCol() < 29) {
+                            if (sum) {
+                                sum_total += rptout.getCount();
+                            } else {
+                                mon_total += rptout.getCount();
+                            }
+                            model_[mro].setData(model_[mro].index(rptrow.getRow() - 1, rptout.getCol() - 1), rptout.getCount(), Qt::EditRole);
+                        } else if (rptout.getCol() == 30) {
+                            model_[mro].setData(model_[mro].index(rptrow.getRow() - 1, rptout.getCol()), rptout.getCount(), Qt::EditRole);
+                        }
+
+                    }
+                }
+                if (mon_total > 0 || sum_total > 0) {
+                    if (sum) {
+                        model_[mro].setData(model_[mro].index(rptrow.getRow() - 1, col), QString::number(sum_total, 'f', 2), Qt::EditRole);
+
+                    } else {
+
+                        model_[mro].setData(model_[mro].index(rptrow.getRow() - 1, col), QString::number(mon_total), Qt::EditRole);
+                    }
+                }
+            }
+            frmProgress->close();
+            delete frmProgress;
+        }
+        showButtons();
+    }
 }
 
 
@@ -1168,6 +1368,23 @@ void reportForm::showControlsFrm() {
     this->widget.label_Data->setVisible(true);
     //this->widget.label_Mro->setVisible(true);
     this->widget.label_Period->setVisible(true);
+    int inspection = this->getUser().getInspection();
+    if (inspection == 1) {
+        this->widget.tabWidget->setCurrentIndex(1);
+        this->widget.tabWidget->setTabEnabled(0, false);
+        this->widget.tabWidget->setTabEnabled(2, false);
+        this->widget.tabWidget->setTabEnabled(3, false);
+    } else if (inspection == 7) {
+        this->widget.tabWidget->setCurrentIndex(2);
+        this->widget.tabWidget->setTabEnabled(0, false);
+        this->widget.tabWidget->setTabEnabled(1, false);
+        this->widget.tabWidget->setTabEnabled(3, false);
+    } else if (inspection == 12) {
+        this->widget.tabWidget->setCurrentIndex(3);
+        this->widget.tabWidget->setTabEnabled(0, false);
+        this->widget.tabWidget->setTabEnabled(1, false);
+        this->widget.tabWidget->setTabEnabled(2, false);
+    }
 
 }
 //  QFile styleF;

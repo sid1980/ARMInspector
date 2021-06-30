@@ -144,8 +144,8 @@ void inspectionFrm::worker(const QString& asWrapper) {
             Inspection inspection;
             JsonSerializer::parse(wrapper.getData(), inspection);
             //emit dialog_->showUserData(user);
-            QMessageBoxEx::information(0, wrapper.getHead(), wrapper.getMessage() +
-                    "МРО  <a style='color:royalblue'> " + inspection.getName() + "</a>");
+            //QMessageBoxEx::information(0, wrapper.getHead(), wrapper.getMessage() +
+            //        "МРО  <a style='color:royalblue'> " + inspection.getName() + "</a>");
 
             emit ready();
         }

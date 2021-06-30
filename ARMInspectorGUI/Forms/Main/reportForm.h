@@ -89,6 +89,19 @@ public:
     //Установить стиль таблицы;
     void setTableStyle(QTableView*);
     void initTblView();
+    //Установить пользователя
+     void setUser(const User&);
+    //Получить пользователя
+    const User& getUser() const;
+    //Установить строку периода
+    void setPeriod();
+    //Установить индикатор нарастающего итога
+    void setCummulative();
+    //Получить  строку периода
+    const QString& getPeriod() const;
+    //Получить  индикатор нарастающего итога
+    const qint64& getCummulative() const;
+    void setMenuByUserRole();
 
 signals:
     ///сигнал готовности
@@ -163,6 +176,10 @@ private:
         false};
     //Период отчёта    
     QString prd_;
+    //Индикатор нарастающего итога
+    qint64 cummulative_;
+    //пользователь
+    User user_;
 };
 
 #endif /* _reportForm_H */

@@ -50,7 +50,7 @@ max-height: 13px;
     QTranslator translator_my;
     translator_my.load("i18n/i18n_" + QLocale::system().name() + ".qm");
     //translator_my.load('i18n/i18n_ru_Ru.qm')
-     QCoreApplication::installTranslator(&translator_my);
+    QCoreApplication::installTranslator(&translator_my);
     //app.installTranslator(&translator_my);
 
     QTranslator translator_qt;
@@ -108,6 +108,8 @@ max-height: 13px;
     } else {
         reportForm frm;
         frm.initClient(&clientController);
+        frm.setUser(user);
+        frm.setMenuByUserRole();
         //clientController.getListMRO();
         //QMenuBar * menuBar = frm.getMenuBar();
         frm.setWindowTitle("АРМ юриста");
