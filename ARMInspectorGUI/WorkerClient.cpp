@@ -86,8 +86,8 @@ void WorkerClient::process() {
     //Разворачиваем командную обёртку.
     JsonSerializer::parse(m_aModelWrapperString, wrapper);
     //Вывести заголовок и сообщение.
-    //qInfo() << "head: " << QString::fromLocal8Bit(wrapper.getHead().toStdString().c_str());
-    //qInfo() << "message: " << QString::fromLocal8Bit(wrapper.getMessage().toStdString().c_str());
+    ////qInfo() << "head: " << QString::fromLocal8Bit(wrapper.getHead().toStdString().c_str());
+    ////qInfo() << "message: " << QString::fromLocal8Bit(wrapper.getMessage().toStdString().c_str());
     //Проверяем результат выполнения команды 
     ModelWrapper::Command command = wrapper.getEnumCommand();
     ModelWrapper::Model model = wrapper.getEnumModel();
@@ -102,6 +102,7 @@ void WorkerClient::process() {
             {
                 ///Сообщить контроллеру клиента о небходимости
                 //установить ID сессии
+                QMessageBox::information(0, "Menu", QString::number(wrapper.getSessionID()));
                 emit setID(wrapper.getSessionID());
             }
                 break;
@@ -113,21 +114,21 @@ void WorkerClient::process() {
                 emit setSessionUser(user);
                 //MessageBox::information(0, "LOGIN",
                 //        "User with name " + user.getName().trimmed() + " is logged in");
-                qInfo() << "User with name " << user.getName().trimmed() << " is logged in";
+                //qInfo() << "User with name " << user.getName().trimmed() << " is logged in";
                 //Сигнализировать о завершении обработки.
                 emit ready();
             }
                 break;
             case ModelWrapper::Command::NOP:
             {
-                qInfo() << "Command is incorrect";
+                //qInfo() << "Command is incorrect";
 
             }
                 break;
             case ModelWrapper::Command::SERVER_RESPONSE:
             {
 
-                qInfo() << "Уведомление от сервера";
+                //qInfo() << "Уведомление от сервера";
 
             }
                 break;

@@ -32,7 +32,7 @@ UiSocket *ServerClient::getClientSocket() const {
 /// Обработать соединение с сервером.
 
 void ServerClient::handleConnectedToServer() {
-    qInfo() << "Connected to the server";
+    //qInfo() << "Connected to the server";
     m_launchAttemptCounter = 0;
     m_isServerConnected = true;
     stopReconnectingToServer();
@@ -43,7 +43,7 @@ void ServerClient::handleConnectedToServer() {
 
 void ServerClient::startReconnectingToServer() {
     if (!m_reconnectTimer.isActive()) {
-        qInfo() << "Start trying to reconnect to server";
+        //qInfo() << "Start trying to reconnect to server";
         m_reconnectTimer.start(RECONNECT_TIMEOUT_MS);
     }
 }
@@ -53,7 +53,7 @@ void ServerClient::startReconnectingToServer() {
 void ServerClient::stopReconnectingToServer() {
     if (m_reconnectTimer.isActive()) {
         m_reconnectTimer.stop();
-        qInfo() << "Reconnect timer stopped";
+        //qInfo() << "Reconnect timer stopped";
     }
 }
 
@@ -90,10 +90,10 @@ void ServerClient::connectToServer() {
     if (m_pClientSocket->state() == QAbstractSocket::ConnectedState)
         return;
 
-    qInfo() << QString("connectToServer(%1, %2)").arg("10.174.0.9").arg(7071);
-    m_pClientSocket->connectToHost("10.174.0.9", 7071); // Windows
-    //qInfo() << QString("connectToServer(%1, %2)").arg("127.0.0.1").arg(7071);
-    //m_pClientSocket->connectToHost("127.0.0.1", 7071); // Linux
+    //qInfo() << QString("connectToServer(%1, %2)").arg("10.174.0.9").arg(7071);
+    //m_pClientSocket->connectToHost("10.174.0.9", 7071); // Windows
+    qInfo() << QString("connectToServer(%1, %2)").arg("127.0.0.1").arg(7071);
+    m_pClientSocket->connectToHost("127.0.0.1", 7071); // Linux
 }
 
 

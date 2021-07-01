@@ -17,18 +17,18 @@ CommandController::CommandController(QIODevice *apIODevice, QObject *apParent) :
 /// @param asMessage Входящее сообщение.
 
 void CommandController::messageProcessing(const RpcMessage &asMessage) {
-    //qInfo() << "messageProcessing(...)";
+    qInfo() << "messageProcessing(...)";
     RpcSocket *socket = static_cast<RpcSocket*> (sender());
     if (!socket) {
         qDebug() << "Отсутствует соединение с сервером";
         return;
     }
 
-    //qDebug() << "received message: " << QString::fromLocal8Bit(asMessage.method().toStdString().c_str());
+    qDebug() << "received message: " << QString::fromLocal8Bit(asMessage.method().toStdString().c_str());
     QString result = QString(asMessage.method().toStdString().c_str());
     if (!result.isEmpty()) {
         emit onProcessRequestServer(result);
-    }
+    } 
 }
 
 /// Сделать  запрос к серверу.
@@ -47,7 +47,7 @@ void CommandController::requestServer(const QString &asQuery) {
 /// Обработать результат  выполнения запроса к серверу. 
 
 /*void CommandController::processRequestServer() {
-    qInfo() << "processCommandResult()";
+    //qInfo() << "processCommandResult()";
     ///Получить данные.
     RpcServiceReply *reply = static_cast<RpcServiceReply *> (sender());
     if (!reply) {

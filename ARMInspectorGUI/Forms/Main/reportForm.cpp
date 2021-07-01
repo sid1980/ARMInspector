@@ -729,7 +729,7 @@ void reportForm::spanTbl(int mro) {
                     if (value.isEmpty()) {
                         spanCol++;
                     } else {
-                        //qInfo() << QString::fromLocal8Bit(value.toStdString().c_str());
+                        ////qInfo() << QString::fromLocal8Bit(value.toStdString().c_str());
                         if (spanCol > 1) {
                             tview->setSpan(lineindex, j - spanCol, 1, spanCol);
                             //QString style = R"( )";
@@ -1298,6 +1298,7 @@ void reportForm::on_pushButton_Report_clicked() {
             delete frmProgress;
         }
         showButtons();
+        this->widget.tabWidget->setCurrentIndex(0);
     }
 }
 
@@ -1385,7 +1386,6 @@ void reportForm::showControlsFrm() {
         this->widget.tabWidget->setTabEnabled(1, false);
         this->widget.tabWidget->setTabEnabled(2, false);
     }
-
 }
 //  QFile styleF;
 //    styleF.setFileName(":/qss/style.qss");

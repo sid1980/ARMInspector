@@ -56,7 +56,7 @@ void ClientController::init(ServerClient *apServerClient) {
 
 void ClientController::setSessionID(int asID) {
     m_aSessionID = asID;
-    qInfo() << QString::fromLocal8Bit("ID сессии:") << m_aSessionID;
+    //qInfo() << QString::fromLocal8Bit("ID сессии:") << m_aSessionID;
     emit ready();
 }
 ///Установить сигнал готовности формы

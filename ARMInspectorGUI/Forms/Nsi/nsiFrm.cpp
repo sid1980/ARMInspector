@@ -60,6 +60,7 @@ Ui::nsiFrm* nsiFrm::getUI() {
 ///-----------------------------------------------------------------------------
 
 void nsiFrm::worker(const QString& asWrapper) {
+    QMessageBox::information(this, "АРМ Юриста", "nsiFrm::worker");
     ModelWrapper wrapper;
     //Разворачиваем командную обёртку.
     JsonSerializer::parse(asWrapper, wrapper);
