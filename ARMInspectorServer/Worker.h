@@ -27,6 +27,7 @@ public:
     /// Получить строку командной обёртки.
     /// @return Возвращает строку командной обёртки.
     const QString& getModelWrapperString() const;
+    DBManager* getDBManager(); 
 
 public slots:
     ///Основная функция потока
@@ -41,6 +42,7 @@ signals:
 private:
     ///Командная обёртка в форме строки.
     QString m_aModelWrapperString;
+    DBManager *m_pDBManager;
 };
 
 #endif /* WORKER_H */

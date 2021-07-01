@@ -103,12 +103,12 @@ void Report::write(QJsonObject &jsonObj) const {
 ///-----------------------------------------------------------------------------
 
 void Report::bindData(QSqlQuery* asSqlQuery) {
-    qInfo() << "Report::bindData";
+    //qInfo() << "Report::bindData";
     QList<int> list = query_.getBindColumnList();
     if (!list.isEmpty()) {
         array<QString, REPORT_COLUMN> fld = Report::getFields();
         for (int i = 0; i < list.size(); i++) {
-            qInfo() << QString::number(list.at(i));
+            //qInfo() << QString::number(list.at(i));
             switch (list.at(i)) {
                 case Report::Column::MRO:
                     asSqlQuery->bindValue(":" + fld[Report::Column::MRO], this->getMro());
@@ -139,7 +139,7 @@ void Report::bindData(QSqlQuery* asSqlQuery) {
 ///-----------------------------------------------------------------------------
 
 const QString& Report::call() {
-    qInfo() << "Report::call()";
+    //qInfo() << "Report::call()";
     return query_.call()->
             field(Report::Column::MRO)->bind(Report::Column::MRO)->
             field(Report::Column::MON)->bind(Report::Column::MON)->

@@ -42,7 +42,9 @@ const QString& Worker::getModelWrapperString() const {
 
 
 
-
+DBManager*  Worker::getDBManager(){
+    return m_pDBManager;
+}
 
 
 ///Основная функция  потока, который создаётся в сеансе.
@@ -63,18 +65,18 @@ void Worker::process() {
         wrapper.setSuccess(result.success);
     };
     //Создать экземпляр класса управления базой данных.
-    //DBManager *pDBManager = new DBManager();
-    QScopedPointer<DBManager> pDBManager(new DBManager());
-    if (pDBManager != nullptr) {
+    //DBManager *m_pDBManager = new DBManager();
+    QScopedPointer<DBManager> m_pDBManager(new DBManager());
+    if (m_pDBManager != nullptr) {
         //Экземпляр класса управления базой данных создан успешно.
         //Конвертировать данные, пришедшие  от клиента в JSON объект.
         JsonSerializer::parse(m_aModelWrapperString, wrapper);
         //Читать команду, которую  необходимо выполнить на сервере.
         ModelWrapper::Command command = wrapper.getEnumCommand();
         ///Передать данные DBManager.
-        pDBManager->setModelWrapper(&wrapper);
+        m_pDBManager->setModelWrapper(&wrapper);
         //Подключаемся к базе данных.
-        bool ok = pDBManager->addDataBase();
+        bool ok = m_pDBManager->addDataBase();
         if (ok) {
             //Подключение к базе данных успешно добавлено.
             //Выбрать команду, которую нужно выполнить. 
@@ -82,62 +84,62 @@ void Worker::process() {
                 case ModelWrapper::Command::LOGIN:
                 {
                     //Авторизация.
-                    pDBManager->login();
+                    m_pDBManager->login();
                 }
                     break;
                 case ModelWrapper::Command::ADD_NEW_USER:
                 {
                     //Добавление нового пользователя .
-                    pDBManager->addUser();
+                    m_pDBManager->addUser();
                 }
                     break;
                 case ModelWrapper::Command::ADD_NEW_MODEL:
                 {
                     //Добавление новой  записи .
 
-                    pDBManager->addModel();
+                    m_pDBManager->addModel();
                 }
                     break;
                 case ModelWrapper::Command::EDIT_USER:
                 {
                     //Добавление нового пользователя .
-                    pDBManager->updateUser();
+                    m_pDBManager->updateUser();
                 }
                     break;
                 case ModelWrapper::Command::CHANGE_PASSWORD:
                 {
                     //Добавление нового пользователя .
-                    pDBManager->changePassword();
+                    m_pDBManager->changePassword();
                 }
                     break;
                 case ModelWrapper::Command::GET_LIST_MODELS:
                 {
                     //Получить список моделей.
-                    pDBManager->getListModels();
+                    m_pDBManager->getListModels();
                 }
                     break;
                 case ModelWrapper::Command::GET_MODEL:
                 {
                     //Получить список моделей.
-                    pDBManager->getModel();
+                    m_pDBManager->getModel();
                 }
                     break;
                 case ModelWrapper::Command::UPDATE_MODEL:
                 {
                     //Редактировать модель.
-                    pDBManager->updateModel();
+                    m_pDBManager->updateModel();
                 }
                     break;
                 case ModelWrapper::Command::DEL_MODEL:
                 {
                     //Удалить модель.
-                    pDBManager->deleteModel();
+                    m_pDBManager->deleteModel();
                 }
                     break;
                 case ModelWrapper::Command::CALL_PROCEDURE:
                 {
                     //Вызвать хранимую процедуру.
-                    pDBManager->callProcedure();
+                    m_pDBManager->callProcedure();
                 }
                     break;
                 default:
@@ -147,10 +149,10 @@ void Worker::process() {
                     break;
             }
             ///Удаляем подключение  к базе данных.
-            pDBManager->removeDatabase();
+            //m_pDBManager->removeDatabase();
         }
         //Удалить экземпляр класса управления базой данных.
-        //delete pDBManager;
+        //delete m_pDBManager;
     } else {
         //Не удалось создать экземпляр класса  управления базой данных.
         setResult(Message::FAILED_CREATE_DBMANAGER);

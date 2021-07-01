@@ -35,7 +35,8 @@
 
 template<typename T> void DBManager::getListModels() {
     //Блокировать ресурсы SQL от использования их  другими потоками. 
-    QMutexLocker lock(&m_Mutex);
+    static QMutex mutex;
+    QMutexLocker lock(&mutex);
     //Проверить , открыта ли  база данных. 
     if (!connectDB<T>()) {
         return;
@@ -53,7 +54,8 @@ template<typename T> void DBManager::getListModels() {
 
 template<typename T> void DBManager::getModel() {
     //Блокировать ресурсы SQL от использования их  другими потоками. 
-    QMutexLocker lock(&m_Mutex);
+    static QMutex mutex;
+    QMutexLocker lock(&mutex);
     //Загружаем параметры команды.
     QJsonObject param;
     JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
@@ -87,14 +89,13 @@ template<typename T, typename TOUT> void DBManager::callProcedure() {
         m_pModelWrapper->setSuccess(result.success);
     };
     //Создать модель данных 
-    T model;//Входные данные 
-    TOUT outmodel;//Выходные данные
+    T model; //Входные данные 
+    TOUT outmodel; //Выходные данные
     //дополнение к сообщению
     QString attach = "<br><a style='color:red'>";
     attach += model.call() + "</a>";
     JsonSerializer::parse(m_pModelWrapper->getData(), model);
     //Взять ранее созданное подключение к  базе данных.
-    qDebug() << model.call();
     if (!connectDB<T>()) {
         return;
     }
@@ -117,9 +118,6 @@ template<typename T, typename TOUT> void DBManager::callProcedure() {
         ///Считать запись базы данных  в объект класса T.
         outmodel.read(recordObject);
         container.add(outmodel);
-        qDebug() << "TOUT" << QString::number(outmodel.getArticle())
-                + " " + QString::number(outmodel.getMysubject())
-                + " " + QString::number(outmodel.getCount());
     }
     setResult(container, Message::CALL_PROCEDURE_SUCCESS, attach);
     return;
@@ -153,7 +151,7 @@ template<typename T> void DBManager::addModel() {
     }
     QSqlQuery query(m_Db);
     attach += model.insert() + "</a>";
-    qInfo() << model.insert();
+    //qInfo() << model.insert();
     query.prepare(model.insert());
     model.bindData(&query);
 
@@ -175,7 +173,7 @@ template<typename T> void DBManager::addModel() {
             model.read(recordObject);
         }
         setResult(model, Message::MODEL_ADD_SUCCESS, attach);
-        //qDebug() << "add model  succes: ";
+        ////qDebug() << "add model  succes: ";
     } else {
         setResult(model, Message::MODEL_ADD_FAILURE, attach);
     }
@@ -204,23 +202,23 @@ template<typename T> void DBManager::updateModel() {
     //Создать модель данных User
     T model;
     JsonSerializer::parse(m_pModelWrapper->getData(), model);
-    //qDebug() << myquery;
+    ////qDebug() << myquery;
     //Взять ранее созданное подключение к  базе данных.
     if (!connectDB<T>()) {
         return;
     }
     //База данных открыта. Можно проводить авторизацию пользователя. 
     QSqlQuery query(m_Db);
-    //qDebug() << model.update();
+    ////qDebug() << model.update();
     query.prepare(model.update());
     model.bindData(&query);
 
     if (query.exec()) {
         setResult(model, Message::MODEL_UPDATE_SUCCESS);
-        // qDebug() << "update model  succes: ";
+        // //qDebug() << "update model  succes: ";
     } else {
         setResult(model, Message::MODEL_UPDATE_FAILURE);
-        // qDebug() << "update model failed: ";
+        // //qDebug() << "update model failed: ";
     }
     return;
 }
@@ -234,7 +232,8 @@ template<typename T> void DBManager::updateModel() {
 
 template<typename T> void DBManager::deleteModel() {
     //Блокировать ресурсы SQL от использования их  другими потоками. 
-    QMutexLocker lock(&m_Mutex);
+    static QMutex mutex;
+    QMutexLocker lock(&mutex);
     //Загружаем параметры команды.
     QJsonObject param;
     JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
@@ -347,7 +346,7 @@ template<typename T> ItemContainer<T> DBManager::getAllRecordS() {
     auto setResult = [this](ItemContainer<T> container, Message msg, QString attach) {
         //Подготовить данные.
         QString json = JsonSerializer::serialize(container);
-        //qDebug() << json;
+        ////qDebug() << json;
         m_pModelWrapper->setData(json);
         //Установить сообщение и результат выполнения команды.
         ServerMessage::Result result = ServerMessage::outPut(msg);
@@ -361,7 +360,7 @@ template<typename T> ItemContainer<T> DBManager::getAllRecordS() {
     //Проверить  и выполнить  SQL запрос.
     QSqlQuery query(m_Db);
     ///Выполнить SQL запрос
-    //qDebug() << QString::fromLocal8Bit("Выполнить SQL запрос:  ") << MQuery<T>::selectAll();
+    ////qDebug() << QString::fromLocal8Bit("Выполнить SQL запрос:  ") << MQuery<T>::selectAll();
     if (!query.exec(MQuery<T>::selectAll())) {
         setResult(container, Message::SQL_ERROR, attach);
         return container;
@@ -373,14 +372,14 @@ template<typename T> ItemContainer<T> DBManager::getAllRecordS() {
         T model;
         for (int x = 0; x < query.record().count(); x++) {
             recordObject.insert(query.record().fieldName(x), QJsonValue::fromVariant(query.value(x)));
-            //qDebug() << query.record().fieldName(x) << "   " << QString::fromLocal8Bit(QJsonValue::fromVariant(query.value(x)).toString().toStdString().c_str());
+            ////qDebug() << query.record().fieldName(x) << "   " << QString::fromLocal8Bit(QJsonValue::fromVariant(query.value(x)).toString().toStdString().c_str());
         }
         ///Считать запись базы данных  в объект класса T.  
         model.read(recordObject);
-        //qDebug()<<":  " << model.getFields()[0];
-        //qDebug()<<":  " << model.getFields()[1];
-        //qDebug()<<":  " << model.getFields()[2];
-        //qDebug()<<":  " << model.getFields()[3];
+        ////qDebug()<<":  " << model.getFields()[0];
+        ////qDebug()<<":  " << model.getFields()[1];
+        ////qDebug()<<":  " << model.getFields()[2];
+        ////qDebug()<<":  " << model.getFields()[3];
         ///Добавить объект класса T в контейнер сериализации.
         container.add(model);
     }

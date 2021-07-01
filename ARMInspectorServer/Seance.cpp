@@ -30,6 +30,7 @@ Seance::Seance(QString asModelWrapper) {
 ///Деструктор.
 
 Seance::~Seance() {
+    //m_pWorker->getDBManager()->removeDatabase();
     ///Искать сеанс в списке.
     QVector<Seance*>::iterator p = std::find(m_aInstances.begin(), m_aInstances.end(), this);
     ///Если сеанс найдена, убрать его из списка.
@@ -112,6 +113,7 @@ void Seance::addThread() {
 void Seance::handleResult(QString asQuery) {
     qDebug() << "Session::handleResult";
     //Сигнализировать  сессии, что обработка запроса завершена;
+
     emit onReadyResult(this, asQuery);
 }
 

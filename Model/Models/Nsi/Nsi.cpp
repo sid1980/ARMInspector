@@ -125,12 +125,12 @@ void Nsi::setData(const int& position, const QVariant& value) {
 ///-----------------------------------------------------------------------------
 
 void Nsi::bindData(QSqlQuery* asSqlQuery) {
-    qInfo() << "Nsi::bindData";
+    ////qInfo() << "Nsi::bindData";
     QList<int> list = query_.getBindColumnList();
     if (!list.isEmpty()) {
         array<QString, NSI_COLUMN> fld = Nsi::getFields();
         for (int i = 0; i < list.size(); i++) {
-            qInfo() << QString::number(list.at(i));
+            ////qInfo() << QString::number(list.at(i));
             switch (list.at(i)) {
                 case Nsi::Column::ID:
                     asSqlQuery->bindValue(":" + fld[Nsi::Column::ID], this->getId());
@@ -154,7 +154,7 @@ void Nsi::bindData(QSqlQuery* asSqlQuery) {
 ///-----------------------------------------------------------------------------
 
 const QString& Nsi::insert() {
-    qInfo() << "Nsi::insert()";
+    ////qInfo() << "Nsi::insert()";
     return query_.insert()->field(Nsi::Column::NAME)->prepare();
 }
 
@@ -170,7 +170,7 @@ const QString& Nsi::insert() {
 ///-----------------------------------------------------------------------------
 
 const QString& Nsi::update() {
-    qInfo() << "Nsi::update()";
+    ////qInfo() << "Nsi::update()";
     return query_.update()->set()->
 //            field(Nsi::Column::ID)->equally()->bind(Nsi::Column::ID)->
             field(Nsi::Column::NAME)->equally()->bind(Nsi::Column::NAME)->

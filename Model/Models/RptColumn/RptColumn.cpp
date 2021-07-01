@@ -153,12 +153,12 @@ void RptColumn::setData(const int& position, const QVariant& value) {
 ///-----------------------------------------------------------------------------
 
 void RptColumn::bindData(QSqlQuery* asSqlQuery) {
-    qInfo() << "RptColumn::bindData";
+    //qInfo() << "RptColumn::bindData";
     QList<int> list = query_.getBindColumnList();
     if (!list.isEmpty()) {
         array<QString, RPT_COLUMN> fld = RptColumn::getFields();
         for (int i = 0; i < list.size(); i++) {
-            qInfo() << QString::number(list.at(i));
+            //qInfo() << QString::number(list.at(i));
             switch (list.at(i)) {
                 case RptColumn::Column::ID:
                     asSqlQuery->bindValue(":" + fld[RptColumn::Column::ID], this->getId());
@@ -186,7 +186,7 @@ void RptColumn::bindData(QSqlQuery* asSqlQuery) {
 ///-----------------------------------------------------------------------------
 
 const QString& RptColumn::insert() {
-    qInfo() << "RptColumn::insert()";
+    //qInfo() << "RptColumn::insert()";
     return query_.insert()->field(RptColumn::Column::ARTICLE)->
             field(RptColumn::Column::SUBJECT)->
             field(RptColumn::Column::COL)->
@@ -201,7 +201,7 @@ const QString& RptColumn::insert() {
 ///-----------------------------------------------------------------------------
 
 const QString& RptColumn::update() {
-    qInfo() << "RptColumn::update()";
+    //qInfo() << "RptColumn::update()";
     return query_.update()->set()->
             //            field(User::Column::ID)->equally()->bind(User::Column::ID)->
             field(RptColumn::Column::ARTICLE)->equally()->bind(RptColumn::Column::ARTICLE)->

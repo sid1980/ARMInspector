@@ -153,12 +153,12 @@ void Inspection::setData(const int& position, const QVariant& value) {
 ///-----------------------------------------------------------------------------
 
 void Inspection::bindData(QSqlQuery* asSqlQuery) {
-    qInfo() << "Mro::bindData";
+    ////qInfo() << "Mro::bindData";
     QList<int> list = query_.getBindColumnList();
     if (!list.isEmpty()) {
         array<QString, INSPECTION_COLUMN> fld = Inspection::getFields();
         for (int i = 0; i < list.size(); i++) {
-            qInfo() << QString::number(list.at(i));
+            ////qInfo() << QString::number(list.at(i));
             switch (list.at(i)) {
                 case Inspection::Column::ID:
                     asSqlQuery->bindValue(":" + fld[Inspection::Column::ID], this->getId());
@@ -183,9 +183,9 @@ void Inspection::bindData(QSqlQuery* asSqlQuery) {
 ///-----------------------------------------------------------------------------
 
 const QString& Inspection::insert() {
-    qInfo() <<  query_.insert()->field(Inspection::Column::NAME)->
-            field(Inspection::Column::MRO)->
-            prepare();
+    ////qInfo() <<  query_.insert()->field(Inspection::Column::NAME)->
+    //        field(Inspection::Column::MRO)->
+    //        prepare();
     return query_.insert()->field(Inspection::Column::NAME)->
             field(Inspection::Column::MRO)->
             prepare();
@@ -199,7 +199,7 @@ const QString& Inspection::insert() {
 ///-----------------------------------------------------------------------------
 
 const QString& Inspection::update() {
-    qInfo() << "Inspection::update()";
+    ////qInfo() << "Inspection::update()";
     return query_.update()->set()->
             //            field(User::Column::ID)->equally()->bind(User::Column::ID)->
             field(Inspection::Column::NAME)->equally()->bind(Inspection::Column::NAME)->

@@ -252,12 +252,12 @@ void User::setData(const int& position, const QVariant& value) {
 ///-----------------------------------------------------------------------------
 
 void User::bindData(QSqlQuery* asSqlQuery) {
-    qInfo() << "User::bindData";
+    //qInfo() << "User::bindData";
     QList<int> list = query_.getBindColumnList();
     if (!list.isEmpty()) {
         array<QString, USER_COLUMN> fld = User::getFields();
         for (int i = 0; i < list.size(); i++) {
-            qInfo() << QString::number(list.at(i));
+            //qInfo() << QString::number(list.at(i));
             switch (list.at(i)) {
                 case User::Column::ID:
                     asSqlQuery->bindValue(":" + fld[User::Column::ID], this->getId());
@@ -302,7 +302,7 @@ void User::bindData(QSqlQuery* asSqlQuery) {
 ///-----------------------------------------------------------------------------
 
 const QString& User::update() {
-    qInfo() << "User::update()";
+    //qInfo() << "User::update()";
     return query_.update()->set()->
 //            field(User::Column::ID)->equally()->bind(User::Column::ID)->
             field(User::Column::FIO)->equally()->bind(User::Column::FIO)->
@@ -324,7 +324,7 @@ const QString& User::update() {
 ///-----------------------------------------------------------------------------
 
 const QString& User::changePassword() {
-    qInfo() << "User::changePassword()";
+    //qInfo() << "User::changePassword()";
     return query_.update()->set()->
             field(User::Column::PASSWORD)->equally()->bind(User::Column::PASSWORD)->
             where()->field(User::User::Column::ID)->equally()->bind(User::User::Column::ID)->
@@ -340,7 +340,7 @@ const QString& User::changePassword() {
 ///-----------------------------------------------------------------------------
 
 const QString& User::insert() {
-    qInfo() << "User::insert()";
+    //qInfo() << "User::insert()";
     return query_.insert()->
             field(User::Column::FIO)->
             field(User::Column::ID_INSPECTION)->
@@ -359,7 +359,7 @@ const QString& User::insert() {
 ///-----------------------------------------------------------------------------
 
 const QString& User::selectByName() {
-    qInfo() << "User::selectByName()";
+    //qInfo() << "User::selectByName()";
     return query_.select()->
             where()->field(User::User::Column::NAME)->equally()->bind(User::User::Column::NAME)->
             prepare();

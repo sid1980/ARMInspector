@@ -132,12 +132,12 @@ void Mro::setData(const int& position, const QVariant& value) {
 ///-----------------------------------------------------------------------------
 
 void Mro::bindData(QSqlQuery* asSqlQuery) {
-    qInfo() << "Mro::bindData";
+    ////qInfo() << "Mro::bindData";
     QList<int> list = query_.getBindColumnList();
     if (!list.isEmpty()) {
         array<QString, MRO_COLUMN> fld = Mro::getFields();
         for (int i = 0; i < list.size(); i++) {
-            qInfo() << QString::number(list.at(i));
+            ////qInfo() << QString::number(list.at(i));
             switch (list.at(i)) {
                 case Mro::Column::ID:
                     asSqlQuery->bindValue(":" + fld[Mro::Column::ID], this->getId());
@@ -163,7 +163,7 @@ void Mro::bindData(QSqlQuery* asSqlQuery) {
 ///-----------------------------------------------------------------------------
 
 const QString& Mro::insert() {
-    qInfo() << "Mro::insert()";
+    ////qInfo() << "Mro::insert()";
     return query_.insert()->field(Mro::Column::NAME)->
             field(Mro::Column::INSPECTION)->
             prepare();
@@ -177,7 +177,7 @@ const QString& Mro::insert() {
 ///-----------------------------------------------------------------------------
 
 const QString& Mro::update() {
-    qInfo() << "Mro::update()";
+    ////qInfo() << "Mro::update()";
     return query_.update()->set()->
             //            field(User::Column::ID)->equally()->bind(User::Column::ID)->
             field(Mro::Column::NAME)->equally()->bind(Mro::Column::NAME)->

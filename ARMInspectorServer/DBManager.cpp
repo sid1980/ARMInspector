@@ -45,7 +45,8 @@ const ModelWrapper* DBManager::getModelWrapper() const {
 
 bool DBManager::addDataBase() {
     //Блокировать ресурсы SQL от использования их  другими пользователями. 
-    QMutexLocker lock(&m_Mutex);
+    static QMutex mutex;
+    QMutexLocker lock(&mutex);
     //Задать  функцию для установки результата выполнения команды сервера
     //и собщения о результате выполнения команды.
     auto setResult = [this](Message msg) {
@@ -60,10 +61,11 @@ bool DBManager::addDataBase() {
         return false;
     }
     //Добавить  подключение клиента в список подключений к базе данных 
+    QSqlDatabase::removeDatabase(QString().setNum(m_pModelWrapper->getSessionID()));
     QSqlDatabase database = QSqlDatabase::addDatabase(DRIVER, QString().setNum(m_pModelWrapper->getSessionID()));
     if (database.isValid()) {
         database.setDatabaseName("DRIVER={MySQL ODBC 5.1 Driver};SERVER=localhost;DATABASE=gu_delinq;Uid=test;Pwd=tst;");
-//        database.setDatabaseName("DRIVER={MySQL ODBC 8.0 Unicode Driver};SERVER=localhost;DATABASE=gu_delinq;Uid=test;Pwd=tst;");
+        //database.setDatabaseName("DRIVER={MySQL ODBC 8.0 Unicode Driver};SERVER=localhost;DATABASE=gu_delinq;Uid=test;Pwd=tst;");
         //database.setConnectOptions("SQL_ATTR_ODBC_VERSION=SQL_OV_ODBC3");
         //database.setDatabaseName("arm");
         //database.setUserName("");
@@ -72,13 +74,13 @@ bool DBManager::addDataBase() {
         //database.setPassword("");
         //Открыть базу данных
         if (!database.open()) {
-            qDebug() << "FAILURE.db is not opened";
+            //qDebug() << "FAILURE.db is not opened";
             //База данных не открыта.Авторизация не возможна.
             setResult(Message::UNABLE_OPEN_DATABASE);
             return false;
         }
-        qDebug() << "SUCEESS. db is opened";
-        qDebug() << "CONNECT " << QString().setNum(m_pModelWrapper->getSessionID());
+        //qDebug() << "SUCEESS. db is opened";
+        //qDebug() << "CONNECT " << QString().setNum(m_pModelWrapper->getSessionID());
         return true;
     } else {
         setResult(Message::UNABLE_CONNECT_DATABASE);
@@ -96,7 +98,8 @@ bool DBManager::addDataBase() {
 
 void DBManager::login() {
     //Блокировать ресурсы SQL от использования их  другими потоками. 
-    QMutexLocker lock(&m_Mutex);
+    static QMutex mutex;
+    QMutexLocker lock(&mutex);
     //Загрузить параметры команды.
     QJsonObject param;
     JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
@@ -124,7 +127,7 @@ void DBManager::login() {
     if (!asLogin.isEmpty()&&!asPassword.isEmpty()) {
         //Взять ранее созданное подключение к  базе данных.
         if (!connectDB<User>()) {
-            qDebug() << "DB not connected";
+            //qDebug() << "DB not connected";
             return;
         }
         //База данных открыта. Можно проводить авторизацию пользователя. 
@@ -143,11 +146,11 @@ void DBManager::login() {
             //Пользователя с таким именем нет в базе данных. 
             //Если это admin , то добавить его и установить пароль по умолчанию
             if (asLogin == "admin") {
-                qDebug() << asLogin;
+                //qDebug() << asLogin;
                 QString pasword_hash = QString(QCryptographicHash::hash(("adm11"), QCryptographicHash::Md5).toHex());
                 QString sqlquery_string = QString("INSERT INTO user(name,password)"
                         " VALUES ('admin','") + pasword_hash + QString("')");
-                qDebug() << sqlquery_string;
+                //qDebug() << sqlquery_string;
 
                 if (!queryStatementInfo.exec(sqlquery_string)) {
                     attach = "Ошибка:  " + strGetStatementInfo;
@@ -167,7 +170,7 @@ void DBManager::login() {
         QJsonObject recordObject;
         //Скопировать запись базы данных в JSON объект.
         for (int x = 0; x < queryStatementInfo.record().count(); x++) {
-            //qDebug() << queryStatementInfo.value(x);
+            ////qDebug() << queryStatementInfo.value(x);
             recordObject.insert(queryStatementInfo.record().fieldName(x), QJsonValue::fromVariant(queryStatementInfo.value(x)));
         }
         ///Считать данные JSON объекта  в объект класса User.  
@@ -218,7 +221,7 @@ void DBManager::callProcedure() {
                 m_pModelWrapper->setMessage(QString(result.str).arg(attach));
                 m_pModelWrapper->setSuccess(result.success);
             };
-            qDebug() << "Unknown model";
+            //qDebug() << "Unknown model";
             QString attach = "<a style='color:red'> deleteModel</a>";
             setResult(Message::UNKMOWN_MODEL, attach);
         }
@@ -287,7 +290,7 @@ void DBManager::deleteModel() {
                 m_pModelWrapper->setMessage(QString(result.str).arg(attach));
                 m_pModelWrapper->setSuccess(result.success);
             };
-            qDebug() << "Unknown model";
+            //qDebug() << "Unknown model";
             QString attach = "<a style='color:red'> deleteModel</a>";
             setResult(Message::UNKMOWN_MODEL, attach);
         }
@@ -303,7 +306,7 @@ void DBManager::deleteModel() {
 ///-----------------------------------------------------------------------------
 
 void DBManager::addModel() {
-    qInfo() << "Получаем модель";
+    //qInfo() << "Получаем модель";
     //Получаем модель.
     ModelWrapper::Model model = m_pModelWrapper->getEnumModel();
     //Выбрать модель, данные которой необходимо запросить. 
@@ -315,31 +318,31 @@ void DBManager::addModel() {
             //номер НСИ
             Nsi::num_ = param[NSI_NUM].toString();
             m_pModelWrapper->setData(param[DATA].toString());
-            //qInfo() << param[DATA].toString();
+            ////qInfo() << param[DATA].toString();
             addModel<Nsi>();
         }
             break;
         case ModelWrapper::Model::Mro:
         {
-            //qInfo() << param[DATA].toString();
+            ////qInfo() << param[DATA].toString();
             addModel<Mro>();
         }
             break;
         case ModelWrapper::Model::Inspection:
         {
-            //qInfo() << param[DATA].toString();
+            ////qInfo() << param[DATA].toString();
             addModel<Inspection>();
         }
             break;
         case ModelWrapper::Model::RptColumn:
         {
-            //qInfo() << param[DATA].toString();
+            ////qInfo() << param[DATA].toString();
             addModel<RptColumn>();
         }
             break;
         case ModelWrapper::Model::RptRow:
         {
-            //qInfo() << param[DATA].toString();
+            ////qInfo() << param[DATA].toString();
             addModel<RptRow>();
         }
             break;
@@ -351,7 +354,7 @@ void DBManager::addModel() {
                 m_pModelWrapper->setMessage(QString(result.str).arg(attach));
                 m_pModelWrapper->setSuccess(result.success);
             };
-            qDebug() << "Unknown model";
+            //qDebug() << "Unknown model";
             QString attach = "<a style='color:red'> addModel</a>";
             setResult(Message::UNKMOWN_MODEL, attach);
         }
@@ -409,7 +412,7 @@ void DBManager::updateModel() {
                 m_pModelWrapper->setMessage(QString(result.str).arg(attach));
                 m_pModelWrapper->setSuccess(result.success);
             };
-            qDebug() << "Unknown model";
+            //qDebug() << "Unknown model";
             QString attach = "<a style='color:red'> updateModel</a>";
             setResult(Message::UNKMOWN_MODEL, attach);
         }
@@ -481,7 +484,7 @@ void DBManager::getModel() {
                 m_pModelWrapper->setMessage(QString(result.str).arg(attach));
                 m_pModelWrapper->setSuccess(result.success);
             };
-            qDebug() << "Unknown model";
+            //qDebug() << "Unknown model";
             QString attach = "<a style='color:red'> getModel</a>";
             setResult(Message::UNKMOWN_MODEL, attach);
         }
@@ -550,7 +553,7 @@ void DBManager::getListModels() {
             JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
             //ноиер НСИ
             Nsi::num_ = param[NSI_NUM].toString();
-            //qDebug()<<"num_" << Nsi::num_;
+            ////qDebug()<<"num_" << Nsi::num_;
             getListModels<Nsi>();
         }
             break;
@@ -562,7 +565,7 @@ void DBManager::getListModels() {
                 m_pModelWrapper->setMessage(QString(result.str).arg(attach));
                 m_pModelWrapper->setSuccess(result.success);
             };
-            qDebug() << "Unknown model";
+            //qDebug() << "Unknown model";
             QString attach = "<a style='color:red'> getListModels</a>";
             setResult(Message::UNKMOWN_MODEL, attach);
         }
@@ -582,14 +585,15 @@ void DBManager::getListModels() {
 
 void DBManager::removeDatabase() {
     //Блокировать ресурсы SQL от использования их  другими потоками. 
-    QMutexLocker lock(&m_Mutex);
+    static QMutex mutex;
+    QMutexLocker lock(&mutex);
     //Закрыть подключение  к базе данных.Освободить ресурсы.
     {
         QSqlDatabase database = QSqlDatabase::database(QString().setNum(m_pModelWrapper->getSessionID()));
         if (database.isOpen()) {
 
             database.close();
-            qDebug() << "db  closed";
+            //qDebug() << "db  closed";
         }
     }
     //Удалить подключение к базе данных из списка QSqlDatabase
@@ -630,13 +634,13 @@ void DBManager::changePassword() {
     user.bindData(&query);
     if (query.exec()) {
         setResult(user, Message::PASSWORD_CHANGE_SUCCESS);
-        qDebug() << user.getName();
-        qDebug() << user.getId();
-        qDebug() << "update user password  succes: ";
+        //qDebug() << user.getName();
+        //qDebug() << user.getId();
+        //qDebug() << "update user password  succes: ";
     } else {
         setResult(user, Message::PASSWORD_CHANGE_FAILURE);
-        qDebug() << "update user password  failed: " << query.lastError();
-        qDebug() << user.getName();
+        //qDebug() << "update user password  failed: " << query.lastError();
+        //qDebug() << user.getName();
     }
 
     return;
@@ -664,26 +668,26 @@ void DBManager::updateUser() {
     //Создать модель данных User
     User user;
     JsonSerializer::parse(m_pModelWrapper->getData(), user);
-    //qDebug() << myquery;
+    ////qDebug() << myquery;
     //Взять ранее созданное подключение к  базе данных.
     if (!connectDB<User>()) {
         return;
     }
     //База данных открыта. Можно проводить авторизацию пользователя. 
     QSqlQuery query(m_Db);
-    //qDebug() << user.getName();
+    ////qDebug() << user.getName();
     query.prepare(user.update());
     user.bindData(&query);
 
     if (query.exec()) {
         setResult(user, Message::USER_EDIT_SUCCESS);
-        qDebug() << user.getName();
-        qDebug() << user.getId();
-        qDebug() << "update user  succes: ";
+        //qDebug() << user.getName();
+        //qDebug() << user.getId();
+        //qDebug() << "update user  succes: ";
     } else {
         setResult(user, Message::USER_EDIT_FAILURE);
-        qDebug() << "update person failed: " << query.lastError();
-        qDebug() << user.getName();
+        //qDebug() << "update person failed: " << query.lastError();
+        //qDebug() << user.getName();
     }
     return;
 }
@@ -725,11 +729,11 @@ bool DBManager::isUserName(const QString& name) {
     ///Экземпляр объекта класса T, который будет  сериализоваться.
     for (int x = 0; x < query.record().count(); x++) {
         recordObject.insert(query.record().fieldName(x), QJsonValue::fromVariant(query.value(x)));
-        qDebug() << "DBManager::isUserName(User user)";
+        //qDebug() << "DBManager::isUserName(User user)";
     }
     ///Считать запись базы данных  в объект класса T.  
     user.read(recordObject);
-    qInfo() << user.getName();
+    //qInfo() << user.getName();
     setResult(user, Message::USER_NAME_IS);
     return true;
 }
@@ -765,7 +769,7 @@ void DBManager::addUser() {
 
     QString pasword_hash = QString(QCryptographicHash::hash((user.getPassword().toStdString().c_str()), QCryptographicHash::Md5).toHex());
     user.setPassword(pasword_hash);
-    qInfo() << user.insert();
+    //qInfo() << user.insert();
     //База данных открыта. Можно проводить авторизацию пользователя. 
 
     QSqlQuery query(m_Db);
@@ -801,13 +805,13 @@ void DBManager::addUser() {
             user.read(recordObject);
         }
         setResult(user, Message::USER_ADD_SUCCESS);
-        qDebug() << user.getName();
-        qDebug() << user.getId();
-        qDebug() << "add user  succes: ";
+        //qDebug() << user.getName();
+        //qDebug() << user.getId();
+        //qDebug() << "add user  succes: ";
     } else {
         setResult(user, Message::USER_ADD_FAILURE);
-        qDebug() << "add person failed: " << query.lastError();
-        qDebug() << user.getName();
+        //qDebug() << "add person failed: " << query.lastError();
+        //qDebug() << user.getName();
     }
 
     return;

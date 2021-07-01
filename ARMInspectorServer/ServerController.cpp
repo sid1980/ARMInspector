@@ -220,12 +220,14 @@ QString ServerController::createResponce(const RpcSocket * apClientSocket, Messa
 /// @param asString Данные в командной оболочке сериализованные в строку. 
 
 void ServerController::notifyCurrentClient(const RpcSocket * apClientSocket, QString asString) {
+    qDebug()<<asString;
     //Прверить, корректен ли сокет.
     if (!apClientSocket->isValid()) {
         //Если сокет не корректен, операцию по уведомлению клиента прекратить. 
         qDebug() << "Can`t notify client" << apClientSocket->isValid();
         return;
     }
+    qDebug() << "I notify client" << apClientSocket->isValid();
     /// Сокет корректен.
     ///Убрать старое клиент-серверное соединение.
     disconnect(this, SIGNAL(notify(RpcMessage)), 0, 0);
