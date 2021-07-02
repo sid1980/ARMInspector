@@ -14,6 +14,7 @@
 
 /// Стандартный конструктор.
 /// @param apParent Родитель.
+QMutex Worker::mutex_;
 
 Worker::Worker(QObject *apParent) : QObject(apParent) {
 }
@@ -40,9 +41,7 @@ const QString& Worker::getModelWrapperString() const {
     return m_aModelWrapperString;
 }
 
-
-
-DBManager*  Worker::getDBManager(){
+DBManager* Worker::getDBManager() {
     return m_pDBManager;
 }
 
@@ -54,6 +53,8 @@ DBManager*  Worker::getDBManager(){
 ///Все действия производятся через командную обёртку.
 
 void Worker::process() {
+    QMutexLocker lock(&Worker::mutex_);
+
     //Создать  командную обёртку. 
     ModelWrapper wrapper;
     //Задать  функцию для установки результата выполнения команды сервера
@@ -67,7 +68,10 @@ void Worker::process() {
     //Создать экземпляр класса управления базой данных.
     //DBManager *m_pDBManager = new DBManager();
     QScopedPointer<DBManager> m_pDBManager(new DBManager());
+    //connect(m_pDBManager, SIGNAL(finished(QString)), SIGNAL(finished(QString)));
+
     if (m_pDBManager != nullptr) {
+        //Создать соединение, которое обработает возвращенный результат. 
         //Экземпляр класса управления базой данных создан успешно.
         //Конвертировать данные, пришедшие  от клиента в JSON объект.
         JsonSerializer::parse(m_aModelWrapperString, wrapper);

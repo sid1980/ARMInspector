@@ -20,6 +20,9 @@ int ServerController::m_aCounter = {0};
 //Список освободившихся номеров  подключений.
 QVector<int> ServerController::m_aListCounter = {};
 
+////
+QMutex ServerController::mutex_;
+
 
 /// Конструктор.
 /// @param parent Родительский объект.
@@ -103,7 +106,7 @@ void ServerController::removeSession(const RpcSocket * apClientSocket, const Ses
     }
     //Если сессия существует,
     //удалить сигнально-слотовое соединение между сессией и контроллером сервера.
-    disconnect(apSession, SIGNAL(onReadyResult(const RpcSocket*, QString)), 0, 0);
+    disconnect(apSession, SIGNAL(onReadyResult(const RpcSocket*, QString)), apClientSocket, 0);
     //Убрать сессию из списка открытых. 
     m_aListSession.remove(*m_aConnectedClients.find(apClientSocket));
     //Удпалить сессию.
@@ -220,7 +223,8 @@ QString ServerController::createResponce(const RpcSocket * apClientSocket, Messa
 /// @param asString Данные в командной оболочке сериализованные в строку. 
 
 void ServerController::notifyCurrentClient(const RpcSocket * apClientSocket, QString asString) {
-    qDebug()<<asString;
+    QMutexLocker lock(&ServerController::mutex_);
+    //qDebug() << asString;
     //Прверить, корректен ли сокет.
     if (!apClientSocket->isValid()) {
         //Если сокет не корректен, операцию по уведомлению клиента прекратить. 
@@ -230,7 +234,7 @@ void ServerController::notifyCurrentClient(const RpcSocket * apClientSocket, QSt
     qDebug() << "I notify client" << apClientSocket->isValid();
     /// Сокет корректен.
     ///Убрать старое клиент-серверное соединение.
-    disconnect(this, SIGNAL(notify(RpcMessage)), 0, 0);
+    disconnect(this, SIGNAL(notify(RpcMessage)), apClientSocket, 0);
     ///Создать новое клиент-серверное соединение.
     connect(this, SIGNAL(notify(RpcMessage)), apClientSocket, SLOT(notify(RpcMessage)));
     ///Софрмировать ответ клиенту.

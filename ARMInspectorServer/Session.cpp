@@ -68,7 +68,7 @@ void Session::addSeance(QString asQuery) {
     m_pSeance = new Seance(wrapperString);
     if (m_pSeance != nullptr) {
         ///Отключить старые соединения.
-        disconnect(m_pSeance, SIGNAL(onReadyResult(Seance*, QString)), 0, 0);
+        disconnect(m_pSeance, SIGNAL(onReadyResult(Seance*, QString)), this, 0);
         ///Создать соединение, сигнализирующее, что сенс возвращает данные
         connect(m_pSeance, SIGNAL(onReadyResult(Seance*, QString)), this, SLOT(removeSeance(Seance*, QString)));
         m_pSeance->addThread();

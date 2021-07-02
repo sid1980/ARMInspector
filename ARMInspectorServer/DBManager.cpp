@@ -45,8 +45,8 @@ const ModelWrapper* DBManager::getModelWrapper() const {
 
 bool DBManager::addDataBase() {
     //Блокировать ресурсы SQL от использования их  другими пользователями. 
-    static QMutex mutex;
-    QMutexLocker lock(&mutex);
+    //static QMutex mutex;
+    //QMutexLocker lock(&mutex);
     //Задать  функцию для установки результата выполнения команды сервера
     //и собщения о результате выполнения команды.
     auto setResult = [this](Message msg) {
@@ -61,7 +61,7 @@ bool DBManager::addDataBase() {
         return false;
     }
     //Добавить  подключение клиента в список подключений к базе данных 
-    QSqlDatabase::removeDatabase(QString().setNum(m_pModelWrapper->getSessionID()));
+    //Добавить  подключение клиента в список подключений к базе данных 
     QSqlDatabase database = QSqlDatabase::addDatabase(DRIVER, QString().setNum(m_pModelWrapper->getSessionID()));
     if (database.isValid()) {
         database.setDatabaseName("DRIVER={MySQL ODBC 5.1 Driver};SERVER=localhost;DATABASE=gu_delinq;Uid=test;Pwd=tst;");
@@ -74,18 +74,19 @@ bool DBManager::addDataBase() {
         //database.setPassword("");
         //Открыть базу данных
         if (!database.open()) {
-            //qDebug() << "FAILURE.db is not opened";
+            qDebug() << "FAILURE.db is not opened";
             //База данных не открыта.Авторизация не возможна.
             setResult(Message::UNABLE_OPEN_DATABASE);
             return false;
         }
-        //qDebug() << "SUCEESS. db is opened";
-        //qDebug() << "CONNECT " << QString().setNum(m_pModelWrapper->getSessionID());
+        qDebug() << "SUCEESS. db is opened";
+        qDebug() << "CONNECT " << QString().setNum(m_pModelWrapper->getSessionID());
         return true;
     } else {
         setResult(Message::UNABLE_CONNECT_DATABASE);
         return false;
     }
+
 }
 
 
@@ -98,8 +99,8 @@ bool DBManager::addDataBase() {
 
 void DBManager::login() {
     //Блокировать ресурсы SQL от использования их  другими потоками. 
-    static QMutex mutex;
-    QMutexLocker lock(&mutex);
+    //static QMutex mutex;
+    //QMutexLocker lock(&mutex);
     //Загрузить параметры команды.
     QJsonObject param;
     JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
@@ -123,6 +124,8 @@ void DBManager::login() {
         ServerMessage::Result result = ServerMessage::outPut(msg);
         m_pModelWrapper->setMessage(QString(result.str).arg(attach));
         m_pModelWrapper->setSuccess(result.success);
+
+
     };
     if (!asLogin.isEmpty()&&!asPassword.isEmpty()) {
         //Взять ранее созданное подключение к  базе данных.
@@ -585,8 +588,8 @@ void DBManager::getListModels() {
 
 void DBManager::removeDatabase() {
     //Блокировать ресурсы SQL от использования их  другими потоками. 
-    static QMutex mutex;
-    QMutexLocker lock(&mutex);
+    //static QMutex mutex;
+    //QMutexLocker lock(&mutex);
     //Закрыть подключение  к базе данных.Освободить ресурсы.
     {
         QSqlDatabase database = QSqlDatabase::database(QString().setNum(m_pModelWrapper->getSessionID()));
@@ -617,6 +620,8 @@ void DBManager::changePassword() {
         ServerMessage::Result result = ServerMessage::outPut(msg);
         m_pModelWrapper->setMessage(result.str);
         m_pModelWrapper->setSuccess(result.success);
+
+
     };
     //Создать модель данных User
     User user;
@@ -642,7 +647,6 @@ void DBManager::changePassword() {
         //qDebug() << "update user password  failed: " << query.lastError();
         //qDebug() << user.getName();
     }
-
     return;
 }
 
@@ -664,6 +668,8 @@ void DBManager::updateUser() {
         ServerMessage::Result result = ServerMessage::outPut(msg);
         m_pModelWrapper->setMessage(result.str);
         m_pModelWrapper->setSuccess(result.success);
+
+
     };
     //Создать модель данных User
     User user;
@@ -755,6 +761,8 @@ void DBManager::addUser() {
         ServerMessage::Result result = ServerMessage::outPut(msg);
         m_pModelWrapper->setMessage(result.str);
         m_pModelWrapper->setSuccess(result.success);
+
+
     };
     //Создать модель данных User
     User user;

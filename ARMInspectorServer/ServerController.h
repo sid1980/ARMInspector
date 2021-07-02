@@ -33,6 +33,7 @@ class ServerController : public RpcService {
 public:
     //Счётчик подключений клиентов к базе данных.
     static int m_aCounter;
+    static QMutex mutex_;
     //Список освободившихся номеров
     static QVector<int> m_aListCounter;
     //Список  подключений к серверу

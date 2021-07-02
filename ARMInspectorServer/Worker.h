@@ -27,7 +27,8 @@ public:
     /// Получить строку командной обёртки.
     /// @return Возвращает строку командной обёртки.
     const QString& getModelWrapperString() const;
-    DBManager* getDBManager(); 
+    DBManager* getDBManager();
+    static QMutex mutex_;
 
 public slots:
     ///Основная функция потока

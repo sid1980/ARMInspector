@@ -100,7 +100,10 @@ public:
 
     /// Выполнить Sql запрос.
     //template<typename T> void execSqlquery();
-
+signals:
+    ///Сигнал завершения работы.
+    /// @param asResult Результат выполнения запроса 
+    void finished(QString asResult);
 
 private:
     ///Указатель на командную обёртку модели.

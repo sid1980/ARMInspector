@@ -35,13 +35,15 @@
 
 template<typename T> void DBManager::getListModels() {
     //Блокировать ресурсы SQL от использования их  другими потоками. 
-    static QMutex mutex;
-    QMutexLocker lock(&mutex);
+    //static QMutex mutex;
+    //QMutexLocker lock(&mutex);
     //Проверить , открыта ли  база данных. 
     if (!connectDB<T>()) {
+        
         return;
     }
     getAllRecordS<T>();
+    
     return;
 }
 
@@ -54,17 +56,20 @@ template<typename T> void DBManager::getListModels() {
 
 template<typename T> void DBManager::getModel() {
     //Блокировать ресурсы SQL от использования их  другими потоками. 
-    static QMutex mutex;
-    QMutexLocker lock(&mutex);
+    //static QMutex mutex;
+    //QMutexLocker lock(&mutex);
     //Загружаем параметры команды.
     QJsonObject param;
     JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
     //ID модели.
     qint64 asId = param["ID"].toInt();
     if (!connectDB<T>()) {
+        
         return;
     }
     getRecord<T>(MQuery<T>::selectById(asId));
+    
+
     return;
 }
 
@@ -87,6 +92,8 @@ template<typename T, typename TOUT> void DBManager::callProcedure() {
         ServerMessage::Result result = ServerMessage::outPut(msg);
         m_pModelWrapper->setMessage(QString(result.str).arg(attach));
         m_pModelWrapper->setSuccess(result.success);
+        
+
     };
     //Создать модель данных 
     T model; //Входные данные 
@@ -139,6 +146,8 @@ template<typename T> void DBManager::addModel() {
         ServerMessage::Result result = ServerMessage::outPut(msg);
         m_pModelWrapper->setMessage(QString(result.str).arg(attach));
         m_pModelWrapper->setSuccess(result.success);
+        
+
     };
     //дополнение к сообщению
     QString attach = "<br><a style='color:red'>";
@@ -198,6 +207,8 @@ template<typename T> void DBManager::updateModel() {
         ServerMessage::Result result = ServerMessage::outPut(msg);
         m_pModelWrapper->setMessage(result.str);
         m_pModelWrapper->setSuccess(result.success);
+        
+
     };
     //Создать модель данных User
     T model;
@@ -232,22 +243,25 @@ template<typename T> void DBManager::updateModel() {
 
 template<typename T> void DBManager::deleteModel() {
     //Блокировать ресурсы SQL от использования их  другими потоками. 
-    static QMutex mutex;
-    QMutexLocker lock(&mutex);
+    //static QMutex mutex;
+    //QMutexLocker lock(&mutex);
     //Загружаем параметры команды.
     QJsonObject param;
     JsonSerializer::json_decode(m_pModelWrapper->getData(), param);
     //ID модели.
     qint64 asId = param[ID_].toInt();
     if (!connectDB<T>()) {
+        
         return;
     }
     T model = getRecord<T>(MQuery<T>::selectById(asId));
     if (!m_pModelWrapper->getSuccess()) {
+        
         return;
     }
     //    query = T::delQuery() + " where id=" + QString::number(asId);
     delRecord<T>(model, MQuery<T>::removeById(asId));
+    
     return;
 }
 
@@ -270,6 +284,8 @@ template<typename T> bool DBManager::connectDB() {
         ServerMessage::Result result = ServerMessage::outPut(msg);
         m_pModelWrapper->setMessage(result.str);
         m_pModelWrapper->setSuccess(result.success);
+        
+
     };
     m_Db = QSqlDatabase::database(QString().setNum(m_pModelWrapper->getSessionID()));
     //Проверить , открыта ли  база данных. 
@@ -304,6 +320,7 @@ template<typename T> T DBManager::getRecord(const QString& queryStr) {
         ServerMessage::Result result = ServerMessage::outPut(msg);
         m_pModelWrapper->setMessage(QString(result.str).arg(attach));
         m_pModelWrapper->setSuccess(result.success);
+
     };
     //дополнение к сообщению
     QString attach = "<br><a style='color:red'>";
@@ -406,6 +423,7 @@ template<typename T> void DBManager::delRecord(const T& model, const QString& qu
         ServerMessage::Result result = ServerMessage::outPut(msg);
         m_pModelWrapper->setMessage(result.str);
         m_pModelWrapper->setSuccess(result.success);
+
     };
     //Проверить  и выполнить  SQL запрос.
     QSqlQuery query(m_Db);
