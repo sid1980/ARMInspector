@@ -102,7 +102,7 @@ void WorkerClient::process() {
             {
                 ///Сообщить контроллеру клиента о небходимости
                 //установить ID сессии
-                QMessageBox::information(0, "Menu", QString::number(wrapper.getSessionID()));
+                //QMessageBox::information(0, "Menu", QString::number(wrapper.getSessionID()));
                 emit setID(wrapper.getSessionID());
             }
                 break;
